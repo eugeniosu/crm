@@ -116,6 +116,7 @@ export function permitted(
 export const AGENT_TOOLS = [
 	"agent",
 	"archive_field",
+	"atender_whatsapp",
 	"enrich_company",
 	"fetch_contact_photo",
 	"find_contact_socials",
