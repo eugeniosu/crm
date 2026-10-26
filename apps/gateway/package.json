@@ -1,0 +1,35 @@
+{
+	"name": "gateway",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"license": "MIT",
+	"scripts": {
+		"build": "prisma generate",
+		"gateway:dev": "bun --watch src/main.ts",
+		"start": "bun src/main.ts",
+		"check-types": "tsc --noEmit",
+		"lint": "biome check .",
+		"test": "bun scripts/prepare-test-db.ts && bun test",
+		"db:generate": "prisma generate",
+		"gateway:db:deploy": "prisma migrate deploy",
+		"gateway:db:migrate": "prisma migrate dev",
+		"gateway:instalacion": "bun scripts/create-install.ts",
+		"postinstall": "prisma generate",
+		"clean": "rm -rf .turbo node_modules src/generated"
+	},
+	"dependencies": {
+		"@crm/auth": "workspace:*",
+		"@crm/env": "workspace:*",
+		"@prisma/adapter-pg": "^7.10.1",
+		"@prisma/client": "^7.10.1",
+		"zod": "^4.4.3"
+	},
+	"devDependencies": {
+		"@crm/typescript-config": "workspace:*",
+		"@types/bun": "^1.3.14",
+		"@types/node": "^24.10.1",
+		"prisma": "^7.10.1",
+		"typescript": "5.9.2"
+	}
+}

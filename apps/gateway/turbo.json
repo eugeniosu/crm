@@ -1,0 +1,21 @@
+{
+	"$schema": "https://turborepo.dev/schema.json",
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"inputs": ["$TURBO_DEFAULT$", "prisma/**"],
+			"outputs": ["src/generated/**"]
+		},
+		"db:generate": {
+			"inputs": ["$TURBO_DEFAULT$", "prisma/**"],
+			"outputs": ["src/generated/**"]
+		},
+		"check-types": {
+			"dependsOn": ["$TURBO_EXTENDS$", "build"]
+		},
+		"test": {
+			"dependsOn": ["$TURBO_EXTENDS$", "build"],
+			"passThroughEnv": ["GATEWAY_TEST_DATABASE_URL"]
+		}
+	}
+}
