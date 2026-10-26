@@ -76,6 +76,33 @@ const HEADER_ALIASES = {
 	description: "description",
 	about: "description",
 	notes: "description",
+	empresa: "name",
+	nombre: "name",
+	nombreempresa: "name",
+	razonsocial: "name",
+	cliente: "name",
+	telefono: "phone",
+	fono: "phone",
+	celular: "phone",
+	movil: "phone",
+	ciudad: "city",
+	comuna: "city",
+	estado: "stateCode",
+	provincia: "stateCode",
+	rubro: "industry",
+	industria: "industry",
+	giro: "industry",
+	actividad: "industry",
+	actividadeconomica: "industry",
+	subrubro: "subIndustry",
+	subindustria: "subIndustry",
+	sitioweb: "website",
+	paginaweb: "website",
+	sitio: "website",
+	dominio: "website",
+	descripcion: "description",
+	notas: "description",
+	observaciones: "description",
 } as const satisfies Record<string, CompanyImportField>;
 
 export function parseCsv(text: string): ParsedCsv {
@@ -114,7 +141,11 @@ export function parseCsv(text: string): ParsedCsv {
 export function createInitialMapping(headers: string[]): CompanyImportMapping {
 	const used = new Set<CompanyImportField>();
 	return headers.map((header) => {
-		const key = header.toLowerCase().replace(/[^a-z]/g, "");
+		const key = header
+			.normalize("NFD")
+			.replace(/\p{M}/gu, "")
+			.toLowerCase()
+			.replace(/[^a-z]/g, "");
 		const field = HEADER_ALIASES[key as keyof typeof HEADER_ALIASES];
 		if (!field || used.has(field)) return null;
 		used.add(field);

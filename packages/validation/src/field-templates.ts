@@ -7,32 +7,32 @@ export type FieldTemplate = {
 export const FIELD_TEMPLATES = {
 	COMPANY: [
 		{
-			label: "Account type",
+			label: "Tipo de cuenta",
 			type: "SELECT",
-			options: ["Prospect", "Customer", "Partner", "Churned"],
+			options: ["Prospecto", "Cliente", "Socio", "Ex cliente"],
 		},
 		{
-			label: "Segment",
+			label: "Segmento",
 			type: "SELECT",
-			options: ["Enterprise", "Mid-Market", "SMB"],
+			options: ["Gran empresa", "Mediana empresa", "Pyme"],
 		},
 		{
-			label: "Territory",
+			label: "Territorio",
 			type: "SELECT",
 			options: ["AMER", "EMEA", "APAC"],
 		},
 		{
-			label: "Lifecycle stage",
+			label: "Etapa del ciclo de vida",
 			type: "SELECT",
-			options: ["Lead", "MQL", "SQL", "Opportunity", "Customer"],
+			options: ["Lead", "MQL", "SQL", "Oportunidad", "Cliente"],
 		},
 		{
-			label: "Lead source",
+			label: "Origen del lead",
 			type: "SELECT",
-			options: ["Inbound", "Outbound", "Event"],
+			options: ["Entrante", "Saliente", "Evento"],
 		},
-		{ label: "ICP fit score", type: "NUMBER" },
-		{ label: "BDR owner", type: "USER" },
+		{ label: "Ajuste al cliente ideal (ICP)", type: "NUMBER" },
+		{ label: "Ejecutivo BDR", type: "USER" },
 	],
 	CONTACT: [],
 	DEAL: [],

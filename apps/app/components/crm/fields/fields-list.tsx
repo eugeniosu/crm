@@ -197,8 +197,11 @@ export function FieldsList({
 	const standard = STANDARD_FIELDS[entity];
 
 	const existingKeys = new Set(all.map((field) => field.key));
+	const existingLabels = new Set(all.map((field) => field.label.toLowerCase()));
 	const suggestions = FIELD_TEMPLATES[entity].filter(
-		(template) => !existingKeys.has(fieldKeyFromLabel(template.label)),
+		(template) =>
+			!existingKeys.has(fieldKeyFromLabel(template.label)) &&
+			!existingLabels.has(template.label.toLowerCase()),
 	);
 
 	return (

@@ -61,6 +61,22 @@ describe("company CSV mapping", () => {
 		]);
 	});
 
+	it("recognizes Spanish headers, with or without accents", () => {
+		const parsed = parseCsv(
+			"Razón social,Teléfono,Comuna,Región,Rubro,Sitio web,Descripción\nAcme,1,Viña,V,Retail,acme.test,x",
+		);
+
+		expect(createInitialMapping(parsed.headers)).toEqual([
+			"name",
+			"phone",
+			"city",
+			"stateCode",
+			"industry",
+			"website",
+			"description",
+		]);
+	});
+
 	it("rejects duplicate destinations", () => {
 		const parsed = parseCsv("company,account\nAcme,Alias");
 		expect(() => buildImportRows(parsed, ["name", "name"])).toThrow(

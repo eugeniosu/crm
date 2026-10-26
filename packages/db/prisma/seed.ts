@@ -2,7 +2,6 @@ import { mirror } from "../src/blob";
 import { db } from "../src/client";
 import { DEFAULT_REPORTING_CURRENCY } from "../src/currency";
 import { resolveFavicon } from "../src/favicon";
-import { fieldKeyFromLabel } from "../src/fields-shape";
 import {
 	ActivityType,
 	DealStage,
@@ -425,17 +424,17 @@ async function seedIcons(
 	console.log(`Resolved ${resolved} of ${missing.length} company icons.`);
 }
 
-const ACCOUNT_TYPES = ["Prospect", "Customer", "Partner", "Churned"] as const;
-const SEGMENT_TIERS = ["Enterprise", "Mid-Market", "SMB"] as const;
+const ACCOUNT_TYPES = ["Prospecto", "Cliente", "Socio", "Ex cliente"] as const;
+const SEGMENT_TIERS = ["Gran empresa", "Mediana empresa", "Pyme"] as const;
 const TERRITORIES = ["AMER", "EMEA", "APAC"] as const;
 const LIFECYCLE_STAGES = [
 	"Lead",
 	"MQL",
 	"SQL",
-	"Opportunity",
-	"Customer",
+	"Oportunidad",
+	"Cliente",
 ] as const;
-const LEAD_SOURCES = ["Inbound", "Outbound", "Event"] as const;
+const LEAD_SOURCES = ["Entrante", "Saliente", "Evento"] as const;
 
 type SeededField = {
 	id: string;
@@ -455,12 +454,12 @@ type SeededFieldSet = {
 
 async function upsertField(
 	entity: FieldEntity,
+	key: string,
 	label: string,
 	type: FieldType,
 	position: number,
 	options: readonly string[] = [],
 ): Promise<SeededField> {
-	const key = fieldKeyFromLabel(label);
 	const definition = await db.fieldDefinition.upsert({
 		where: { entity_key: { entity, key } },
 		create: {
@@ -500,19 +499,54 @@ async function seedCompanyFields(): Promise<SeededFieldSet> {
 		icpFitScore,
 		bdrOwner,
 	] = await Promise.all([
-		upsertField("COMPANY", "Account type", FieldType.SELECT, 0, ACCOUNT_TYPES),
-		upsertField("COMPANY", "Segment", FieldType.SELECT, 1, SEGMENT_TIERS),
-		upsertField("COMPANY", "Territory", FieldType.SELECT, 2, TERRITORIES),
 		upsertField(
 			"COMPANY",
-			"Lifecycle stage",
+			"account_type",
+			"Tipo de cuenta",
+			FieldType.SELECT,
+			0,
+			ACCOUNT_TYPES,
+		),
+		upsertField(
+			"COMPANY",
+			"segment",
+			"Segmento",
+			FieldType.SELECT,
+			1,
+			SEGMENT_TIERS,
+		),
+		upsertField(
+			"COMPANY",
+			"territory",
+			"Territorio",
+			FieldType.SELECT,
+			2,
+			TERRITORIES,
+		),
+		upsertField(
+			"COMPANY",
+			"lifecycle_stage",
+			"Etapa del ciclo de vida",
 			FieldType.SELECT,
 			3,
 			LIFECYCLE_STAGES,
 		),
-		upsertField("COMPANY", "Lead source", FieldType.SELECT, 4, LEAD_SOURCES),
-		upsertField("COMPANY", "ICP fit score", FieldType.NUMBER, 5),
-		upsertField("COMPANY", "BDR owner", FieldType.USER, 6),
+		upsertField(
+			"COMPANY",
+			"lead_source",
+			"Origen del lead",
+			FieldType.SELECT,
+			4,
+			LEAD_SOURCES,
+		),
+		upsertField(
+			"COMPANY",
+			"icp_fit_score",
+			"Ajuste al cliente ideal (ICP)",
+			FieldType.NUMBER,
+			5,
+		),
+		upsertField("COMPANY", "bdr_owner", "Ejecutivo BDR", FieldType.USER, 6),
 	]);
 
 	return {
@@ -596,7 +630,7 @@ async function seedCompanyFieldValues(
 					companyId: company.id,
 					optionId: optionIdFor(
 						fields.lifecycleStage,
-						accountType === "Customer" ? "Customer" : pick(LIFECYCLE_STAGES),
+						accountType === "Cliente" ? "Cliente" : pick(LIFECYCLE_STAGES),
 					),
 				},
 				update: {},
