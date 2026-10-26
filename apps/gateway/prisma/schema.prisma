@@ -1,0 +1,65 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  runtime                = "nodejs"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = ""
+}
+
+enum ConnectKind {
+  whatsapp
+}
+
+model Install {
+  id                  String           @id @default(cuid())
+  slug                String           @unique
+  name                String
+  relayUrl            String
+  relayTokenEncrypted String
+  apiKeyHash          String           @unique
+  settingsUrl         String
+  createdAt           DateTime         @default(now())
+  disabledAt          DateTime?
+  whatsappNumber      WhatsappNumber?
+  connectSessions     ConnectSession[]
+}
+
+model WhatsappNumber {
+  id                 String    @id @default(cuid())
+  installId          String    @unique
+  install            Install   @relation(fields: [installId], references: [id], onDelete: Cascade)
+  phoneNumberId      String    @unique
+  wabaId             String
+  displayPhoneNumber String
+  verifiedName       String
+  qualityRating      String?
+  tokenEncrypted     String
+  coexistence        Boolean
+  connectedAt        DateTime  @default(now())
+  lastError          String?
+  lastErrorAt        DateTime?
+}
+
+model ConnectSession {
+  id        String      @id
+  installId String
+  install   Install     @relation(fields: [installId], references: [id], onDelete: Cascade)
+  kind      ConnectKind
+  createdAt DateTime    @default(now())
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  @@index([installId])
+}
+
+model WebhookReceipt {
+  wamid      String   @id
+  receivedAt DateTime @default(now())
+
+  @@index([receivedAt])
+}
