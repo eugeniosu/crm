@@ -72,7 +72,7 @@ read, or a RUT with a wrong check digit, answers `400`.
 - **A suppressed address is skipped.** A rep deleted that person. The route answers
   `filed: false` with the reason and writes nothing. It never lifts a suppression.
 - **A deal needs a company.** A lead without a company is a contact only. The deal
-  opens on the first call that names one, as `Kontia - <name>`, owned by
+  opens on the first call that names one, as `Lead - <name>`, owned by
   `INTAKE_OWNER_EMAIL` (or the oldest user).
 - **Stages only move forward.** `whatsapp` targets `LEAD_NEW`, a `meeting` targets
   `DEMO_BOOKED`, `demo` targets `TRIAL_ACTIVE`. The deal moves only when the target

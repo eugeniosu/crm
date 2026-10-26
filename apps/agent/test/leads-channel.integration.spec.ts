@@ -7,6 +7,7 @@ import {
 	it,
 } from "bun:test";
 import { db } from "@crm/db";
+import { publishKnowledge } from "@crm/db/leads-knowledge";
 import whatsapp from "../agent/channels/whatsapp";
 import { DISPATCH_REQUEST } from "../agent/lib/leads/dispatcher-model";
 import { LEADS } from "../agent/lib/leads/leads-config";
@@ -89,14 +90,28 @@ async function clear() {
 	await db.leadConversation.deleteMany({ where: { phone: PHONE } });
 }
 
+let knowledgeId: string | null = null;
+
+async function forgetKnowledge() {
+	if (!knowledgeId) return;
+	await db.leadKnowledgeVersion.deleteMany({ where: { id: knowledgeId } });
+	knowledgeId = null;
+}
+
 beforeEach(async () => {
 	process.env.LEADS_REENVIO_TOKEN = TOKEN;
 	process.env.ANTHROPIC_API_KEY = "test-key";
 	delete process.env.WHATSAPP_TOKEN;
 	await clear();
+	if (!(await db.leadKnowledgeVersion.count())) {
+		knowledgeId = (await publishKnowledge(db, "Atendemos pymes.", null)).id;
+	}
 });
 
-afterEach(clear);
+afterEach(async () => {
+	await clear();
+	await forgetKnowledge();
+});
 
 afterAll(() => {
 	for (const [key, value] of [
@@ -110,6 +125,17 @@ afterAll(() => {
 });
 
 describe("the WhatsApp relay route", () => {
+	it("answers 503 while the business has published no knowledge", async () => {
+		const published = await db.leadKnowledgeVersion.count();
+		if (published > 1 || (published === 1 && !knowledgeId)) return;
+		await forgetKnowledge();
+
+		const { response, sent } = await post(JSON.stringify(message()));
+
+		expect(response.status).toBe(503);
+		expect(sent).toHaveLength(0);
+	});
+
 	it("answers 503 without a relay token", async () => {
 		delete process.env.LEADS_REENVIO_TOKEN;
 		const { response, sent } = await post(JSON.stringify(message()));

@@ -10,7 +10,7 @@ export const INTAKE = {
 		maxDigits: 15,
 	},
 	rutField: { key: "rut" },
-	deal: { namePrefix: "Kontia - " },
+	deal: { namePrefix: "Lead - " },
 	meta: { source: "intake" },
 	stageChange: { subject: "Stage changed" },
 	note: {
@@ -44,7 +44,7 @@ export const INTAKE = {
 			"No CRM user can own intake records. Sign in once, or set INTAKE_OWNER_EMAIL.",
 	},
 	agentReasons: {
-		whatsapp: "Wrote to Kontia on WhatsApp",
+		whatsapp: "Wrote on WhatsApp",
 		demo: "Opened a Kontia demo account",
 		web: "Filled in the Kontia web form",
 	},

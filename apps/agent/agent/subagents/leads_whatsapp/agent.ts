@@ -4,7 +4,7 @@ import { leadsModel } from "../../lib/leads/leads-model";
 
 export default defineAgent({
 	description:
-		"Answers one WhatsApp conversation with a person who is not yet a Kontia customer.",
+		"Answers one WhatsApp conversation with a person who is not yet a customer of this business.",
 	model: leadsModel(),
 	modelContextWindowTokens: LEADS.model.contextWindowTokens,
 	defaultTools: false,

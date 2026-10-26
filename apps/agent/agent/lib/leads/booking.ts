@@ -145,8 +145,8 @@ async function createEvent(
 	const event = await calendar.createEvent({
 		eventId: eventId(phone, reservation.start),
 		start: reservation.start,
-		title: `Kontia · ${guest.company}`,
-		description: `${guest.name} (${guest.company})\nMotivo: ${guest.reason}\nAgendada por el asistente de WhatsApp de Kontia.`,
+		title: `Reunión · ${guest.company}`,
+		description: `${guest.name} (${guest.company})\nMotivo: ${guest.reason}\nAgendada por el asistente de WhatsApp.`,
 		attendeeEmail: guest.email,
 		attendeeName: guest.name,
 	});

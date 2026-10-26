@@ -11,6 +11,7 @@
 		"dev:headless": "eve dev --no-ui",
 		"leads:simular": "bun scripts/simulate-whatsapp.ts",
 		"leads:autorizar-calendario": "bun scripts/authorize-leads-calendar.ts",
+		"leads:publicar-conocimiento": "bun scripts/publish-knowledge.ts",
 		"dispatch": "curl -fsS -X POST \"${AGENT_URL:-http://127.0.0.1:2000}/eve/v1/dev/schedules/dispatch\"",
 		"build": "eve build",
 		"start": "bun scripts/start.ts",

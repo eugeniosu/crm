@@ -89,11 +89,13 @@ Add it to the test only after you decide a stranger may call it.
   (`turnKey`), later turns find nothing and stop.
 - The subagent receives the context (Chile date and time, WhatsApp profile name),
   the last 20 messages and the new ones as its user message. The system prompt is
-  fixed and cacheable: `instructions.md`, `instructions/conocimiento-kontia.md`
-  and the plans section.
-- Plans come from `KONTIA_PLANES_URL`, cached for an hour. Without them the agent
-  gives no prices and offers a meeting. `conocimiento-kontia.md` must not hold
-  prices or voseo (`test/leads-prompt.spec.ts`).
+  stable for the install and cacheable: the platform rules (`lib/leads/instructions.ts`,
+  with the workspace name), then the published knowledge, then the plans section
+  when `KONTIA_PLANES_URL` is set. Every turn opens a new subagent session, so a
+  newly published version applies from the next message.
+- Plans come from `KONTIA_PLANES_URL` (Kontia's own install only), cached for an
+  hour. If it is set and does not answer, the agent gives no prices and offers a
+  meeting.
 - Slots: 30 minutes, 09:00–18:00 America/Santiago, Monday to Friday, at least two
   hours ahead, ranges of at most 14 days, morning before 13:00. At most ten slots
   per answer, with `hay_mas` when there are more (`lib/leads/schedule.ts`).
@@ -123,10 +125,35 @@ All in `.env.example` and `globalPassThroughEnv`. The API reads none of them.
 | `LEADS_CALENDARIO` | `simulado` or `google`; unset is `simulado` outside production |
 | `LEADS_GOOGLE_CLIENT_ID`, `_CLIENT_SECRET`, `_REFRESH_TOKEN`, `_CALENDAR_ID` | The sales calendar |
 | `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` | The agent's own Cloud API token and the landing number's id. Without them replies are simulated |
-| `KONTIA_PLANES_URL` | Kontia's public plans |
+| `KONTIA_PLANES_URL` | Kontia's public plans, for Kontia's own install. Unset elsewhere |
 | `INTAKE_API_TOKEN`, `API_URL` | Already used by the intake route; the agent calls it with them |
 
 The agent prints which of these are on at boot, next to its other capabilities.
+
+## The business's knowledge
+
+Each install writes what its assistant knows in **Settings → WhatsApp assistant**
+(`/settings/whatsapp`): who they are, services, fees, how they start, hours and
+their own rules. The platform rules come first and win over the knowledge: never
+ask for or accept passwords, never talk about other people, say it is an automated
+assistant when asked, stay on the business's topics.
+
+- **Draft and versions.** The editor saves a draft (`appSetting.leadsKnowledgeDraft`).
+  Publishing appends a numbered `leadKnowledgeVersion`; the assistant always uses
+  the latest. Any version can be brought back into the editor and published again.
+  Only owners and admins can change it (`canManageAssistant`).
+- **Template.** An empty editor offers a starter for accounting offices
+  (`apps/api/src/whatsapp-assistant/whatsapp-assistant.template.ts`). Text left in
+  brackets triggers a warning, because the assistant reads it as is.
+- **Preview.** The same screen chats with the assistant using the editor's text,
+  published or not. The API forwards to the agent (`POST /internal/crm/leads-preview`,
+  `AGENT_BRIDGE_SECRET`), which runs the same prompt and tool definitions with
+  side-effect-free tools: availability is real, booking, filing and handover only
+  pretend.
+- **Nothing published.** The relay route answers 503, so Kontia falls back to its
+  usual reply. A file can also be published from the shell:
+  `bun run --filter=agent leads:publicar-conocimiento scripts/conocimiento/kontia.md`
+  (Kontia's own knowledge lives there).
 
 ## Running it locally
 
@@ -137,7 +164,8 @@ The agent prints which of these are on at boot, next to its other capabilities.
    ```sh
    export LEADS_REENVIO_TOKEN="$(openssl rand -hex 32)"
    export ANTHROPIC_API_KEY=… ANTHROPIC_WORKSPACE_ID=…
-   export KONTIA_PLANES_URL="http://localhost:4000/api/planes-publicos"
+   export AGENT_BRIDGE_SECRET="$(openssl rand -hex 32)"  # the same value in the API, for the preview
+   export KONTIA_PLANES_URL="http://localhost:4000/api/planes-publicos"  # Kontia's install only
    bun run --filter=agent dev:headless
    ```
 

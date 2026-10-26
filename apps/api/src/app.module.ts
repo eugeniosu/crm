@@ -38,6 +38,7 @@ import { TelemetryModule } from "./telemetry/telemetry.module";
 import { TrackingModule } from "./tracking/tracking.module";
 import { TrpcModule } from "./trpc/trpc.module";
 import { UsersModule } from "./users/users.module";
+import { WhatsappAssistantModule } from "./whatsapp-assistant/whatsapp-assistant.module";
 import { WorkspaceModule } from "./workspace/workspace.module";
 
 @Module({
@@ -74,6 +75,7 @@ import { WorkspaceModule } from "./workspace/workspace.module";
 		McpModule,
 		SyncModule,
 		SettingsModule,
+		WhatsappAssistantModule,
 		WorkspaceModule,
 		SsoModule,
 		SlackModule,

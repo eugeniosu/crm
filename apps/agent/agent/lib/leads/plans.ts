@@ -43,7 +43,7 @@ export async function readPlans(
 		return plans;
 	} catch (error) {
 		console.warn(
-			`[leads] could not read the Kontia plans: ${error instanceof Error ? error.message : String(error)}`,
+			`[leads] could not read the plan prices: ${error instanceof Error ? error.message : String(error)}`,
 		);
 		return cached?.url === url ? cached.plans : null;
 	}

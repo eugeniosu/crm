@@ -43,6 +43,12 @@ export const LEADS = {
 		maxOutputTokensPerSession: 20_000,
 		sessionTimeoutMs: HOUR_MS,
 	},
+	preview: {
+		path: "/internal/crm/leads-preview",
+		maxSteps: 6,
+		maxOutputTokens: 1500,
+		maxLines: 40,
+	},
 	dispatcher: {
 		modelId: "whatsapp-dispatcher",
 		contextWindowTokens: 1_000_000,

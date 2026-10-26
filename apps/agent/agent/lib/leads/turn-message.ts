@@ -5,7 +5,7 @@ import { chileDay, slotText } from "./schedule";
 const SPEAKERS = {
 	lead: "Persona",
 	agent: "Tú",
-	team: "Equipo de Kontia (una persona, desde el teléfono)",
+	team: "Equipo (una persona, desde el teléfono)",
 } satisfies Record<Turn["history"][number]["from"], string>;
 
 export function turnContext(profileName: string | null, now: Date): string {

@@ -7,6 +7,7 @@ import {
 } from "../lib/leads/conversation";
 import { DISPATCH_REQUEST } from "../lib/leads/dispatcher-model";
 import { maskPhone } from "../lib/leads/identity";
+import { publishedKnowledge } from "../lib/leads/instructions";
 import { leadAuth } from "../lib/leads/lead-session";
 import { LEADS } from "../lib/leads/leads-config";
 import { leadsEnv } from "../lib/leads/leads-env";
@@ -58,6 +59,12 @@ export default defineChannel({
 				!authorizedRelay(request.headers.get("authorization"), env.relayToken)
 			) {
 				return json({ error: "No autorizado." }, 401);
+			}
+			if (!(await publishedKnowledge())) {
+				return json(
+					{ error: "El asistente no tiene conocimiento publicado." },
+					503,
+				);
 			}
 
 			const raw = await readBody(request);

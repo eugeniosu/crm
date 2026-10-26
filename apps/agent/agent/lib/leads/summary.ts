@@ -6,7 +6,7 @@ import { LEADS } from "./leads-config";
 import { leadsEnv } from "./leads-env";
 import { leadsModel } from "./leads-model";
 
-export const SUMMARY_PROMPT = `Resume para el CRM de Kontia esta conversación de WhatsApp entre una persona interesada y el asistente de Kontia. En español, en tres partes cortas con estos títulos: "Necesidad" (qué busca y cuántas empresas maneja, si lo dijo), "Interés" (qué tan cerca está de probar o contratar, y qué plan le calza) y "Acuerdos" (reunión agendada, datos pendientes, próximos pasos). Usa solo lo que está en la conversación; si algo no se habló, dilo. Texto plano, sin Markdown.`;
+export const SUMMARY_PROMPT = `Resume para el CRM esta conversación de WhatsApp entre una persona interesada y el asistente del negocio. En español, en tres partes cortas con estos títulos: "Necesidad" (qué busca y el tamaño de su empresa u oficina, si lo dijo), "Interés" (qué tan cerca está de contratar, y qué servicio o plan le calza) y "Acuerdos" (reunión agendada, datos pendientes, próximos pasos). Usa solo lo que está en la conversación; si algo no se habló, dilo. Texto plano, sin Markdown.`;
 
 type Claimed = {
 	id: string;
@@ -70,7 +70,7 @@ function speakerOf(message: {
 	fromTeam: boolean;
 }): string {
 	if (message.direction === "INBOUND") return "Persona";
-	return message.fromTeam ? "Equipo de Kontia" : "Asistente";
+	return message.fromTeam ? "Equipo" : "Asistente";
 }
 
 async function transcriptOf(conversationId: string): Promise<string> {

@@ -18,6 +18,7 @@ const ITEMS: SettingsNavItem[] = [
 	{ title: "General", href: ROOT },
 	{ title: "Seguimiento y analítica", href: `${ROOT}/tracking` },
 	{ title: "Conexiones", href: `${ROOT}/connections` },
+	{ title: "Asistente de WhatsApp", href: `${ROOT}/whatsapp` },
 	{ title: "Monedas", href: `${ROOT}/currencies` },
 	{ title: "Miembros", href: `${ROOT}/members` },
 	{ title: "Claves de API", href: `${ROOT}/api-keys` },

@@ -102,7 +102,7 @@ export function leadsStatus(env: LeadsEnv = leadsEnv()): LeadsStatus[] {
 			from: "INTAKE_API_TOKEN",
 		},
 		{
-			label: "Kontia plan prices",
+			label: "Plan prices from Kontia",
 			enabled: env.plansUrl !== null,
 			from: "KONTIA_PLANES_URL",
 		},

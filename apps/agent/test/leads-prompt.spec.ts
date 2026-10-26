@@ -1,24 +1,18 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { leadsInstructions, leadsRules } from "../agent/lib/leads/instructions";
 import {
 	plansSection,
 	readPlans,
 	resetPlansCache,
 } from "../agent/lib/leads/plans";
+import { previewTurn } from "../agent/lib/leads/preview";
 import { turnContext } from "../agent/lib/leads/turn-message";
 
-const ROOT = join(
-	import.meta.dirname,
-	"..",
-	"agent",
-	"subagents",
-	"leads_whatsapp",
-);
-
-const RULES = readFileSync(join(ROOT, "instructions.md"), "utf8");
+const RULES = leadsRules("Estudio Rojas");
 const KNOWLEDGE = readFileSync(
-	join(ROOT, "instructions", "conocimiento-kontia.md"),
+	join(import.meta.dirname, "..", "scripts", "conocimiento", "kontia.md"),
 	"utf8",
 );
 
@@ -45,7 +39,38 @@ const PLANS = [
 ];
 
 describe("the leads agent's prompt", () => {
-	it("has the knowledge file", () => {
+	it("speaks for the business it serves, never for Kontia", () => {
+		expect(RULES).toContain("Eres el asistente de WhatsApp de Estudio Rojas.");
+		expect(RULES).not.toContain("Kontia");
+	});
+
+	it("puts the rules first, then the business knowledge, then the plans", () => {
+		const prompt = leadsInstructions({
+			business: "Estudio Rojas",
+			knowledge: "Atendemos pymes.",
+			plans: "# Planes\n- Uno",
+		});
+
+		expect(prompt.startsWith(RULES)).toBe(true);
+		expect(prompt.indexOf("# Conocimiento de Estudio Rojas")).toBeLessThan(
+			prompt.indexOf("Atendemos pymes."),
+		);
+		expect(prompt.endsWith("# Planes\n- Uno")).toBe(true);
+	});
+
+	it("hands the person over when nothing is published", () => {
+		const prompt = leadsInstructions({
+			business: "Estudio Rojas",
+			knowledge: "  ",
+			plans: null,
+		});
+
+		expect(prompt).toContain("Todavía no hay conocimiento publicado");
+		expect(prompt).toContain("derivar_a_humano");
+		expect(prompt).not.toContain("# Planes");
+	});
+
+	it("has Kontia's own knowledge file", () => {
 		expect(KNOWLEDGE.length).toBeGreaterThan(1000);
 	});
 
@@ -118,5 +143,34 @@ describe("the plans section", () => {
 		expect(
 			await readPlans("http://k/bad", 0, async () => Response.json([{ x: 1 }])),
 		).toBeNull();
+	});
+});
+
+describe("the preview of the assistant", () => {
+	it("answers the person's last messages with the rest as history", () => {
+		const turn = previewTurn([
+			{ from: "lead", text: "Hola" },
+			{ from: "agent", text: "¡Hola! ¿En qué te ayudo?" },
+			{ from: "lead", text: "¿Llevan remuneraciones?" },
+			{ from: "lead", text: "Somos 12 trabajadores" },
+		]);
+
+		expect(turn.history).toEqual([
+			{ from: "lead", text: "Hola" },
+			{ from: "agent", text: "¡Hola! ¿En qué te ayudo?" },
+		]);
+		expect(turn.pending).toEqual([
+			"¿Llevan remuneraciones?",
+			"Somos 12 trabajadores",
+		]);
+	});
+
+	it("has nothing to answer when the assistant spoke last", () => {
+		expect(
+			previewTurn([
+				{ from: "lead", text: "Hola" },
+				{ from: "agent", text: "¡Hola!" },
+			]).pending,
+		).toEqual([]);
 	});
 });

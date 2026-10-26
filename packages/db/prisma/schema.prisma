@@ -43,6 +43,7 @@ model User {
   conversationFeedback    AgentConversationFeedback[]   @relation("ConversationFeedbackAuthor")
   slackMemberMatch        SlackMemberMatch?
   connectedMcpConnections McpConnection[]               @relation("McpConnectionUser")
+  publishedLeadKnowledge  LeadKnowledgeVersion[]
   mcpOauthStates          McpOauthState[]               @relation("McpOauthStateUser")
 
   members     Member[]
@@ -1450,6 +1451,9 @@ model AppSetting {
 
   archiveRetentionDays Int @default(180)
 
+  leadsKnowledgeDraft          String?
+  leadsKnowledgeDraftUpdatedAt DateTime?
+
   trackingSiteId           String? @unique
   trackingCrossDomain      Boolean @default(true)
   trackingLimitToDomains   Boolean @default(true)
@@ -1788,6 +1792,17 @@ model LeadMessage {
   @@index([conversationId, sentAt])
   @@index([conversationId, turnKey])
   @@map("leadMessage")
+}
+
+model LeadKnowledgeVersion {
+  id            String   @id @default(cuid())
+  number        Int      @unique
+  content       String
+  publishedById String?
+  publishedBy   User?    @relation(fields: [publishedById], references: [id], onDelete: SetNull)
+  publishedAt   DateTime @default(now())
+
+  @@map("leadKnowledgeVersion")
 }
 
 model LeadMeeting {

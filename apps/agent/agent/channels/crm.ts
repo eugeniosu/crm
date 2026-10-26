@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { EnrichmentStatus, Prisma } from "@crm/db";
 import { MAX_ATTEMPTS } from "@crm/db/agent-tasks";
+import { LEADS_KNOWLEDGE_MAX_CHARS } from "@crm/db/leads-knowledge";
 import { schemas } from "@crm/validation";
 import { eveTurnFailure } from "@crm/validation/eve-stream";
 import { type ChannelFrom, defineChannel, GET, POST } from "eve/channels";
@@ -30,6 +31,9 @@ import {
 } from "../lib/dispatch";
 import { DISPATCH } from "../lib/dispatch-config";
 import { settle } from "../lib/enrichment";
+import { LEADS } from "../lib/leads/leads-config";
+import { leadsEnv } from "../lib/leads/leads-env";
+import { previewReply } from "../lib/leads/preview";
 import { finishRun, runResultOf } from "../lib/run-runtime";
 import { attribute } from "../lib/session-purpose";
 import { createSlackChannel } from "../lib/slack-membership";
@@ -52,6 +56,19 @@ const cancelRunRequest = z.object({ runId: identifier }).catch({ runId: null });
 const verifyKeyRequest = z
 	.object({ apiKey: identifier })
 	.catch({ apiKey: null });
+
+const previewRequest = z.object({
+	knowledge: z.string().max(LEADS_KNOWLEDGE_MAX_CHARS),
+	lines: z
+		.array(
+			z.object({
+				from: z.enum(["lead", "agent"]),
+				text: z.string().trim().min(1).max(LEADS.channel.maxTextChars),
+			}),
+		)
+		.min(1)
+		.max(LEADS.preview.maxLines),
+});
 
 const receiveTarget = z
 	.object({
@@ -268,6 +285,42 @@ export default defineChannel({
 			}
 
 			return Response.json(await verifyKey(apiKey));
+		}),
+
+		POST(LEADS.preview.path, async (request) => {
+			if (!authorised(request)) {
+				return new Response("Unauthorized", { status: 401 });
+			}
+			if (!leadsEnv().anthropicApiKey) {
+				return Response.json(
+					{ error: "El asistente de WhatsApp no tiene modelo configurado." },
+					{ status: 503 },
+				);
+			}
+
+			const parsed = previewRequest.safeParse(
+				await request.json().catch(() => null),
+			);
+			if (!parsed.success) {
+				return Response.json(
+					{ error: z.prettifyError(parsed.error) },
+					{ status: 400 },
+				);
+			}
+
+			try {
+				return Response.json({
+					reply: await previewReply(parsed.data, new Date()),
+				});
+			} catch (cause) {
+				console.error(
+					`[leads] the preview did not answer: ${cause instanceof Error ? cause.message : String(cause)}`,
+				);
+				return Response.json(
+					{ error: "El asistente no pudo responder la prueba." },
+					{ status: 502 },
+				);
+			}
 		}),
 	],
 

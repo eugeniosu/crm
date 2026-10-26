@@ -86,6 +86,7 @@ const VERBS: ToolVerbs = {
 	read_company_history: "Leyó todo lo que tenemos de la empresa",
 	read_deal_history: "Leyó el negocio y su historial",
 	search_crm: "Buscó el registro en el CRM",
+	atender_whatsapp: "Respondió los mensajes de WhatsApp",
 	resolve_linkedin_profile: "Buscó su perfil de LinkedIn",
 	get_linkedin_profile: "Leyó un perfil de LinkedIn",
 	get_contact_work_history: "Leyó su historial laboral",

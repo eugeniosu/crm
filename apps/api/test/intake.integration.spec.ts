@@ -185,7 +185,7 @@ describe("filing a lead from Kontia", () => {
 				contacts: { select: { contactId: true } },
 			},
 		});
-		expect(deal.name).toBe("Kontia - Ana Rojas");
+		expect(deal.name).toBe("Lead - Ana Rojas");
 		expect(deal.ownerId).toBe(ownerId);
 		expect(deal.contacts).toEqual([{ contactId: result.contactId }]);
 

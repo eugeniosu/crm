@@ -1,9 +1,9 @@
 import { defineDynamic, defineInstructions } from "eve/instructions";
-import { plansSection, readPlans } from "../../../lib/leads/plans";
+import { currentLeadsInstructions } from "../../../lib/leads/instructions";
 
 export default defineDynamic({
 	events: {
 		"session.started": async () =>
-			defineInstructions({ content: plansSection(await readPlans()) }),
+			defineInstructions({ content: await currentLeadsInstructions() }),
 	},
 });
