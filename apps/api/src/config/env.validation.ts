@@ -136,6 +136,23 @@ export class EnvironmentVariables {
 	AGENT_BRIDGE_SECRET?: string;
 
 	@IsOptional()
+	@IsUrl(
+		{ require_tld: false, require_protocol: true },
+		{
+			message:
+				"GATEWAY_URL must be a full URL with a scheme, like https://conectar.kontia.cl.",
+		},
+	)
+	GATEWAY_URL?: string;
+
+	@IsOptional()
+	@IsString()
+	@MinLength(32, {
+		message: "GATEWAY_API_KEY must be at least 32 characters.",
+	})
+	GATEWAY_API_KEY?: string;
+
+	@IsOptional()
 	@IsString()
 	@Matches(/^[A-Za-z0-9+/]{43}=$/, {
 		message: "MCP_ENCRYPTION_KEY must contain exactly 32 base64-encoded bytes.",

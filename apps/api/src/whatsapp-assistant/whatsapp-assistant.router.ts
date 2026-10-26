@@ -13,13 +13,16 @@ import { AuthMiddleware } from "../trpc/middlewares/auth.middleware";
 import { restMeta } from "../trpc/openapi";
 import {
 	assistantKnowledgeOutput,
+	connectWhatsappOutput,
 	previewAssistantInput,
 	previewAssistantOutput,
 	publishKnowledgeInput,
 	restoreKnowledgeInput,
 	saveKnowledgeDraftInput,
+	whatsappConnectionOutput,
 } from "./whatsapp-assistant.contracts";
 import { WhatsappAssistantService } from "./whatsapp-assistant.service";
+import { WhatsappConnectionService } from "./whatsapp-connection.service";
 
 @Router({ alias: "whatsappAssistant" })
 @UseMiddlewares(AuthMiddleware)
@@ -27,7 +30,39 @@ export class WhatsappAssistantRouter {
 	constructor(
 		@Inject(WhatsappAssistantService)
 		private readonly assistant: WhatsappAssistantService,
+		@Inject(WhatsappConnectionService)
+		private readonly connections: WhatsappConnectionService,
 	) {}
+
+	@Query({
+		output: whatsappConnectionOutput,
+		meta: restMeta("GET", "/whatsapp-assistant/connection", [
+			"WhatsApp assistant",
+		]),
+	})
+	async connection(@Ctx() ctx: AuthedTrpcContext) {
+		return this.connections.connection(ctx.user.id);
+	}
+
+	@Mutation({
+		output: connectWhatsappOutput,
+		meta: restMeta("POST", "/whatsapp-assistant/connection", [
+			"WhatsApp assistant",
+		]),
+	})
+	async connect(@Ctx() ctx: AuthedTrpcContext) {
+		return this.connections.connect(ctx.user.id);
+	}
+
+	@Mutation({
+		output: whatsappConnectionOutput,
+		meta: restMeta("DELETE", "/whatsapp-assistant/connection", [
+			"WhatsApp assistant",
+		]),
+	})
+	async disconnect(@Ctx() ctx: AuthedTrpcContext) {
+		return this.connections.disconnect(ctx.user.id);
+	}
 
 	@Query({
 		output: assistantKnowledgeOutput,

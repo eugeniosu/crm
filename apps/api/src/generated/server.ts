@@ -32,7 +32,7 @@ import { agentModelOutput, modelCatalogOutput, setAgentModelInput, researchKeyOu
 import { slackStatusOutput, slackMatchesOutput, slackChannelsInput, slackChannelsOutput, slackJoinChannelInput, slackJoinChannelOutput, slackRefreshPeopleOutput, slackCreateChannelInput, slackCreateChannelOutput, slackDisconnectOutput } from "../slack/slack.contracts";
 import { ssoSignInOptionsOutput, ssoSettingsOutput, ssoProviderListInput, ssoProviderListOutput, registerSsoProviderInput, ssoProviderOutput, deleteSsoProviderInput, deleteSsoProviderOutput } from "../sso/sso.contracts";
 import { trackingSettingsOutput, trackingFlagInput, cookieLifetimeInput, addDomainInput, trackedDomainOutput, removeDomainInput, rotateSiteIdOutput, verifyInput, verifyOutput, sourcesOutput, companyActivityInput, websiteActivityOutput, contactActivityInput } from "../tracking/tracking.contracts";
-import { assistantKnowledgeOutput, saveKnowledgeDraftInput, publishKnowledgeInput, restoreKnowledgeInput, previewAssistantInput, previewAssistantOutput } from "../whatsapp-assistant/whatsapp-assistant.contracts";
+import { whatsappConnectionOutput, connectWhatsappOutput, assistantKnowledgeOutput, saveKnowledgeDraftInput, publishKnowledgeInput, restoreKnowledgeInput, previewAssistantInput, previewAssistantOutput } from "../whatsapp-assistant/whatsapp-assistant.contracts";
 import { workspaceOutput, memberListInput, memberListOutput, updateWorkspaceInput, setMemberRoleInput, workspaceMemberOutput } from "../workspace/workspace.contracts";
 import type { UsersRouter } from "../users/users.router";
 
@@ -790,6 +790,15 @@ const appRouter = t.router({
       .query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
     }),
   whatsappAssistant: t.router({
+    connection: publicProcedure
+      .output(whatsappConnectionOutput)
+      .query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    connect: publicProcedure
+      .output(connectWhatsappOutput)
+      .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    disconnect: publicProcedure
+      .output(whatsappConnectionOutput)
+      .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     knowledge: publicProcedure
       .output(assistantKnowledgeOutput)
       .query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),

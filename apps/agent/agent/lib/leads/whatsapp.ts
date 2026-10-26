@@ -14,7 +14,15 @@ const graphReply = z
 	})
 	.catch({ messages: [] });
 
+const gatewayReply = z
+	.object({ id: z.string().nullable().catch(null) })
+	.catch({ id: null });
+
 type Fetch = (input: string, init?: RequestInit) => Promise<Response>;
+
+type Gateway = NonNullable<LeadsEnv["gateway"]>;
+
+type MetaApp = NonNullable<LeadsEnv["whatsapp"]>;
 
 export async function sendWhatsAppText(
 	phone: string,
@@ -22,16 +30,56 @@ export async function sendWhatsAppText(
 	env: LeadsEnv = leadsEnv(),
 	fetcher: Fetch = fetch,
 ): Promise<Delivery> {
-	if (!env.whatsapp) return { status: "SIMULATED", providerId: null };
+	if (env.gateway) return sendThroughGateway(env.gateway, phone, body, fetcher);
+	if (env.whatsapp) return sendToMeta(env.whatsapp, phone, body, fetcher);
+	return { status: "SIMULATED", providerId: null };
+}
 
+async function sendThroughGateway(
+	gateway: Gateway,
+	phone: string,
+	body: string,
+	fetcher: Fetch,
+): Promise<Delivery> {
 	try {
 		const response = await fetcher(
-			`${LEADS.whatsapp.graphUrl}/${env.whatsapp.phoneNumberId}/messages`,
+			`${gateway.url}${LEADS.gateway.messagesPath}`,
 			{
 				method: "POST",
 				signal: AbortSignal.timeout(LEADS.http.timeoutMs),
 				headers: {
-					authorization: `Bearer ${env.whatsapp.token}`,
+					authorization: `Bearer ${gateway.apiKey}`,
+					"content-type": "application/json",
+				},
+				body: JSON.stringify({ to: phone, text: body }),
+			},
+		);
+		if (!response.ok)
+			throw new Error(`the gateway answered ${response.status}`);
+		const data = gatewayReply.parse(await response.json());
+		return { status: "SENT", providerId: data.id };
+	} catch (cause) {
+		console.error(
+			`[leads] could not send the WhatsApp reply to ${maskPhone(phone)}: ${cause instanceof Error ? cause.message : String(cause)}`,
+		);
+		return { status: "FAILED", providerId: null };
+	}
+}
+
+async function sendToMeta(
+	whatsapp: MetaApp,
+	phone: string,
+	body: string,
+	fetcher: Fetch,
+): Promise<Delivery> {
+	try {
+		const response = await fetcher(
+			`${LEADS.whatsapp.graphUrl}/${whatsapp.phoneNumberId}/messages`,
+			{
+				method: "POST",
+				signal: AbortSignal.timeout(LEADS.http.timeoutMs),
+				headers: {
+					authorization: `Bearer ${whatsapp.token}`,
 					"content-type": "application/json",
 				},
 				body: JSON.stringify({
@@ -45,9 +93,9 @@ export async function sendWhatsAppText(
 		if (!response.ok) throw new Error(`Graph API answered ${response.status}`);
 		const data = graphReply.parse(await response.json());
 		return { status: "SENT", providerId: data.messages[0]?.id ?? null };
-	} catch (error) {
+	} catch (cause) {
 		console.error(
-			`[leads] could not send the WhatsApp reply to ${maskPhone(phone)}: ${error instanceof Error ? error.message : String(error)}`,
+			`[leads] could not send the WhatsApp reply to ${maskPhone(phone)}: ${cause instanceof Error ? cause.message : String(cause)}`,
 		);
 		return { status: "FAILED", providerId: null };
 	}

@@ -17,6 +17,7 @@ export type LeadsEnv = {
 	calendar: CalendarMode;
 	google: GoogleCalendarEnv | null;
 	whatsapp: { token: string; phoneNumberId: string } | null;
+	gateway: { url: string; apiKey: string } | null;
 	plansUrl: string | null;
 	intake: { url: string; token: string } | null;
 };
@@ -49,6 +50,8 @@ export function leadsEnv(env: Env = process.env): LeadsEnv {
 	const whatsappToken = text(env, "WHATSAPP_TOKEN");
 	const phoneNumberId = text(env, "WHATSAPP_PHONE_NUMBER_ID");
 	const intakeToken = text(env, "INTAKE_API_TOKEN");
+	const gatewayUrl = text(env, "GATEWAY_URL");
+	const gatewayKey = text(env, "GATEWAY_API_KEY");
 
 	return {
 		relayToken:
@@ -63,6 +66,10 @@ export function leadsEnv(env: Env = process.env): LeadsEnv {
 		whatsapp:
 			whatsappToken && phoneNumberId
 				? { token: whatsappToken, phoneNumberId }
+				: null,
+		gateway:
+			gatewayUrl && gatewayKey
+				? { url: gatewayUrl.replace(/\/+$/, ""), apiKey: gatewayKey }
 				: null,
 		plansUrl: text(env, "KONTIA_PLANES_URL"),
 		intake: intakeToken
@@ -84,7 +91,12 @@ export function leadsStatus(env: LeadsEnv = leadsEnv()): LeadsStatus[] {
 			from: "LEADS_REENVIO_TOKEN + ANTHROPIC_API_KEY",
 		},
 		{
-			label: "WhatsApp replies (simulated without it)",
+			label: "WhatsApp replies through the Kontia CRM gateway",
+			enabled: env.gateway !== null,
+			from: "GATEWAY_URL + GATEWAY_API_KEY",
+		},
+		{
+			label: "WhatsApp replies straight to Meta (simulated without it)",
 			enabled: env.whatsapp !== null,
 			from: "WHATSAPP_TOKEN + WHATSAPP_PHONE_NUMBER_ID",
 		},

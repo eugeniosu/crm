@@ -53,3 +53,21 @@ export const previewAssistantInput = z.object({
 export type PreviewAssistantInput = z.infer<typeof previewAssistantInput>;
 
 export const previewAssistantOutput = z.object({ reply: z.string() });
+
+export const whatsappConnectionOutput = z.object({
+	mode: z.enum(["gateway", "direct", "none"]),
+	reachable: z.boolean(),
+	canManage: z.boolean(),
+	connected: z.boolean(),
+	displayPhoneNumber: z.string().nullable(),
+	verifiedName: z.string().nullable(),
+	qualityRating: z.string().nullable(),
+	coexistence: z.boolean().nullable(),
+	connectedAt: z.string().nullable(),
+	lastError: z.string().nullable(),
+	lastErrorAt: z.string().nullable(),
+});
+
+export type WhatsappConnection = z.infer<typeof whatsappConnectionOutput>;
+
+export const connectWhatsappOutput = z.object({ url: z.string() });

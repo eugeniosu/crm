@@ -46,9 +46,10 @@ async function Assistant() {
 	const trpc = getServerTrpc();
 	const queryClient = getServerQueryClient();
 
-	await queryClient.prefetchQuery(
-		trpc.whatsappAssistant.knowledge.queryOptions(),
-	);
+	await Promise.all([
+		queryClient.prefetchQuery(trpc.whatsappAssistant.knowledge.queryOptions()),
+		queryClient.prefetchQuery(trpc.whatsappAssistant.connection.queryOptions()),
+	]);
 
 	return (
 		<HydrateClient>

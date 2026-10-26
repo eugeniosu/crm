@@ -65,6 +65,9 @@ export const LEADS = {
 	whatsapp: {
 		graphUrl: "https://graph.facebook.com/v25.0",
 	},
+	gateway: {
+		messagesPath: "/v1/messages",
+	},
 	google: {
 		tokenUrl: "https://oauth2.googleapis.com/token",
 		apiUrl: "https://www.googleapis.com/calendar/v3",

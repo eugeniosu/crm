@@ -6,6 +6,7 @@ import { useTRPC } from "@/lib/trpc/client";
 import { AssistantPreview } from "./assistant-preview";
 import { KnowledgeEditor } from "./knowledge-editor";
 import { KnowledgeVersions } from "./knowledge-versions";
+import { WhatsappConnection } from "./whatsapp-connection";
 
 export function AssistantSettings() {
 	const trpc = useTRPC();
@@ -24,6 +25,7 @@ export function AssistantSettings() {
 				onChange={setContent}
 			/>
 			{knowledge.data.canManage ? <AssistantPreview content={text} /> : null}
+			<WhatsappConnection />
 			<KnowledgeVersions
 				knowledge={knowledge.data}
 				onRestored={(draft) => setContent(draft)}
