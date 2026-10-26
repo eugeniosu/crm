@@ -1,7 +1,7 @@
 import "@crm/env/load";
 
 import { chmod, open, rm } from "node:fs/promises";
-import { resolve } from "node:path";
+import { isAbsolute, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { z } from "zod";
 import { createGatewayDb } from "../src/db";
@@ -53,6 +53,11 @@ try {
 	fail(cause.message);
 }
 
+if (!isAbsolute(values.salida)) {
+	fail(
+		"--salida tiene que ser una ruta absoluta fuera del repo, por ejemplo ~/.config/crm/rojas.env.",
+	);
+}
 const output = resolve(values.salida);
 let file: Awaited<ReturnType<typeof open>>;
 try {

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { renderConnectPage, renderErrorPage } from "../connect-page";
 import { randomToken } from "../credentials";
-import { type GatewayDeps, sealWhatsappToken } from "../deps";
+import { type GatewayDeps, sealWhatsappToken, whatsappToken } from "../deps";
 import { GATEWAY } from "../gateway-config";
 import {
 	type ConnectSession,
@@ -9,7 +9,7 @@ import {
 	Prisma,
 } from "../generated/prisma/client";
 import { failure, json, readJson } from "../http";
-import { log } from "../log";
+import { errorName, log } from "../log";
 import { createGraph, type Graph, GraphError } from "../meta/graph";
 
 const metaId = z
@@ -220,6 +220,26 @@ function isUniqueViolation(cause: unknown): boolean {
 	);
 }
 
+async function releaseWaba(
+	previous: { wabaId: string; tokenEncrypted: string },
+	graph: Graph,
+	deps: GatewayDeps,
+	install: Install,
+): Promise<void> {
+	try {
+		await graph.unsubscribeApp(
+			previous.wabaId,
+			whatsappToken(deps, previous.tokenEncrypted),
+		);
+	} catch (cause) {
+		const detail =
+			cause instanceof GraphError ? cause.describe() : errorName(cause);
+		log.warn(
+			`no se pudo desuscribir la WABA anterior de ${install.slug}: ${detail}`,
+		);
+	}
+}
+
 async function connectNumber(
 	body: CompleteBody,
 	install: Install,
@@ -231,6 +251,10 @@ async function connectNumber(
 	if (await phoneOwnedElsewhere(phoneNumberId, install.id, deps)) {
 		return alreadyConnected();
 	}
+	const previous = await deps.db.whatsappNumber.findUnique({
+		where: { installId: install.id },
+		select: { wabaId: true, tokenEncrypted: true },
+	});
 	await graph.subscribeApp(body.wabaId, token);
 	const phone = await graph.readPhoneNumber(phoneNumberId, token);
 	const coexistence =
@@ -261,6 +285,9 @@ async function connectNumber(
 	} catch (cause) {
 		if (isUniqueViolation(cause)) return alreadyConnected();
 		throw cause;
+	}
+	if (previous && previous.wabaId !== body.wabaId) {
+		await releaseWaba(previous, graph, deps, install);
 	}
 	const syncError = coexistence
 		? await requestCoexistenceSync(phoneNumberId, token, graph, install)

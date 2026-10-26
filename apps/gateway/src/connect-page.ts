@@ -218,6 +218,7 @@ export function renderConnectPage(data: ConnectPageData): string {
 <li>Toca el botón e inicia sesión con la cuenta de Facebook que administra tu negocio.</li>
 <li>Cuando Meta te pregunte, elige conectar el número de tu app WhatsApp Business y escanea con la app el código QR que aparece.</li>
 <li>Al terminar, deja la app abierta unos minutos: Meta copia tus contactos y conversaciones.</li>
+<li>Si Meta te pide un medio de pago, agrégalo en WhatsApp Manager: Meta cobra a tu negocio los mensajes que tu número envía según sus tarifas.</li>
 </ol>
 <button id="connect" type="button" disabled>Conectar con WhatsApp</button>
 <p id="status" class="status" role="status" aria-live="polite">Cargando Meta…</p>

@@ -13,7 +13,7 @@ const rawEnv = z.object({
 	GATEWAY_TEST_DATABASE_URL: z.string().trim().min(1).optional(),
 	GATEWAY_ENCRYPTION_KEY: z.string().trim().optional(),
 	GATEWAY_PUBLIC_URL: z.url().optional(),
-	PORT: z.coerce.number().int().min(1).max(65_535).optional(),
+	GATEWAY_PORT: z.coerce.number().int().min(1).max(65_535).optional(),
 	META_APP_ID: optionalText,
 	META_APP_SECRET: optionalText,
 	META_VERIFY_TOKEN: optionalText,
@@ -56,7 +56,7 @@ export function readGatewayEnv(source: NodeJS.ProcessEnv): GatewayEnv {
 			"GATEWAY_ENCRYPTION_KEY falta o no son 32 bytes en base64. Genera una con: openssl rand -base64 32",
 		);
 	}
-	const port = env.PORT ?? GATEWAY.http.defaultPort;
+	const port = env.GATEWAY_PORT ?? GATEWAY.http.defaultPort;
 	return {
 		databaseUrl: gatewayDatabaseUrl(env),
 		publicUrl: (env.GATEWAY_PUBLIC_URL ?? `http://localhost:${port}`).replace(

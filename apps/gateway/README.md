@@ -78,8 +78,8 @@ All in the root `.env` (see `.env.example`).
 | `GATEWAY_DATABASE_URL` | The gateway's Postgres database |
 | `GATEWAY_TEST_DATABASE_URL` | The test database. Must end in `_test` |
 | `GATEWAY_ENCRYPTION_KEY` | 32 bytes in base64. Without a valid key the gateway does not start |
-| `GATEWAY_PUBLIC_URL` | Public origin for connection links. Default `http://localhost:$PORT` |
-| `PORT` | Default 3100 |
+| `GATEWAY_PUBLIC_URL` | Public origin for connection links. Default `http://localhost:$GATEWAY_PORT` |
+| `GATEWAY_PORT` | Default 3100. Its own name, because the API reads `PORT` |
 | `META_APP_ID`, `META_CONFIG_ID` | The Meta app and its Embedded Signup configuration. Without them the page answers 503 |
 | `META_APP_SECRET` | Webhook signature and code exchange. Without it every webhook gets 401 |
 | `META_VERIFY_TOKEN` | Webhook handshake |
@@ -90,7 +90,7 @@ All in the root `.env` (see `.env.example`).
 ```sh
 docker exec crm-postgres psql -U postgres -c "CREATE DATABASE gateway"
 bun run --filter=gateway gateway:db:deploy
-PORT=3100 bun run --filter=gateway gateway:dev
+bun run --filter=gateway gateway:dev
 ```
 
 Tests use a real Postgres. They create and migrate `gateway_test` themselves:

@@ -5,7 +5,8 @@ import { createBackground } from "./background";
 import { createGatewayDb } from "./db";
 import { GatewayConfigError, readGatewayEnv } from "./env";
 import { GATEWAY } from "./gateway-config";
-import { log } from "./log";
+import { errorName, log } from "./log";
+import { pruneReceipts } from "./receipts";
 
 function start(): void {
 	let env: ReturnType<typeof readGatewayEnv>;
@@ -17,8 +18,9 @@ function start(): void {
 		process.exit(1);
 	}
 
+	const db = createGatewayDb(env.databaseUrl);
 	const gateway = createGateway({
-		db: createGatewayDb(env.databaseUrl),
+		db,
 		box: env.box,
 		meta: env.meta,
 		publicUrl: env.publicUrl,
@@ -27,6 +29,13 @@ function start(): void {
 		now: () => new Date(),
 		background: createBackground(),
 	});
+
+	const prune = () =>
+		pruneReceipts(db, new Date()).catch((cause) =>
+			log.warn(`no se pudieron borrar los recibos viejos: ${errorName(cause)}`),
+		);
+	void prune();
+	setInterval(prune, GATEWAY.receipts.pruneEveryMs);
 
 	const server = Bun.serve({
 		port: env.port,

@@ -38,6 +38,9 @@
 			"entry": ["src/*.ts"],
 			"project": ["src/**/*.{ts,tsx}"]
 		},
+		"apps/gateway": {
+			"ignoreDependencies": ["@prisma/client"]
+		},
 		"packages/db": {
 			"entry": ["src/*.ts"],
 			"project": ["src/**/*.ts"],

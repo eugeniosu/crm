@@ -208,6 +208,33 @@ describe("POST /connect/whatsapp/:id/complete", () => {
 		expect(used.usedAt).toBeInstanceOf(Date);
 	});
 
+	test("al cambiar de número desuscribe la WABA anterior con su propio token", async () => {
+		const box = newBox();
+		const created = await seedInstall(box, "rojas", CRM_URL);
+		await seedNumber(box, created.install.id, "old", "token-anterior");
+		const graph = fakeGraph((call) =>
+			`${call.method} ${call.path}` === "DELETE /waba-old/subscribed_apps"
+				? graphFailure(100, "Meta no responde")
+				: happyMeta(call),
+		);
+		const h = harness(graph, box);
+		const { id } = await session(created.install.id);
+		const request = complete(id, FULL);
+
+		const response = await h.call(request.path, request.init);
+
+		expect(response.status).toBe(200);
+		const release = graph.calls.find(
+			(call) =>
+				call.method === "DELETE" && call.path === "/waba-old/subscribed_apps",
+		);
+		expect(release?.authorization).toBe("Bearer token-anterior");
+		const number = await db.whatsappNumber.findUniqueOrThrow({
+			where: { installId: created.install.id },
+		});
+		expect(number).toMatchObject({ phoneNumberId: "777", wabaId: "555" });
+	});
+
 	test("sin phoneNumberId toma el único número de la WABA", async () => {
 		const { created, graph, h } = await setup();
 		const { id } = await session(created.install.id);

@@ -1,5 +1,7 @@
 const SECOND_MS = 1000;
 const MINUTE_MS = 60 * SECOND_MS;
+const HOUR_MS = 60 * MINUTE_MS;
+const DAY_MS = 24 * HOUR_MS;
 
 export const GATEWAY = {
 	http: {
@@ -28,6 +30,10 @@ export const GATEWAY = {
 		sessionIdBytes: 32,
 		signupWaitMs: 10 * SECOND_MS,
 		timeZone: "America/Santiago",
+	},
+	receipts: {
+		keepMs: 30 * DAY_MS,
+		pruneEveryMs: 6 * HOUR_MS,
 	},
 	credentials: {
 		randomBytes: 32,
