@@ -1,4 +1,5 @@
 import { LEADS_KNOWLEDGE_MAX_CHARS } from "@crm/db/leads-knowledge";
+import { MAX_NOTICE_MINUTES, MEETING_LENGTHS } from "@crm/db/leads-settings";
 import { z } from "zod";
 
 export const PREVIEW_MAX_LINES = 40;
@@ -71,3 +72,46 @@ export const whatsappConnectionOutput = z.object({
 export type WhatsappConnection = z.infer<typeof whatsappConnectionOutput>;
 
 export const connectWhatsappOutput = z.object({ url: z.string() });
+
+const officeHours = z.object({
+	weekdays: z.array(z.number().int().min(0).max(6)).min(1).max(7),
+	openMinute: z
+		.number()
+		.int()
+		.min(0)
+		.max(24 * 60),
+	closeMinute: z
+		.number()
+		.int()
+		.min(0)
+		.max(24 * 60),
+	meetingMinutes: z
+		.number()
+		.int()
+		.refine((value) => (MEETING_LENGTHS as readonly number[]).includes(value), {
+			message: "La duración de la reunión no es válida.",
+		}),
+	noticeMinutes: z.number().int().min(0).max(MAX_NOTICE_MINUTES),
+});
+
+export const assistantSettingsOutput = z.object({
+	enabled: z.boolean(),
+	ownerId: z.string().nullable(),
+	hours: officeHours,
+	owners: z.array(
+		z.object({ id: z.string(), name: z.string(), email: z.string() }),
+	),
+	canManage: z.boolean(),
+});
+
+export type AssistantSettings = z.infer<typeof assistantSettingsOutput>;
+
+export const updateAssistantSettingsInput = z.object({
+	enabled: z.boolean(),
+	ownerId: z.string().trim().min(1).nullable(),
+	hours: officeHours,
+});
+
+export type UpdateAssistantSettingsInput = z.infer<
+	typeof updateAssistantSettingsInput
+>;

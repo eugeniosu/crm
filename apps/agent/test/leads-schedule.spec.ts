@@ -47,6 +47,24 @@ describe("free slots", () => {
 		expect(slots).toHaveLength(18);
 	});
 
+	it("follows the office's own days, hours, length and notice", () => {
+		const office = {
+			weekdays: [1, 3],
+			openMinute: 10 * 60 + 30,
+			closeMinute: 13 * 60,
+			meetingMinutes: 60,
+			noticeMinutes: 0,
+		};
+		const week = freeSlots("2026-11-09", "2026-11-13", [], DAY_BEFORE, office);
+
+		expect(week.map((slot) => chileIso(slot).slice(0, 16))).toEqual([
+			"2026-11-09T10:30",
+			"2026-11-09T11:30",
+			"2026-11-11T10:30",
+			"2026-11-11T11:30",
+		]);
+	});
+
 	it("keeps two hours of notice", () => {
 		expect(hours(freeSlots(MONDAY, MONDAY, [], NINE))[0]).toBe("11:00");
 	});

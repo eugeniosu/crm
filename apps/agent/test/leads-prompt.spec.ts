@@ -1,7 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { leadsInstructions, leadsRules } from "../agent/lib/leads/instructions";
+import { DEFAULT_OFFICE_HOURS } from "@crm/db/leads-settings";
+import {
+	hoursText,
+	leadsInstructions,
+	leadsRules,
+} from "../agent/lib/leads/instructions";
 import {
 	plansSection,
 	readPlans,
@@ -10,7 +15,7 @@ import {
 import { previewTurn } from "../agent/lib/leads/preview";
 import { turnContext } from "../agent/lib/leads/turn-message";
 
-const RULES = leadsRules("Estudio Rojas");
+const RULES = leadsRules("Estudio Rojas", DEFAULT_OFFICE_HOURS);
 const KNOWLEDGE = readFileSync(
 	join(import.meta.dirname, "..", "scripts", "conocimiento", "kontia.md"),
 	"utf8",
@@ -47,6 +52,7 @@ describe("the leads agent's prompt", () => {
 	it("puts the rules first, then the business knowledge, then the plans", () => {
 		const prompt = leadsInstructions({
 			business: "Estudio Rojas",
+			hours: DEFAULT_OFFICE_HOURS,
 			knowledge: "Atendemos pymes.",
 			plans: "# Planes\n- Uno",
 		});
@@ -61,6 +67,7 @@ describe("the leads agent's prompt", () => {
 	it("hands the person over when nothing is published", () => {
 		const prompt = leadsInstructions({
 			business: "Estudio Rojas",
+			hours: DEFAULT_OFFICE_HOURS,
 			knowledge: "  ",
 			plans: null,
 		});
@@ -172,5 +179,38 @@ describe("the preview of the assistant", () => {
 				{ from: "agent", text: "¡Hola!" },
 			]).pending,
 		).toEqual([]);
+	});
+});
+
+describe("the office hours in the prompt", () => {
+	it("tells the default week the way people say it", () => {
+		expect(hoursText(DEFAULT_OFFICE_HOURS)).toBe(
+			"Las reuniones duran 30 minutos y se agendan de lunes a viernes, de 09:00 a 18:00 (hora de Chile), con al menos 2 horas de anticipación.",
+		);
+	});
+
+	it("lists scattered days and other lengths", () => {
+		expect(
+			hoursText({
+				weekdays: [5, 1, 3],
+				openMinute: 10 * 60 + 30,
+				closeMinute: 13 * 60,
+				meetingMinutes: 45,
+				noticeMinutes: 60,
+			}),
+		).toBe(
+			"Las reuniones duran 45 minutos y se agendan los lunes, miércoles y viernes, de 10:30 a 13:00 (hora de Chile), con al menos 1 hora de anticipación.",
+		);
+		expect(
+			hoursText({
+				weekdays: [6],
+				openMinute: 9 * 60,
+				closeMinute: 12 * 60,
+				meetingMinutes: 60,
+				noticeMinutes: 0,
+			}),
+		).toContain(
+			"los sábado, de 09:00 a 12:00 (hora de Chile), sin anticipación mínima",
+		);
 	});
 });

@@ -21,6 +21,7 @@
 		"./idempotency": "./src/idempotency.ts",
 		"./json": "./src/json.ts",
 		"./leads-knowledge": "./src/leads-knowledge.ts",
+		"./leads-settings": "./src/leads-settings.ts",
 		"./safe-fetch": "./src/safe-fetch.ts",
 		"./settings": "./src/settings.ts",
 		"./slack-inventory": "./src/slack-inventory.ts",

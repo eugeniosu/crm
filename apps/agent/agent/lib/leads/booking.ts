@@ -1,7 +1,8 @@
 import { db, Prisma } from "@crm/db";
+import { DEFAULT_OFFICE_HOURS, type OfficeHours } from "@crm/db/leads-settings";
 import type { Calendar } from "./calendar";
 import { LEADS } from "./leads-config";
-import { eventId, isValidSlot, MEETING_MS } from "./schedule";
+import { eventId, isValidSlot, meetingMs } from "./schedule";
 
 export class InvalidSlotError extends Error {}
 
@@ -50,8 +51,9 @@ export async function book(
 	start: Date,
 	guest: Guest,
 	now: Date,
+	hours: OfficeHours = DEFAULT_OFFICE_HOURS,
 ): Promise<Booked> {
-	if (!isValidSlot(start, now)) {
+	if (!isValidSlot(start, now, hours)) {
 		throw new InvalidSlotError(
 			"Ese horario no está dentro de los bloques disponibles.",
 		);
@@ -64,7 +66,7 @@ export async function book(
 	});
 	if (upcoming) return booked(upcoming, true);
 
-	const reservation = await reserve(phone, start, guest, now);
+	const reservation = await reserve(phone, start, guest, now, hours);
 	if (reservation.status === "CREATED") return booked(reservation, true);
 
 	try {
@@ -85,13 +87,14 @@ async function reserve(
 	start: Date,
 	guest: Guest,
 	now: Date,
+	hours: OfficeHours,
 ): Promise<MeetingRow> {
 	try {
 		return await db.leadMeeting.create({
 			data: {
 				phone,
 				start,
-				end: new Date(start.getTime() + MEETING_MS),
+				end: new Date(start.getTime() + meetingMs(hours)),
 				reservedAt: now,
 				attendeeName: guest.name,
 				attendeeEmail: guest.email,
@@ -129,7 +132,7 @@ async function reserve(
 	if (released.count === 0) {
 		throw new BookingInProgressError("Esta reunión ya se está agendando.");
 	}
-	return reserve(phone, start, guest, now);
+	return reserve(phone, start, guest, now, hours);
 }
 
 async function createEvent(
@@ -145,6 +148,7 @@ async function createEvent(
 	const event = await calendar.createEvent({
 		eventId: eventId(phone, reservation.start),
 		start: reservation.start,
+		end: reservation.end,
 		title: `Reunión · ${guest.company}`,
 		description: `${guest.name} (${guest.company})\nMotivo: ${guest.reason}\nAgendada por el asistente de WhatsApp.`,
 		attendeeEmail: guest.email,

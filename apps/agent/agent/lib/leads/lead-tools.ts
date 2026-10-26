@@ -1,3 +1,4 @@
+import { DEFAULT_OFFICE_HOURS, type OfficeHours } from "@crm/db/leads-settings";
 import { normalizeRut } from "@crm/validation/rut";
 import { z } from "zod";
 import {
@@ -19,7 +20,6 @@ import {
 	freeSlots,
 	InvalidRangeError,
 	inBand,
-	MEETING_MS,
 	slotText,
 } from "./schedule";
 
@@ -91,17 +91,18 @@ export async function consultAvailability(
 	input: { desde: string; hasta: string; franja: Band },
 	now: Date,
 	calendar: Calendar = salesCalendar(),
+	hours: OfficeHours = DEFAULT_OFFICE_HOURS,
 ) {
 	const today = chileDay(now);
 	const from = input.desde < today ? today : input.desde;
 	let slots: Date[];
 	try {
-		freeSlots(from, input.hasta, [], now);
+		freeSlots(from, input.hasta, [], now, hours);
 		const busy = await calendar.busy(
 			chileTime(from, 0),
 			chileTime(input.hasta, 23, 59),
 		);
-		slots = freeSlots(from, input.hasta, busy, now);
+		slots = freeSlots(from, input.hasta, busy, now, hours);
 	} catch (error) {
 		if (error instanceof InvalidRangeError) {
 			return { ok: false, error: error.message } satisfies ToolFailure;
@@ -130,6 +131,7 @@ export async function bookMeeting(
 	now: Date,
 	calendar: Calendar = salesCalendar(),
 	file: FileLead = fileLead,
+	hours: OfficeHours = DEFAULT_OFFICE_HOURS,
 ) {
 	const parsed = meetingInput.safeParse(raw);
 	if (!parsed.success) return invalid(parsed.error);
@@ -148,6 +150,7 @@ export async function bookMeeting(
 				reason: input.motivo,
 			},
 			now,
+			hours,
 		);
 	} catch (error) {
 		return bookingFailure(error);
@@ -161,7 +164,7 @@ export async function bookMeeting(
 		interest: input.motivo,
 		meeting: {
 			start: chileIso(meeting.start),
-			end: chileIso(new Date(meeting.start.getTime() + MEETING_MS)),
+			end: chileIso(meeting.end),
 			externalEventId: meeting.eventId,
 		},
 	});
@@ -171,7 +174,7 @@ export async function bookMeeting(
 		agendada: true,
 		ya_estaba_agendada: meeting.alreadyBooked,
 		cuando: slotText(meeting.start),
-		duracion_minutos: LEADS.schedule.meetingMinutes,
+		duracion_minutos: hours.meetingMinutes,
 		invitacion_a: input.email,
 		enlace_video: meeting.videoLink,
 	};

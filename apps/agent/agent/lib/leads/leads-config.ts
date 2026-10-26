@@ -14,12 +14,7 @@ export const LEADS = {
 	subagent: "leads_whatsapp",
 	schedule: {
 		zone: "America/Santiago",
-		meetingMinutes: 30,
-		noticeMs: 2 * HOUR_MS,
-		openHour: 9,
-		closeHour: 18,
 		middayHour: 13,
-		businessWeekdays: [1, 2, 3, 4, 5],
 		maxRangeDays: 14,
 		maxSlots: 10,
 	},

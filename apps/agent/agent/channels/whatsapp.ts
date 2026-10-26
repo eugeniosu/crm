@@ -11,6 +11,7 @@ import { publishedKnowledge } from "../lib/leads/instructions";
 import { leadAuth } from "../lib/leads/lead-session";
 import { LEADS } from "../lib/leads/leads-config";
 import { leadsEnv } from "../lib/leads/leads-env";
+import { leadsSettings } from "../lib/leads/office";
 import { authorizedRelay, parseRelay } from "../lib/leads/relay";
 import { REPLIES } from "../lib/leads/replies";
 import { sendWhatsAppText } from "../lib/leads/whatsapp";
@@ -59,6 +60,9 @@ export default defineChannel({
 				!authorizedRelay(request.headers.get("authorization"), env.relayToken)
 			) {
 				return json({ error: "No autorizado." }, 401);
+			}
+			if (!(await leadsSettings()).enabled) {
+				return json({ error: "El asistente está apagado." }, 503);
 			}
 			if (!(await publishedKnowledge())) {
 				return json(

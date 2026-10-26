@@ -1,6 +1,7 @@
 import { ActivityType, type Db, type DealStage, Prisma } from "@crm/db";
 import { OPEN_DEAL_STAGES } from "@crm/db/deal-stage";
 import { lockIdempotencyKeys } from "@crm/db/idempotency";
+import { SETTINGS_ID } from "@crm/db/settings";
 import {
 	type IntakeLeadInput,
 	type IntakeMeeting,
@@ -639,6 +640,12 @@ export class IntakeService {
 	}
 
 	private async owner(): Promise<string> {
+		const chosen = await this.db.appSetting.findUnique({
+			where: { id: SETTINGS_ID },
+			select: { leadsOwnerId: true },
+		});
+		if (chosen?.leadsOwnerId) return chosen.leadsOwnerId;
+
 		const user = this.ownerEmail
 			? await this.db.user.findFirst({
 					where: { email: { equals: this.ownerEmail, mode: "insensitive" } },

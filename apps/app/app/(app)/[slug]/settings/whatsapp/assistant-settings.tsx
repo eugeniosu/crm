@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTRPC } from "@/lib/trpc/client";
+import { AssistantOperation } from "./assistant-operation";
 import { AssistantPreview } from "./assistant-preview";
 import { KnowledgeEditor } from "./knowledge-editor";
 import { KnowledgeVersions } from "./knowledge-versions";
@@ -26,6 +27,7 @@ export function AssistantSettings() {
 			/>
 			{knowledge.data.canManage ? <AssistantPreview content={text} /> : null}
 			<WhatsappConnection />
+			<AssistantOperation />
 			<KnowledgeVersions
 				knowledge={knowledge.data}
 				onRestored={(draft) => setContent(draft)}

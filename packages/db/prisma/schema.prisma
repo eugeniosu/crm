@@ -44,6 +44,7 @@ model User {
   slackMemberMatch        SlackMemberMatch?
   connectedMcpConnections McpConnection[]               @relation("McpConnectionUser")
   publishedLeadKnowledge  LeadKnowledgeVersion[]
+  ownedLeadsSettings      AppSetting[]                  @relation("LeadsOwner")
   mcpOauthStates          McpOauthState[]               @relation("McpOauthStateUser")
 
   members     Member[]
@@ -1453,6 +1454,14 @@ model AppSetting {
 
   leadsKnowledgeDraft          String?
   leadsKnowledgeDraftUpdatedAt DateTime?
+  leadsAssistantEnabled        Boolean   @default(true)
+  leadsOwnerId                 String?
+  leadsOwner                   User?     @relation("LeadsOwner", fields: [leadsOwnerId], references: [id], onDelete: SetNull)
+  leadsWeekdays                Int[]     @default([1, 2, 3, 4, 5])
+  leadsOpenMinute              Int       @default(540)
+  leadsCloseMinute             Int       @default(1080)
+  leadsMeetingMinutes          Int       @default(30)
+  leadsNoticeMinutes           Int       @default(120)
 
   trackingSiteId           String? @unique
   trackingCrossDomain      Boolean @default(true)

@@ -3,7 +3,7 @@ import { z } from "zod";
 export const LEADS_TOOL_SPECS = {
 	consultar_disponibilidad: {
 		description:
-			"Horarios libres para una reunión de 30 minutos con el equipo, en horario hábil de Chile y con al menos 2 horas de anticipación. Devuelve los inicios disponibles con su texto para mostrarlos, los más próximos primero. El rango es de a lo más 14 días. Si hay_mas es true, la lista se recortó: hay más horarios que no aparecen, así que nunca digas que no hay; acota el rango o la franja.",
+			"Horarios libres para una reunión con el equipo, dentro del horario de atención y con la anticipación mínima. Devuelve los inicios disponibles con su texto para mostrarlos, los más próximos primero. El rango es de a lo más 14 días. Si hay_mas es true, la lista se recortó: hay más horarios que no aparecen, así que nunca digas que no hay; acota el rango o la franja.",
 		inputSchema: z.object({
 			desde: z.string().describe("Primer día, YYYY-MM-DD (hora de Chile)."),
 			hasta: z.string().describe("Último día, YYYY-MM-DD (incluido)."),

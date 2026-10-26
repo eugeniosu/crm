@@ -49,6 +49,7 @@ async function Assistant() {
 	await Promise.all([
 		queryClient.prefetchQuery(trpc.whatsappAssistant.knowledge.queryOptions()),
 		queryClient.prefetchQuery(trpc.whatsappAssistant.connection.queryOptions()),
+		queryClient.prefetchQuery(trpc.whatsappAssistant.settings.queryOptions()),
 	]);
 
 	return (

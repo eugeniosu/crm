@@ -126,7 +126,7 @@ export function KnowledgeEditor({
 					onChange={(event) => onChange(event.target.value)}
 					maxLength={knowledge.maxChars}
 					disabled={!editable}
-					className="min-h-[28rem] font-mono"
+					className="max-h-[36rem] min-h-[28rem] overflow-y-auto font-mono"
 					placeholder="Escribe aquí lo que el asistente tiene que saber."
 				/>
 

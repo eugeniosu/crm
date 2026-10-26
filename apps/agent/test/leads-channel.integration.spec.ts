@@ -8,6 +8,7 @@ import {
 } from "bun:test";
 import { db } from "@crm/db";
 import { publishKnowledge } from "@crm/db/leads-knowledge";
+import { readLeadsSettings, writeLeadsSettings } from "@crm/db/leads-settings";
 import whatsapp from "../agent/channels/whatsapp";
 import { DISPATCH_REQUEST } from "../agent/lib/leads/dispatcher-model";
 import { LEADS } from "../agent/lib/leads/leads-config";
@@ -125,6 +126,19 @@ afterAll(() => {
 });
 
 describe("the WhatsApp relay route", () => {
+	it("answers 503 while the office has the assistant off", async () => {
+		const before = await readLeadsSettings(db);
+		await writeLeadsSettings(db, { ...before, enabled: false });
+		try {
+			const { response, sent } = await post(JSON.stringify(message()));
+
+			expect(response.status).toBe(503);
+			expect(sent).toHaveLength(0);
+		} finally {
+			await writeLeadsSettings(db, before);
+		}
+	});
+
 	it("answers 503 while the business has published no knowledge", async () => {
 		const published = await db.leadKnowledgeVersion.count();
 		if (published > 1 || (published === 1 && !knowledgeId)) return;

@@ -1,16 +1,62 @@
 import { db } from "@crm/db";
 import { readPublishedKnowledge } from "@crm/db/leads-knowledge";
+import type { OfficeHours } from "@crm/db/leads-settings";
 import { identity } from "../workspace";
 import { leadsEnv } from "./leads-env";
+import { leadsSettings } from "./office";
 import { plansSection, readPlans } from "./plans";
 
 export type LeadsPrompt = {
 	business: string;
+	hours: OfficeHours;
 	knowledge: string | null;
 	plans: string | null;
 };
 
-export function leadsRules(business: string): string {
+const WEEKDAYS = [
+	"domingo",
+	"lunes",
+	"martes",
+	"miércoles",
+	"jueves",
+	"viernes",
+	"sábado",
+];
+
+function clock(minutes: number): string {
+	return `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+}
+
+function mondayFirst(day: number): number {
+	return (day + 6) % 7;
+}
+
+function daysText(weekdays: readonly number[]): string {
+	const ordered = [...weekdays].sort((a, b) => mondayFirst(a) - mondayFirst(b));
+	const names = ordered.map((day) => WEEKDAYS[day] ?? "");
+	const first = names[0] ?? "";
+	const last = names[names.length - 1] ?? "";
+	if (names.length === 1) return `los ${first}`;
+	const consecutive = ordered.every(
+		(day, index) =>
+			index === 0 ||
+			mondayFirst(day) === mondayFirst(ordered[index - 1] ?? day) + 1,
+	);
+	if (consecutive && names.length > 2) return `de ${first} a ${last}`;
+	return `los ${names.slice(0, -1).join(", ")} y ${last}`;
+}
+
+export function hoursText(hours: OfficeHours): string {
+	const notice =
+		hours.noticeMinutes === 0
+			? "sin anticipación mínima"
+			: hours.noticeMinutes % 60 === 0
+				? `con al menos ${hours.noticeMinutes / 60} ${hours.noticeMinutes === 60 ? "hora" : "horas"} de anticipación`
+				: `con al menos ${hours.noticeMinutes} minutos de anticipación`;
+	return `Las reuniones duran ${hours.meetingMinutes} minutos y se agendan ${daysText(hours.weekdays)}, de ${clock(hours.openMinute)} a ${clock(hours.closeMinute)} (hora de Chile), ${notice}.`;
+}
+
+export function leadsRules(business: string, hours: OfficeHours): string {
 	return `Eres el asistente de WhatsApp de ${business}. Atiendes a personas que escriben a su número y todavía no son clientes: quieren saber qué hace ${business}, cómo trabaja y en qué condiciones, o conversar con el equipo.
 
 # Qué recibes y qué devuelves
@@ -39,7 +85,7 @@ Cuando la persona te diga su nombre, su oficina o empresa, su email o qué le in
 
 # Agendar una reunión
 1. Antes de agendar necesitas tres datos: su nombre, el nombre de su oficina o empresa y su email. Si falta alguno, pídelo; no agendes sin los tres. El nombre del perfil de WhatsApp puede no ser su nombre real: confírmalo antes de usarlo.
-2. Usa consultar_disponibilidad para ver los horarios libres y ofrece dos o tres opciones concretas. Las reuniones duran 30 minutos, en horario hábil de Chile.
+2. Usa consultar_disponibilidad para ver los horarios libres y ofrece dos o tres opciones concretas. ${hoursText(hours)}
 3. Cuando la persona elija un horario, usa agendar_reunion con el inicio exacto que devolvió consultar_disponibilidad. Confirma el día y la hora, y dile que le llegará la invitación con el enlace de Google Meet a su correo.
 4. Si agendar_reunion dice que el horario se ocupó, ofrece otros.
 
@@ -52,7 +98,7 @@ const NO_KNOWLEDGE =
 
 export function leadsInstructions(prompt: LeadsPrompt): string {
 	const sections = [
-		leadsRules(prompt.business),
+		leadsRules(prompt.business, prompt.hours),
 		`# Conocimiento de ${prompt.business}`,
 		prompt.knowledge?.trim() || NO_KNOWLEDGE,
 	];
@@ -83,10 +129,16 @@ async function plansFromKontia(): Promise<string | null> {
 export async function currentLeadsInstructions(
 	knowledge?: string,
 ): Promise<string> {
-	const [business, published, plans] = await Promise.all([
+	const [business, published, plans, settings] = await Promise.all([
 		businessName(),
 		knowledge === undefined ? publishedKnowledge() : Promise.resolve(knowledge),
 		plansFromKontia(),
+		leadsSettings(),
 	]);
-	return leadsInstructions({ business, knowledge: published, plans });
+	return leadsInstructions({
+		business,
+		hours: settings.hours,
+		knowledge: published,
+		plans,
+	});
 }

@@ -16,9 +16,11 @@ const connections = new WhatsappConnectionService();
 type Seen = { method: string; path: string; auth: string | null };
 
 const seen: Seen[] = [];
-let number: { connected: boolean; displayPhoneNumber?: string } = {
-	connected: false,
-};
+type GatewayNumber = { connected: boolean; displayPhoneNumber?: string };
+
+const DISCONNECTED: GatewayNumber = { connected: false };
+
+let number = DISCONNECTED;
 
 const central = Bun.serve({
 	port: 0,
@@ -33,7 +35,7 @@ const central = Bun.serve({
 			return Response.json(number);
 		}
 		if (url.pathname === "/v1/whatsapp" && request.method === "DELETE") {
-			number = { connected: false };
+			number = DISCONNECTED;
 			return new Response(null, { status: 204 });
 		}
 		if (url.pathname === "/v1/connect-sessions") {
@@ -100,7 +102,7 @@ beforeAll(async () => {
 
 afterEach(() => {
 	seen.length = 0;
-	number = { connected: false };
+	number = DISCONNECTED;
 });
 
 afterAll(async () => {
@@ -128,7 +130,10 @@ describe("the office's WhatsApp connection", () => {
 
 	it("shows the number the gateway has, asking with the install's key", async () => {
 		useGateway(central.url.href);
-		number = { connected: true, displayPhoneNumber: "+56 9 1234 5678" };
+		number = {
+			connected: true,
+			displayPhoneNumber: "+56 9 1234 5678",
+		} satisfies GatewayNumber;
 
 		const status = await connections.connection(adminId);
 
@@ -153,7 +158,7 @@ describe("the office's WhatsApp connection", () => {
 
 	it("opens a connection session and disconnects through the gateway", async () => {
 		useGateway(central.url.href);
-		number = { connected: true };
+		number = { connected: true } satisfies GatewayNumber;
 
 		expect(await connections.connect(adminId)).toEqual({
 			url: "https://conectar.test/connect/whatsapp/abc",

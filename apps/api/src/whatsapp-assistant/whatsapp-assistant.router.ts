@@ -11,14 +11,17 @@ import type { z } from "zod";
 import type { AuthedTrpcContext } from "../trpc/context.types";
 import { AuthMiddleware } from "../trpc/middlewares/auth.middleware";
 import { restMeta } from "../trpc/openapi";
+import { AssistantSettingsService } from "./assistant-settings.service";
 import {
 	assistantKnowledgeOutput,
+	assistantSettingsOutput,
 	connectWhatsappOutput,
 	previewAssistantInput,
 	previewAssistantOutput,
 	publishKnowledgeInput,
 	restoreKnowledgeInput,
 	saveKnowledgeDraftInput,
+	updateAssistantSettingsInput,
 	whatsappConnectionOutput,
 } from "./whatsapp-assistant.contracts";
 import { WhatsappAssistantService } from "./whatsapp-assistant.service";
@@ -32,7 +35,33 @@ export class WhatsappAssistantRouter {
 		private readonly assistant: WhatsappAssistantService,
 		@Inject(WhatsappConnectionService)
 		private readonly connections: WhatsappConnectionService,
+		@Inject(AssistantSettingsService)
+		private readonly assistantSettings: AssistantSettingsService,
 	) {}
+
+	@Query({
+		output: assistantSettingsOutput,
+		meta: restMeta("GET", "/whatsapp-assistant/settings", [
+			"WhatsApp assistant",
+		]),
+	})
+	async settings(@Ctx() ctx: AuthedTrpcContext) {
+		return this.assistantSettings.settings(ctx.user.id);
+	}
+
+	@Mutation({
+		input: updateAssistantSettingsInput,
+		output: assistantSettingsOutput,
+		meta: restMeta("PUT", "/whatsapp-assistant/settings", [
+			"WhatsApp assistant",
+		]),
+	})
+	async updateSettings(
+		@Ctx() ctx: AuthedTrpcContext,
+		@Input() input: z.infer<typeof updateAssistantSettingsInput>,
+	) {
+		return this.assistantSettings.update(ctx.user.id, input);
+	}
 
 	@Query({
 		output: whatsappConnectionOutput,

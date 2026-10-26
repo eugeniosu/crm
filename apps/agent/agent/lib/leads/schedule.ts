@@ -1,11 +1,14 @@
 import { createHash } from "node:crypto";
+import { DEFAULT_OFFICE_HOURS, type OfficeHours } from "@crm/db/leads-settings";
 import { LEADS } from "./leads-config";
 
 const { schedule } = LEADS;
 const MINUTE_MS = 60_000;
 const DAY_MS = 24 * 60 * MINUTE_MS;
 
-export const MEETING_MS = schedule.meetingMinutes * MINUTE_MS;
+export function meetingMs(hours: OfficeHours): number {
+	return hours.meetingMinutes * MINUTE_MS;
+}
 
 export type Interval = { start: Date; end: Date };
 
@@ -129,6 +132,7 @@ export function freeSlots(
 	to: string,
 	busy: readonly Interval[],
 	now: Date,
+	hours: OfficeHours = DEFAULT_OFFICE_HOURS,
 ): Date[] {
 	if (!isValidDay(from) || !isValidDay(to)) {
 		throw new InvalidRangeError("Las fechas van en formato YYYY-MM-DD.");
@@ -142,22 +146,27 @@ export function freeSlots(
 		);
 	}
 
-	const earliest = now.getTime() + schedule.noticeMs;
-	return businessDays(from, to)
-		.flatMap(daySlots)
+	const earliest = now.getTime() + hours.noticeMinutes * MINUTE_MS;
+	const length = meetingMs(hours);
+	return businessDays(from, to, hours)
+		.flatMap((day) => daySlots(day, hours))
 		.filter(
 			(start) =>
 				start.getTime() >= earliest &&
 				!busy.some((interval) =>
-					overlaps(interval, start, new Date(start.getTime() + MEETING_MS)),
+					overlaps(interval, start, new Date(start.getTime() + length)),
 				),
 		);
 }
 
-export function isValidSlot(start: Date, now: Date): boolean {
+export function isValidSlot(
+	start: Date,
+	now: Date,
+	hours: OfficeHours = DEFAULT_OFFICE_HOURS,
+): boolean {
 	if (Number.isNaN(start.getTime())) return false;
 	const day = chileDay(start);
-	return freeSlots(day, day, [], now).some(
+	return freeSlots(day, day, [], now, hours).some(
 		(slot) => slot.getTime() === start.getTime(),
 	);
 }
@@ -177,25 +186,22 @@ export function eventId(phone: string, start: Date): string {
 	return `kl${createHash("sha256").update(key).digest("hex").slice(0, 40)}`;
 }
 
-function businessDays(from: string, to: string): string[] {
+function businessDays(from: string, to: string, hours: OfficeHours): string[] {
 	const days: string[] = [];
 	for (let day = from; day <= to; day = nextDay(day)) {
-		if (
-			(schedule.businessWeekdays as readonly number[]).includes(weekdayOf(day))
-		) {
-			days.push(day);
-		}
+		if (hours.weekdays.includes(weekdayOf(day))) days.push(day);
 	}
 	return days;
 }
 
-function daySlots(day: string): Date[] {
+function daySlots(day: string, hours: OfficeHours): Date[] {
 	const slots: Date[] = [];
-	const close = chileTime(day, schedule.closeHour).getTime();
+	const length = meetingMs(hours);
+	const close = chileTime(day, 0, hours.closeMinute).getTime();
 	for (
-		let start = chileTime(day, schedule.openHour).getTime();
-		start + MEETING_MS <= close;
-		start += MEETING_MS
+		let start = chileTime(day, 0, hours.openMinute).getTime();
+		start + length <= close;
+		start += length
 	) {
 		slots.push(new Date(start));
 	}

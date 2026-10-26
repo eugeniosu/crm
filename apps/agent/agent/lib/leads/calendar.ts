@@ -3,7 +3,7 @@ import { z } from "zod";
 import { maskEmail } from "./identity";
 import { LEADS } from "./leads-config";
 import { type GoogleCalendarEnv, leadsEnv } from "./leads-env";
-import { type Interval, MEETING_MS } from "./schedule";
+import type { Interval } from "./schedule";
 
 export class CalendarError extends Error {}
 
@@ -12,6 +12,7 @@ export class CalendarNotConfiguredError extends Error {}
 export type NewEvent = {
 	eventId: string;
 	start: Date;
+	end: Date;
 	title: string;
 	description: string;
 	attendeeEmail: string;
@@ -183,7 +184,7 @@ export function googleCalendar(
 }
 
 export function eventBody(event: NewEvent) {
-	const end = new Date(event.start.getTime() + MEETING_MS);
+	const end = event.end;
 	return {
 		id: event.eventId,
 		summary: event.title,

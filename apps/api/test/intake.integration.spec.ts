@@ -7,6 +7,7 @@ import {
 	it,
 } from "bun:test";
 import { ActivityType, DealStage, db, RecordSource } from "@crm/db";
+import { readLeadsSettings, writeLeadsSettings } from "@crm/db/leads-settings";
 import type { IntakeLeadInput } from "@crm/validation/intake-lead";
 import { BadRequestException } from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
@@ -257,6 +258,45 @@ describe("filing a lead from Kontia", () => {
 		expect(task?.completedAt).toBeNull();
 		expect(task?.createdById).toBe(ownerId);
 		expect(task?.meta).toMatchObject({ handoff: true });
+	});
+
+	it("hands the leads to the owner the office chose, over the env", async () => {
+		const chosen = await db.user.create({
+			data: {
+				id: `${keyPrefix}chosen`,
+				name: "Elegida",
+				email: `chosen-${suffix}@example.test`,
+			},
+			select: { id: true },
+		});
+		const before = await readLeadsSettings(db);
+		await writeLeadsSettings(db, { ...before, ownerId: chosen.id });
+		try {
+			const result = await intake.file(
+				lead({
+					phone: phone(41),
+					name: "Tomás",
+					handoff: { reason: "Quiere hablar con alguien" },
+				}),
+			);
+			if (!result.filed) throw new Error("not filed");
+
+			const contact = await db.contact.findUniqueOrThrow({
+				where: { id: result.contactId },
+				select: { ownerId: true },
+			});
+			const task = await db.activity.findFirstOrThrow({
+				where: { contactId: result.contactId, type: ActivityType.TASK },
+				select: { createdById: true },
+			});
+			expect(contact.ownerId).toBe(chosen.id);
+			expect(task.createdById).toBe(chosen.id);
+		} finally {
+			await writeLeadsSettings(db, before);
+			await db.contact.deleteMany({ where: { ownerId: chosen.id } });
+			await db.activity.deleteMany({ where: { createdById: chosen.id } });
+			await db.user.delete({ where: { id: chosen.id } });
+		}
 	});
 
 	it("leaves no task when the lead asks for nothing", async () => {

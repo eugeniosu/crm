@@ -242,7 +242,8 @@ describe("the Google event", () => {
 		const body = eventBody({
 			eventId: "klabc",
 			start,
-			title: "Kontia · Estudio Rojas",
+			end: new Date(start.getTime() + 45 * 60_000),
+			title: "Reunión · Estudio Rojas",
 			description: "Ana",
 			attendeeEmail: "ana@estudio.cl",
 			attendeeName: "Ana Rojas",
@@ -255,6 +256,6 @@ describe("the Google event", () => {
 		expect(body.conferenceData.createRequest.conferenceSolutionKey.type).toBe(
 			"hangoutsMeet",
 		);
-		expect(Date.parse(body.end.dateTime) - start.getTime()).toBe(30 * 60_000);
+		expect(Date.parse(body.end.dateTime) - start.getTime()).toBe(45 * 60_000);
 	});
 });
