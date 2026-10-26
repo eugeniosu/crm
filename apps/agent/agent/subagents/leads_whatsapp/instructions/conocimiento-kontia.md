@@ -274,7 +274,7 @@ Con las credenciales de cada empresa y de la oficina, Kontia consulta lo mismo q
 - Sin contrato de permanencia: se puede cancelar cuando se quiera. Según los Términos, se avisa por escrito al menos cinco días hábiles antes del siguiente período de facturación, y no hay devolución por períodos ya iniciados.
 - Todos los planes incluyen todas las funciones; cambian solo cuántas empresas y usuarios tiene la oficina. Para carteras de más de 200 empresas hay un plan a medida (Corporate), que se conversa con ventas.
 - Los valores son en UF por mes, más IVA, y se facturan mes a mes por adelantado; la UF se convierte a pesos al valor del día de la factura. Un cambio de precio se avisa con al menos 30 días corridos de anticipación.
-- Si la oficina supera los cupos de su plan, Kontia se lo muestra y la deja seguir trabajando; conviene revisar si le acomoda otro plan.
+- Los cupos cuentan las empresas activas y los usuarios de la oficina; las empresas dadas de baja no cuentan. Al llegar al límite, para agregar más empresas o usuarios hay que cambiarse a un plan mayor.
 
 # Plan de referidos
 - Una oficina cliente que recomienda Kontia a otra oficina recibe una gift card por el doble de lo que la oficina referida pague su primer mes, disponible al tercer mes de la referida.
