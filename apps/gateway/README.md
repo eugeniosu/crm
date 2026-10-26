@@ -16,6 +16,18 @@ part of a self-hosted CRM. It:
 It has its own Postgres database and Prisma client (`prisma/`, generated into
 `src/generated`). It does not use `@crm/db`.
 
+## Domains
+
+- The gateway: `https://conectar.kontia.cl`.
+- Each office's CRM: `https://<office>.kontia.cl`, where `<office>` is the install's
+  slug (its official name, lowercase, no accents or spaces).
+- Kontia's own CRM, which sells Kontia and is not an office: `https://crm.kontia.cl`.
+
+Every one of them is "the same site" as `kontia.cl` for the browser. No CRM sets a
+cookie for `.kontia.cl` (leave `AUTH_COOKIE_DOMAIN` unset: the cookie stays on the
+office's own host), and nothing in Kontia keeps a session in a domain-wide cookie.
+Slugs Kontia already uses as subdomains are refused (`GATEWAY.reservedSlugs`).
+
 ## Routes
 
 | Route | Caller | What it does |
@@ -105,9 +117,9 @@ Change the schema with `bun run --filter=gateway gateway:db:migrate -- --name <n
 
 ```sh
 bun run --filter=gateway gateway:instalacion -- \
-  --slug rojas --nombre "Estudio Rojas" \
-  --relay-url https://rojas.crm.kontia.cl/internal/whatsapp/leads \
-  --settings-url https://rojas.crm.kontia.cl/rojas/settings/whatsapp \
+  --slug estudiorojas --nombre "Estudio Rojas" \
+  --relay-url https://estudiorojas.kontia.cl/internal/whatsapp/leads \
+  --settings-url https://estudiorojas.kontia.cl/estudiorojas/settings/whatsapp \
   --salida /absolute/path/rojas.env
 ```
 

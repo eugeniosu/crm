@@ -18,6 +18,10 @@ export const newInstall = z.object({
 		.regex(
 			/^[a-z0-9](?:[a-z0-9-]{0,48}[a-z0-9])?$/,
 			"el slug va en minúsculas, dígitos y guiones",
+		)
+		.refine(
+			(slug) => !(GATEWAY.reservedSlugs as readonly string[]).includes(slug),
+			"ese nombre lo usa Kontia: elige otro para la oficina",
 		),
 	name: z.string().trim().min(1).max(120),
 	relayUrl: httpUrl,

@@ -6,6 +6,7 @@ import {
 	readGatewayEnv,
 } from "../src/env";
 import { GATEWAY } from "../src/gateway-config";
+import { newInstall } from "../src/installs";
 import { signBody, validSignature } from "../src/meta/signature";
 import { maskPhone } from "../src/phone";
 import { buildRelayBody, receivedAt } from "../src/relay/relay-body";
@@ -251,5 +252,32 @@ describe("teléfonos en los logs", () => {
 		expect(maskPhone("56912345678")).toBe("+569****5678");
 		expect(maskPhone("123")).toBe("****");
 		expect(maskPhone(undefined)).toBe("****");
+	});
+});
+
+describe("nombre de la instalación", () => {
+	const base = {
+		name: "Estudio Rojas",
+		relayUrl: "https://estudiorojas.kontia.cl/internal/whatsapp/leads",
+		settingsUrl:
+			"https://estudiorojas.kontia.cl/estudiorojas/settings/whatsapp",
+	};
+
+	test("acepta el nombre oficial de la oficina como subdominio", () => {
+		expect(
+			newInstall.safeParse({ ...base, slug: "estudiorojas" }).success,
+		).toBe(true);
+	});
+
+	test("rechaza los subdominios que ya usa Kontia", () => {
+		for (const slug of ["api", "stage", "crm", "conectar", "www"]) {
+			expect(newInstall.safeParse({ ...base, slug }).success).toBe(false);
+		}
+	});
+
+	test("rechaza lo que no sirve como subdominio", () => {
+		for (const slug of ["Estudio Rojas", "peñalolén", "-rojas", "rojas-"]) {
+			expect(newInstall.safeParse({ ...base, slug }).success).toBe(false);
+		}
 	});
 });
