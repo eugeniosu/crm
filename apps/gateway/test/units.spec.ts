@@ -73,9 +73,9 @@ describe("variables de entorno", () => {
 	test("la URL pública pierde la barra final", () => {
 		const env = readGatewayEnv({
 			...base,
-			GATEWAY_PUBLIC_URL: "https://conectar.kontia.cl/",
+			GATEWAY_PUBLIC_URL: "https://crm.kontia.cl/",
 		});
-		expect(env.publicUrl).toBe("https://conectar.kontia.cl");
+		expect(env.publicUrl).toBe("https://crm.kontia.cl");
 	});
 
 	test("los tests se niegan a una base que no termina en _test", () => {

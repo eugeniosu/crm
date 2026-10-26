@@ -34,7 +34,7 @@ function run(args: string[]) {
 			NODE_ENV: "development",
 			GATEWAY_DATABASE_URL: process.env.GATEWAY_TEST_DATABASE_URL,
 			GATEWAY_ENCRYPTION_KEY: KEY,
-			GATEWAY_PUBLIC_URL: "https://conectar.test",
+			GATEWAY_PUBLIC_URL: "https://central.crm.test",
 		},
 	});
 	return {
@@ -79,7 +79,7 @@ describe("gateway:instalacion", () => {
 		const lines = parseEnvFile(await readFile(output, "utf8"));
 		const apiKey = lines.get("GATEWAY_API_KEY") ?? "";
 		const relayToken = lines.get("LEADS_REENVIO_TOKEN") ?? "";
-		expect(lines.get("GATEWAY_URL")).toBe("https://conectar.test");
+		expect(lines.get("GATEWAY_URL")).toBe("https://central.crm.test");
 		expect(Buffer.from(apiKey, "base64url").length).toBeGreaterThanOrEqual(32);
 		expect(Buffer.from(relayToken, "base64url").length).toBeGreaterThanOrEqual(
 			32,

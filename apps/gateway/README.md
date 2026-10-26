@@ -2,7 +2,7 @@
 
 Kontia CRM is single-tenant: one install per accounting office, each with its own
 WhatsApp number. Meta accepts one webhook URL per app, so Kontia runs one gateway
-for all installs (`https://conectar.kontia.cl`). It is Kontia infrastructure, not
+for all installs (`https://crm.kontia.cl`). It is Kontia infrastructure, not
 part of a self-hosted CRM. It:
 
 1. Connects an office's number to the Cloud API with Embedded Signup v4 in
@@ -15,6 +15,13 @@ part of a self-hosted CRM. It:
 
 It has its own Postgres database and Prisma client (`prisma/`, generated into
 `src/generated`). It does not use `@crm/db`.
+
+## Domains
+
+The gateway answers at `https://crm.kontia.cl`; each office's CRM lives one level
+below it, at `https://<office>.crm.kontia.cl`. Never set `AUTH_COOKIE_DOMAIN` on
+an office's install to `.crm.kontia.cl`: its session cookie would then reach every
+other office's CRM. Left unset, the cookie stays on the office's own host.
 
 ## Routes
 

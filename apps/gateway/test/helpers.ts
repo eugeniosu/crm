@@ -115,7 +115,7 @@ export function harness(
 		db,
 		box,
 		meta,
-		publicUrl: "https://conectar.test",
+		publicUrl: "https://central.crm.test",
 		fetch: routedFetch(graph),
 		sleep: async (ms) => {
 			sleeps.push(ms);
@@ -131,7 +131,7 @@ export function harness(
 		graph,
 		sleeps,
 		call: (path, init) =>
-			gateway.fetch(new Request(`https://conectar.test${path}`, init)),
+			gateway.fetch(new Request(`https://central.crm.test${path}`, init)),
 	};
 }
 
