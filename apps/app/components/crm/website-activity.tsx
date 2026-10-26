@@ -52,54 +52,54 @@ export function WebsiteActivity({
 	const campaign = last?.campaign ?? first?.campaign ?? null;
 
 	return (
-		<DetailSheetSection title="Website activity">
+		<DetailSheetSection title="Actividad del sitio web">
 			<DetailSheetProperties>
-				<DetailSheetProperty label="Page views">
+				<DetailSheetProperty label="Vistas de página">
 					<span className="tabular-nums">
-						{activity.views.toLocaleString()}
+						{activity.views.toLocaleString("es-CL")}
 					</span>
 					{activity.lastSeenAt ? (
 						<span className="text-muted-foreground">
-							{" · last seen "}
+							{" · visto por última vez "}
 							<LocalRelativeTime date={activity.lastSeenAt} />
 						</span>
 					) : null}
 				</DetailSheetProperty>
 
 				{first ? (
-					<DetailSheetProperty label="Original source">
+					<DetailSheetProperty label="Fuente original">
 						{channel(first)}
 					</DetailSheetProperty>
 				) : null}
 
 				{topPage ? (
-					<DetailSheetProperty label="Top page">
+					<DetailSheetProperty label="Página más vista">
 						<span className="flex min-w-0 items-baseline gap-1">
 							<span className="truncate font-mono" title={topPage.path}>
 								{topPage.path}
 							</span>
 							<span className="shrink-0 text-muted-foreground">
 								{"· "}
-								<span className="tabular-nums">{topPage.views}</span> views
+								<span className="tabular-nums">{topPage.views}</span> vistas
 							</span>
 						</span>
 					</DetailSheetProperty>
 				) : null}
 
 				{channelChanged ? (
-					<DetailSheetProperty label="Latest source">
+					<DetailSheetProperty label="Fuente más reciente">
 						{channel(last)}
 					</DetailSheetProperty>
 				) : null}
 
 				{first?.at ? (
-					<DetailSheetProperty label="First seen">
+					<DetailSheetProperty label="Visto por primera vez">
 						<LocalRelativeTime date={first.at} />
 					</DetailSheetProperty>
 				) : null}
 
 				{campaign ? (
-					<DetailSheetProperty label="Campaign">{campaign}</DetailSheetProperty>
+					<DetailSheetProperty label="Campaña">{campaign}</DetailSheetProperty>
 				) : null}
 			</DetailSheetProperties>
 		</DetailSheetSection>
@@ -107,7 +107,7 @@ export function WebsiteActivity({
 }
 
 function channel(touch: Touch | null): string {
-	if (!touch) return "Unknown";
+	if (!touch) return "Desconocida";
 	if (!touch.medium || touch.medium === "direct") return touch.source;
 	return `${touch.source} · ${touch.medium}`;
 }

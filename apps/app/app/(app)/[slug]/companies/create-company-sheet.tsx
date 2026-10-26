@@ -43,7 +43,7 @@ function AddButton(props: ComponentProps<typeof Button>) {
 	return (
 		<Button {...props}>
 			<Icon icon={Add} data-icon="inline-start" />
-			New company
+			Nueva empresa
 		</Button>
 	);
 }
@@ -78,7 +78,7 @@ function CreateCompanyForm() {
 		trpc.companies.create.mutationOptions({
 			onSuccess: async (company) => {
 				await cache.company(company.id);
-				toast.success(`${company.name} added.`);
+				toast.success(`${company.name} agregada.`);
 				await setOpen(null);
 				setName("");
 				setDomain("");
@@ -96,10 +96,10 @@ function CreateCompanyForm() {
 			</SheetTrigger>
 			<SheetContent side="right">
 				<SheetHeader>
-					<SheetTitle>New company</SheetTitle>
+					<SheetTitle>Nueva empresa</SheetTitle>
 					<SheetDescription>
-						Give it a name and a domain. The agent fills in the logo,
-						description, industry, address and socials.
+						Dale un nombre y un dominio. El agente completa el logo, la
+						descripción, el rubro, la dirección y las redes sociales.
 					</SheetDescription>
 				</SheetHeader>
 
@@ -117,7 +117,7 @@ function CreateCompanyForm() {
 				>
 					<FieldGroup>
 						<Field>
-							<FieldLabel htmlFor={nameId}>Name</FieldLabel>
+							<FieldLabel htmlFor={nameId}>Nombre</FieldLabel>
 							<Input
 								id={nameId}
 								value={name}
@@ -129,7 +129,7 @@ function CreateCompanyForm() {
 						</Field>
 
 						<Field>
-							<FieldLabel htmlFor={domainId}>Domain</FieldLabel>
+							<FieldLabel htmlFor={domainId}>Dominio</FieldLabel>
 							<Input
 								id={domainId}
 								value={domain}
@@ -139,19 +139,21 @@ function CreateCompanyForm() {
 								inputMode="url"
 							/>
 							<FieldDescription>
-								A full URL is fine — it is reduced to the bare host, which has
-								to be unique.
+								Puedes pegar la URL completa: se reduce al dominio solo, que
+								tiene que ser único.
 							</FieldDescription>
 						</Field>
 
 						<Field>
-							<FieldLabel htmlFor="create-company-owner">Owner</FieldLabel>
+							<FieldLabel htmlFor="create-company-owner">
+								Responsable
+							</FieldLabel>
 							<Select value={ownerId} onValueChange={setOwnerId}>
 								<SelectTrigger id="create-company-owner">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value={UNASSIGNED}>Unassigned</SelectItem>
+									<SelectItem value={UNASSIGNED}>Sin asignar</SelectItem>
 									{(users.data ?? []).map((user) => (
 										<SelectItem key={user.id} value={user.id}>
 											{user.name}
@@ -170,10 +172,10 @@ function CreateCompanyForm() {
 						disabled={create.isPending || name.trim() === ""}
 					>
 						{create.isPending ? <Spinner /> : null}
-						Add company
+						Agregar empresa
 					</Button>
 					<SheetClose asChild>
-						<Button variant="outline">Cancel</Button>
+						<Button variant="outline">Cancelar</Button>
 					</SheetClose>
 				</SheetFooter>
 			</SheetContent>

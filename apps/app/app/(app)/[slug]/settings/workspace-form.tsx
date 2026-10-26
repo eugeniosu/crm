@@ -52,7 +52,7 @@ export function WorkspaceForm() {
 			onSuccess: async (saved) => {
 				await cache.workspace();
 				setDraft(null);
-				toast.success("Workspace saved.");
+				toast.success("Espacio de trabajo guardado.");
 
 				if (saved.slug !== slug) {
 					router.replace(workspaceUrl(saved.slug, "/settings"));
@@ -75,9 +75,9 @@ export function WorkspaceForm() {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Workspace</CardTitle>
+				<CardTitle>Espacio de trabajo</CardTitle>
 				<CardDescription>
-					The name and website of the company using this CRM.
+					El nombre y el sitio web de la empresa que usa este CRM.
 				</CardDescription>
 
 				<CardAction>
@@ -93,7 +93,7 @@ export function WorkspaceForm() {
 						}
 					>
 						{save.isPending ? <Spinner data-icon="inline-start" /> : null}
-						Save
+						Guardar
 					</Button>
 				</CardAction>
 			</CardHeader>
@@ -111,7 +111,7 @@ export function WorkspaceForm() {
 				>
 					<FieldGroup>
 						<Field>
-							<FieldLabel htmlFor={nameId}>Name</FieldLabel>
+							<FieldLabel htmlFor={nameId}>Nombre</FieldLabel>
 							<Input
 								id={nameId}
 								value={values.name}
@@ -122,12 +122,12 @@ export function WorkspaceForm() {
 								required
 							/>
 							<FieldDescription>
-								Shown wherever the CRM refers to your own company.
+								Se muestra donde el CRM se refiere a tu propia empresa.
 							</FieldDescription>
 						</Field>
 
 						<Field>
-							<FieldLabel htmlFor={websiteId}>Website</FieldLabel>
+							<FieldLabel htmlFor={websiteId}>Sitio web</FieldLabel>
 							<InputGroup>
 								<InputGroupAddon>
 									<InputGroupText>https://</InputGroupText>
@@ -145,14 +145,16 @@ export function WorkspaceForm() {
 									disabled={!canRename || save.isPending}
 								/>
 							</InputGroup>
-							<FieldDescription>Your own company's website.</FieldDescription>
+							<FieldDescription>
+								El sitio web de tu propia empresa.
+							</FieldDescription>
 						</Field>
 					</FieldGroup>
 				</form>
 
 				{canRename ? null : (
 					<p className="text-muted-foreground text-xs">
-						Only an owner or an admin can change this.
+						Solo un propietario o un administrador puede cambiar esto.
 					</p>
 				)}
 			</CardContent>

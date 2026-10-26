@@ -7,7 +7,7 @@ export async function signOutAndRedirect() {
 	const { error } = await signOut();
 
 	if (error) {
-		toast.error(error.message ?? "Could not sign out.");
+		toast.error(error.message ?? "No se pudo cerrar la sesión.");
 		return;
 	}
 

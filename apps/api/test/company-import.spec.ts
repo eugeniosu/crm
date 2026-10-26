@@ -147,10 +147,10 @@ describe("importing companies", () => {
 			created: 0,
 			skipped: 4,
 			skips: [
-				{ row: 2, reason: "A company needs a name." },
-				{ row: 3, reason: '"not a domain" is not a valid domain.' },
-				{ row: 4, reason: `${domain} already belongs to a company.` },
-				{ row: 5, reason: `${domain} already belongs to a company.` },
+				{ row: 2, reason: "Una empresa necesita un nombre." },
+				{ row: 3, reason: '"not a domain" no es un dominio válido.' },
+				{ row: 4, reason: `${domain} ya pertenece a una empresa.` },
+				{ row: 5, reason: `${domain} ya pertenece a una empresa.` },
 			],
 		});
 	});

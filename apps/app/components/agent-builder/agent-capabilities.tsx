@@ -33,9 +33,9 @@ export type Resource = Extract<
 >["dataScope"]["resources"][number];
 
 const ACTION_LABELS = new Map([
-	["slack.message.post", "Post a message"],
-	["crm.activity.create", "Write a note or task on the record"],
-	["run.summary", "Write a summary of the run"],
+	["slack.message.post", "Publicar un mensaje"],
+	["crm.activity.create", "Escribir una nota o tarea en el registro"],
+	["run.summary", "Escribir un resumen de la ejecución"],
 ]);
 
 export function AgentCapabilities({
@@ -73,7 +73,7 @@ export function AgentCapabilities({
 					queryKey: trpc.agents.byId.pathKey(),
 				});
 				reset();
-				toast.success("Saved. A new version is live.");
+				toast.success("Guardado. Ya está activa una versión nueva.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -83,7 +83,7 @@ export function AgentCapabilities({
 		trpc.slack.joinChannel.mutationOptions({
 			onSuccess: async () => {
 				await channels.reload();
-				toast.success("Asked someone to invite Comp AI.");
+				toast.success("Se pidió a alguien que invite a Comp AI.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -93,9 +93,10 @@ export function AgentCapabilities({
 		return (
 			<Alert variant="warning">
 				<Icon icon={Warning} />
-				<AlertTitle>This version's manifest cannot be read</AlertTitle>
+				<AlertTitle>No se puede leer el manifiesto de esta versión</AlertTitle>
 				<AlertDescription>
-					{capabilities.problem ?? "The manifest is not in a shape we know."}
+					{capabilities.problem ??
+						"El manifiesto no tiene un formato conocido."}
 				</AlertDescription>
 			</Alert>
 		);
@@ -119,9 +120,9 @@ export function AgentCapabilities({
 		shownResources.length === 0 &&
 		capabilities.dataScope?.mode !== "WORKSPACE";
 	const blocked = everyActionOff
-		? "Leave one action on. An agent that does nothing cannot be saved."
+		? "Deja una acción activada. No se puede guardar un agente que no hace nada."
 		: scopeEmptied
-			? "Add one record. An empty list opens every record in the workspace."
+			? "Agrega un registro. Una lista vacía abre todos los registros del espacio de trabajo."
 			: null;
 
 	const save = () => {
@@ -161,13 +162,13 @@ export function AgentCapabilities({
 								}}
 							>
 								<Button size="sm" variant="outline">
-									Create a channel
+									Crear un canal
 								</Button>
 							</CreateChannelDialog>
 						) : null
 					}
-					summary="One channel. Comp AI joins it when you save."
-					title="Lives in"
+					summary="Un canal. Comp AI se une cuando guardes."
+					title="Dónde vive"
 				>
 					<ChannelPicker
 						canInviteItself={canInviteItself}
@@ -183,8 +184,8 @@ export function AgentCapabilities({
 			) : null}
 
 			<Section
-				summary="If it is off here, it cannot do it."
-				title="What it can do there"
+				summary="Si está desactivado aquí, no puede hacerlo."
+				title="Qué puede hacer ahí"
 			>
 				<div className="flex flex-col">
 					{capabilities.actions.map((action) => (
@@ -214,17 +215,15 @@ export function AgentCapabilities({
 						</div>
 					))}
 					{capabilities.actions.length === 0 ? (
-						<p className="text-muted-foreground text-sm">
-							Nothing outside the CRM.
-						</p>
+						<p className="text-muted-foreground text-sm">Nada fuera del CRM.</p>
 					) : null}
 				</div>
 			</Section>
 
 			{capabilities.mcp.length > 0 ? (
 				<Section
-					summary="Every tool is fixed in this version. Changed tools stop until review."
-					title="Connected tools"
+					summary="Cada herramienta queda fija en esta versión. Las herramientas modificadas se detienen hasta que se revisen."
+					title="Herramientas conectadas"
 				>
 					<div className="flex flex-col">
 						{capabilities.mcp.flatMap((grant) =>
@@ -251,15 +250,15 @@ export function AgentCapabilities({
 
 			<Section
 				summary={
-					capabilities.dataScope?.summary || "What it reads to do its job."
+					capabilities.dataScope?.summary || "Lo que lee para hacer su trabajo."
 				}
-				title="What it can see"
+				title="Qué puede ver"
 			>
 				<div className="flex flex-wrap gap-2">
 					{shownResources.length === 0 &&
 					capabilities.dataScope?.mode === "WORKSPACE" ? (
 						<span className="flex h-7 items-center rounded-md border px-2.5 text-sm">
-							Every record in the workspace
+							Todos los registros del espacio de trabajo
 						</span>
 					) : null}
 
@@ -271,7 +270,7 @@ export function AgentCapabilities({
 							{resource.label}
 							{canManage ? (
 								<button
-									aria-label={`Remove ${resource.label}`}
+									aria-label={`Quitar ${resource.label}`}
 									className="text-muted-foreground hover:text-foreground"
 									onClick={() =>
 										setResources(
@@ -314,16 +313,16 @@ export function AgentCapabilities({
 				description={
 					blocked ??
 					(channelChanged
-						? `Comp AI joins #${to}. It stays in #${from} until you remove it.`
-						: "The old version stays in the history.")
+						? `Comp AI se une a #${to}. Se mantiene en #${from} hasta que lo quites.`
+						: "La versión anterior queda en el historial.")
 				}
 				open={dirty}
 				title={
 					blocked
-						? "This change cannot be saved"
+						? "No se puede guardar este cambio"
 						: channelChanged
-							? `Moving from #${from} to #${to}`
-							: "Changing what this agent can do"
+							? `Pasando de #${from} a #${to}`
+							: "Cambiando lo que puede hacer este agente"
 				}
 			>
 				<Button
@@ -332,14 +331,14 @@ export function AgentCapabilities({
 					size="sm"
 					variant="outline"
 				>
-					Discard
+					Descartar
 				</Button>
 				<Button
 					disabled={revise.isPending || blocked !== null}
 					onClick={save}
 					size="sm"
 				>
-					{revise.isPending ? "Saving…" : "Save"}
+					{revise.isPending ? "Guardando…" : "Guardar"}
 				</Button>
 			</SaveBar>
 		</div>
@@ -363,7 +362,7 @@ function ResourcePicker({ onPick }: { onPick: (resource: Resource) => void }) {
 					type="button"
 				>
 					<Icon className="size-3" icon={Add} motion="none" />
-					Add a record type
+					Agregar un tipo de registro
 				</button>
 			</PopoverTrigger>
 
@@ -371,7 +370,7 @@ function ResourcePicker({ onPick }: { onPick: (resource: Resource) => void }) {
 				<input
 					className="w-full border-b bg-transparent px-3 py-2.5 text-sm outline-none"
 					onChange={(event) => setQuery(event.target.value)}
-					placeholder="Search records and integrations"
+					placeholder="Buscar registros e integraciones"
 					value={query}
 				/>
 				<div className="flex max-h-64 flex-col overflow-y-auto py-1">
@@ -399,7 +398,7 @@ function ResourcePicker({ onPick }: { onPick: (resource: Resource) => void }) {
 					))}
 					{(results.data ?? []).length === 0 ? (
 						<p className="px-3 py-2 text-muted-foreground text-sm">
-							Nothing matches.
+							Sin coincidencias.
 						</p>
 					) : null}
 				</div>

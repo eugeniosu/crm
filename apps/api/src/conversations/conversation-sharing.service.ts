@@ -137,7 +137,9 @@ export class ConversationSharingService {
 		});
 
 		if (!share) {
-			throw new NotFoundException("That shared conversation is unavailable.");
+			throw new NotFoundException(
+				"Esa conversación compartida no está disponible.",
+			);
 		}
 
 		const { conversation } = share;
@@ -224,7 +226,7 @@ export class ConversationSharingService {
 
 	private missingBuilder(conversationId: string): never {
 		throw new NotFoundException(
-			`No builder conversation with id ${conversationId}.`,
+			`No existe una conversación del constructor con id ${conversationId}.`,
 		);
 	}
 
@@ -238,7 +240,7 @@ export class ConversationSharingService {
 
 		if (!member) {
 			throw new ForbiddenException(
-				"This conversation belongs to another team.",
+				"Esta conversación pertenece a otro equipo.",
 			);
 		}
 	}

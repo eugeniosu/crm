@@ -46,7 +46,7 @@ export function AgentClarificationComposer({
 		if (pending) return;
 		const value = freeformValue.trim() || selectedValue;
 		if (!value) {
-			setTransportError("Choose an answer to continue.");
+			setTransportError("Elige una respuesta para continuar.");
 			return;
 		}
 		const optionId = value.startsWith(OPTION_VALUE_PREFIX)
@@ -65,7 +65,7 @@ export function AgentClarificationComposer({
 			setTransportError(
 				error instanceof Error && error.message.trim()
 					? error.message
-					: "Unable to submit. Check your connection and try again.",
+					: "No se pudo enviar. Revisa tu conexión y vuelve a intentarlo.",
 			);
 		}
 	};
@@ -79,8 +79,8 @@ export function AgentClarificationComposer({
 				<FieldLegend>{question.prompt}</FieldLegend>
 				<FieldDescription>
 					{options.length > 0
-						? "Choose an answer, then submit."
-						: "Add the detail the agent needs to continue."}
+						? "Elige una respuesta y envíala."
+						: "Agrega el detalle que el agente necesita para continuar."}
 				</FieldDescription>
 				{options.length > 0 ? (
 					<RadioGroup
@@ -115,8 +115,8 @@ export function AgentClarificationComposer({
 				) : null}
 				{showFreeform ? (
 					<Input
-						aria-label={options.length > 0 ? "Another answer" : "Your answer"}
-						placeholder="Add the detail the agent needs"
+						aria-label={options.length > 0 ? "Otra respuesta" : "Tu respuesta"}
+						placeholder="Agrega el detalle que el agente necesita"
 						value={freeformValue}
 						disabled={pending}
 						onChange={(event) => {
@@ -132,9 +132,9 @@ export function AgentClarificationComposer({
 				<Button type="submit" disabled={pending} aria-busy={pending} size="sm">
 					<AsyncButtonContent
 						status={pending ? "pending" : "idle"}
-						pendingLabel="Submitting"
+						pendingLabel="Enviando"
 					>
-						Submit answer
+						Enviar respuesta
 					</AsyncButtonContent>
 				</Button>
 			</div>

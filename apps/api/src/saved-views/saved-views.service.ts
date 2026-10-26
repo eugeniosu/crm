@@ -53,7 +53,7 @@ export class SavedViewsService {
 	): Promise<SavedView> {
 		const existing = await this.db.savedView.findUnique({ where: { id } });
 		if (!existing || existing.ownerId !== userId) {
-			throw new NotFoundException(`No saved view with id ${id}.`);
+			throw new NotFoundException(`No existe una vista guardada con id ${id}.`);
 		}
 
 		try {
@@ -75,7 +75,7 @@ export class SavedViewsService {
 	async delete(id: string, userId: string): Promise<{ id: string }> {
 		const existing = await this.db.savedView.findUnique({ where: { id } });
 		if (!existing || existing.ownerId !== userId) {
-			throw new NotFoundException(`No saved view with id ${id}.`);
+			throw new NotFoundException(`No existe una vista guardada con id ${id}.`);
 		}
 
 		try {
@@ -115,10 +115,12 @@ export class SavedViewsService {
 	private translate(cause: unknown, id?: string): never {
 		if (cause instanceof PrismaNamespace.PrismaClientKnownRequestError) {
 			if (cause.code === "P2002") {
-				throw new ConflictException("You already have a view with that name.");
+				throw new ConflictException("Ya tienes una vista con ese nombre.");
 			}
 			if (cause.code === "P2025") {
-				throw new NotFoundException(`No saved view with id ${id}.`);
+				throw new NotFoundException(
+					`No existe una vista guardada con id ${id}.`,
+				);
 			}
 		}
 		throw cause;

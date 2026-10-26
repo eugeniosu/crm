@@ -246,7 +246,7 @@ function ChartTooltipContent({
 													typeof item.value === "string"
 														? (valueFormatter?.(item.value) ??
 															(typeof item.value === "number"
-																? item.value.toLocaleString()
+																? item.value.toLocaleString("es-CL")
 																: item.value))
 														: String(item.value)}
 												</span>

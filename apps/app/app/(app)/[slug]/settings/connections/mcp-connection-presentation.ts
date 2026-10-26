@@ -40,29 +40,29 @@ type Agent = {
 const TOOL_GROUPS = [
 	{
 		kind: "read",
-		label: "Read",
-		description: "Views data without changing it.",
+		label: "Lectura",
+		description: "Consulta datos sin modificarlos.",
 		badgeVariant: "scope-read",
 	},
 	{
 		kind: "change",
-		label: "Change",
-		description: "Creates or updates data.",
+		label: "Cambio",
+		description: "Crea o actualiza datos.",
 		badgeVariant: "scope-change",
 	},
 	{
 		kind: "risky",
-		label: "Sensitive",
-		description: "Uses sensitive or destructive access.",
+		label: "Sensible",
+		description: "Usa acceso sensible o destructivo.",
 		badgeVariant: "scope-sensitive",
 	},
 ] as const;
 
 const TOOL_REVIEW_LABEL = {
-	pending: "Needs review",
-	reviewed: "Reviewed",
-	changed: "Changed",
-	removed: "Removed",
+	pending: "Requiere revisión",
+	reviewed: "Revisada",
+	changed: "Modificada",
+	removed: "Eliminada",
 } satisfies Record<ToolReviewState, string>;
 
 export function presentMcpConnection(input: {
@@ -101,7 +101,7 @@ export function presentMcpConnection(input: {
 		label: string;
 		count: number;
 	}> = [
-		{ value: "all", label: "All", count: input.tools.length },
+		{ value: "all", label: "Todas", count: input.tools.length },
 		...TOOL_GROUPS.map((group) => ({
 			value: group.kind,
 			label: group.label,
@@ -119,7 +119,7 @@ export function presentMcpConnection(input: {
 					failure:
 						connection.lastErrorCode || connection.status === "error"
 							? {
-									title: "The last connection attempt failed.",
+									title: "El último intento de conexión falló.",
 									code: connection.lastErrorCode ?? "unknown_error",
 								}
 							: null,
@@ -133,7 +133,7 @@ export function presentMcpConnection(input: {
 						: [],
 					agents: input.agents.map((agent) => ({
 						...agent,
-						statusLabel: agent.status === "LIVE" ? "Running" : "Paused",
+						statusLabel: agent.status === "LIVE" ? "En ejecución" : "En pausa",
 					})),
 				}
 			: null,

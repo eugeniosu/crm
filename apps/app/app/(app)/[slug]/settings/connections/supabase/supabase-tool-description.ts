@@ -6,7 +6,7 @@ const GRAPHQL_SCHEMA_MARKER = "Below is the GraphQL schema for this tool:";
 export async function presentSupabaseToolDescription(
 	description: string | null,
 ) {
-	const value = description?.trim() || "No description provided.";
+	const value = description?.trim() || "Sin descripción.";
 	const markerIndex = value.indexOf(GRAPHQL_SCHEMA_MARKER);
 	if (markerIndex < 0) return { prose: value };
 
@@ -25,7 +25,7 @@ export async function presentSupabaseToolDescription(
 			prose,
 			code: {
 				highlightedHTML,
-				label: "GraphQL schema",
+				label: "Esquema GraphQL",
 				value: formattedSchema,
 			},
 		};

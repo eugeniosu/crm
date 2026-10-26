@@ -40,7 +40,7 @@ export function ConversationPicker({
 	onNew: () => void;
 	busy: boolean;
 }) {
-	const label = current?.title ?? "New conversation";
+	const label = current?.title ?? "Nueva conversación";
 
 	return (
 		<div className="flex min-w-0 items-center gap-2 border-b px-4 py-2 sm:px-5">
@@ -58,7 +58,7 @@ export function ConversationPicker({
 
 				<DropdownMenuContent align="start" className="w-72">
 					{conversations.length === 0 ? (
-						<DropdownMenuItem disabled>Nothing yet</DropdownMenuItem>
+						<DropdownMenuItem disabled>Todavía no hay nada</DropdownMenuItem>
 					) : (
 						conversations.map((conversation) => (
 							<DropdownMenuItem
@@ -66,7 +66,7 @@ export function ConversationPicker({
 								onSelect={() => onSelect(conversation)}
 							>
 								<span className="min-w-0 flex-1 truncate">
-									{conversation.title ?? "Untitled"}
+									{conversation.title ?? "Sin título"}
 								</span>
 								<span className="shrink-0 text-muted-foreground text-xs">
 									<LocalDateTime
@@ -81,7 +81,7 @@ export function ConversationPicker({
 					<DropdownMenuSeparator />
 					<DropdownMenuItem onSelect={onNew}>
 						<Icon icon={Add} data-icon="inline-start" />
-						New conversation
+						Nueva conversación
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
@@ -110,7 +110,7 @@ function Forget({
 			onSuccess: async () => {
 				await conversations.invalidate();
 				onDone();
-				toast.success("Conversation deleted.");
+				toast.success("Conversación eliminada.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -124,7 +124,7 @@ function Forget({
 			onClick={() => remove.mutate({ id: conversation.id })}
 		>
 			<Icon icon={TrashCan} />
-			<span className="sr-only">Delete this conversation</span>
+			<span className="sr-only">Eliminar esta conversación</span>
 		</Button>
 	);
 }

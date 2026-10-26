@@ -58,7 +58,7 @@ export class SettingsService {
 
 		if (!models) {
 			throw new BadRequestException(
-				"Could not reach the AI Gateway to check that model. Try again in a moment.",
+				"No se pudo conectar con el AI Gateway para verificar ese modelo. Inténtalo de nuevo en un momento.",
 			);
 		}
 
@@ -66,7 +66,7 @@ export class SettingsService {
 
 		if (!chosen) {
 			throw new BadRequestException(
-				`The AI Gateway does not serve a tool-using model called "${modelId}".`,
+				`El AI Gateway no ofrece un modelo con uso de herramientas llamado "${modelId}".`,
 			);
 		}
 

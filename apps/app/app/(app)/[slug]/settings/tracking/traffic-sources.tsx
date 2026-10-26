@@ -19,10 +19,10 @@ import { useTRPC } from "@/lib/trpc/client";
 const CELL = "px-3 py-2.5 align-middle";
 
 const COLUMNS: SimpleTableColumn[] = [
-	{ id: "source", header: "Source" },
-	{ id: "medium", header: "Medium", width: "w-32" },
-	{ id: "views", header: "Page views", width: "w-28", align: "right" },
-	{ id: "contacts", header: "Contacts", width: "w-24", align: "right" },
+	{ id: "source", header: "Origen" },
+	{ id: "medium", header: "Medio", width: "w-32" },
+	{ id: "views", header: "Vistas de página", width: "w-28", align: "right" },
+	{ id: "contacts", header: "Contactos", width: "w-24", align: "right" },
 ];
 
 export function TrafficSources() {
@@ -34,17 +34,17 @@ export function TrafficSources() {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Traffic sources</CardTitle>
+				<CardTitle>Fuentes de tráfico</CardTitle>
 				<CardDescription>
-					Where your visitors come from. Only people who have submitted a form
-					are attributed to a record.
+					De dónde vienen tus visitantes. Solo las personas que enviaron un
+					formulario se asignan a un registro.
 				</CardDescription>
 			</CardHeader>
 
 			{sources.data.length === 0 ? (
 				<CardTableEmpty>
-					No sources yet. They appear once the script records its first page
-					view.
+					Todavía no hay fuentes. Aparecen cuando el script registra su primera
+					vista de página.
 				</CardTableEmpty>
 			) : (
 				<SimpleTable columns={COLUMNS}>
@@ -55,10 +55,10 @@ export function TrafficSources() {
 								{row.medium ?? "—"}
 							</TableCell>
 							<TableCell className={`${CELL} text-right tabular-nums`}>
-								{row.views.toLocaleString()}
+								{row.views.toLocaleString("es-CL")}
 							</TableCell>
 							<TableCell className={`${CELL} text-right tabular-nums`}>
-								{row.contacts.toLocaleString()}
+								{row.contacts.toLocaleString("es-CL")}
 							</TableCell>
 						</SimpleTableRow>
 					))}

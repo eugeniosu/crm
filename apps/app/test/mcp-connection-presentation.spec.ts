@@ -30,14 +30,14 @@ describe("presentMcpConnection", () => {
 		});
 
 		expect(presentation.groups.map((group) => group.label)).toEqual([
-			"Read",
-			"Change",
+			"Lectura",
+			"Cambio",
 		]);
 		expect(presentation.filters).toEqual([
-			{ value: "all", label: "All", count: 2 },
-			{ value: "read", label: "Read", count: 1 },
-			{ value: "change", label: "Change", count: 1 },
-			{ value: "risky", label: "Sensitive", count: 0 },
+			{ value: "all", label: "Todas", count: 2 },
+			{ value: "read", label: "Lectura", count: 1 },
+			{ value: "change", label: "Cambio", count: 1 },
+			{ value: "risky", label: "Sensible", count: 0 },
 		]);
 		expect(presentation.pendingReviewCount).toBe(1);
 	});

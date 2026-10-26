@@ -26,7 +26,7 @@ import { useCrmCache } from "@/lib/trpc/cache";
 import { useTRPC } from "@/lib/trpc/client";
 
 function contacts(count: number): string {
-	return formatCount(count, "contact");
+	return formatCount(count, "contacto", "contactos");
 }
 
 export function ContactsBulkActions({
@@ -51,7 +51,7 @@ export function ContactsBulkActions({
 		trpc.contacts.bulkAssignOwner.mutationOptions({
 			onSuccess: async (result) => {
 				await cache.contact();
-				reportBulk(result, (count) => `${contacts(count)} reassigned.`);
+				reportBulk(result, (count) => `${contacts(count)} reasignados.`);
 				onDone();
 			},
 			onError,
@@ -62,7 +62,7 @@ export function ContactsBulkActions({
 		trpc.contacts.bulkSetCompany.mutationOptions({
 			onSuccess: async (result) => {
 				await cache.contact();
-				reportBulk(result, (count) => `${contacts(count)} moved.`);
+				reportBulk(result, (count) => `${contacts(count)} movidos.`);
 				onDone();
 			},
 			onError,
@@ -75,7 +75,8 @@ export function ContactsBulkActions({
 				await cache.contact();
 				reportBulk(
 					result,
-					(count) => `Looking up ${contacts(count)} — the table will update.`,
+					(count) =>
+						`Investigando ${contacts(count)}: la tabla se actualizará.`,
 				);
 				onDone();
 			},
@@ -87,7 +88,7 @@ export function ContactsBulkActions({
 		trpc.contacts.bulkArchive.mutationOptions({
 			onSuccess: async (result, variables) => {
 				await cache.removedMany({ kind: "contact", ids: variables.ids });
-				reportBulk(result, (count) => `${contacts(count)} archived.`);
+				reportBulk(result, (count) => `${contacts(count)} archivados.`);
 				onDone();
 			},
 			onError,
@@ -98,7 +99,7 @@ export function ContactsBulkActions({
 		trpc.contacts.bulkRestore.mutationOptions({
 			onSuccess: async (result) => {
 				await cache.contact();
-				reportBulk(result, (count) => `${contacts(count)} restored.`);
+				reportBulk(result, (count) => `${contacts(count)} restaurados.`);
 				onDone();
 			},
 			onError,
@@ -109,7 +110,10 @@ export function ContactsBulkActions({
 		trpc.contacts.bulkPurge.mutationOptions({
 			onSuccess: async (result, variables) => {
 				await cache.removedMany({ kind: "contact", ids: variables.ids });
-				reportBulk(result, (count) => `${contacts(count)} deleted forever.`);
+				reportBulk(
+					result,
+					(count) => `${contacts(count)} eliminados para siempre.`,
+				);
 				setConfirming(false);
 				onDone();
 			},
@@ -126,7 +130,7 @@ export function ContactsBulkActions({
 					<DropdownMenuGroup>
 						<DropdownMenuItem onSelect={() => restore.mutate({ ids })}>
 							<Undo />
-							Restore
+							Restaurar
 						</DropdownMenuItem>
 					</DropdownMenuGroup>
 					<DropdownMenuSeparator />
@@ -135,7 +139,7 @@ export function ContactsBulkActions({
 							variant="destructive"
 							onSelect={() => setConfirming(true)}
 						>
-							Delete forever
+							Eliminar para siempre
 						</DropdownMenuItem>
 					</DropdownMenuGroup>
 				</BulkActionsMenu>
@@ -143,8 +147,8 @@ export function ContactsBulkActions({
 				<BulkDeleteDialog
 					open={confirming}
 					onOpenChange={setConfirming}
-					title={`Delete ${contacts(ids.length)} forever?`}
-					description="Their email addresses are suppressed, so the inbox sync will not file them again. This cannot be undone."
+					title={`¿Eliminar ${contacts(ids.length)} para siempre?`}
+					description="Sus correos quedan bloqueados, así que la sincronización de la bandeja de entrada no volverá a registrarlos. Esta acción no se puede deshacer."
 					onConfirm={() => purge.mutate({ ids })}
 				/>
 			</>
@@ -165,11 +169,11 @@ export function ContactsBulkActions({
 		>
 			<BulkOwnerMenu
 				users={users.data ?? []}
-				unassignedLabel="Nobody"
+				unassignedLabel="Nadie"
 				onSelect={(ownerId) => assignOwner.mutate({ ids, ownerId })}
 			/>
 			<DropdownMenuSub>
-				<DropdownMenuSubTrigger>Move to company</DropdownMenuSubTrigger>
+				<DropdownMenuSubTrigger>Mover a una empresa</DropdownMenuSubTrigger>
 				<DropdownMenuSubContent
 					className="w-64 p-0"
 					onFocus={(event) => {
@@ -179,7 +183,7 @@ export function ContactsBulkActions({
 					}}
 				>
 					<CompanyMenuSearch
-						none="No company"
+						none="Sin empresa"
 						inputRef={companySearch}
 						onSelect={(companyId) => {
 							setMenuOpen(false);
@@ -191,14 +195,14 @@ export function ContactsBulkActions({
 			<DropdownMenuGroup>
 				<DropdownMenuItem onSelect={() => enrich.mutate({ ids })}>
 					<Renew />
-					Re-enrich
+					Volver a enriquecer
 				</DropdownMenuItem>
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />
 			<DropdownMenuGroup>
 				<DropdownMenuItem onSelect={() => archive.mutate({ ids })}>
 					<Archive />
-					Archive
+					Archivar
 				</DropdownMenuItem>
 			</DropdownMenuGroup>
 		</BulkActionsMenu>

@@ -41,7 +41,7 @@ type CompanyRow = RouterOutputs["companies"]["list"]["rows"][number];
 const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	{
 		id: "name",
-		header: "Company",
+		header: "Empresa",
 		sortable: true,
 		hideable: false,
 		width: "w-[26%]",
@@ -60,7 +60,7 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	},
 	{
 		id: "domain",
-		header: "Domain",
+		header: "Dominio",
 		sortable: true,
 		width: "w-[16%]",
 		hideBelow: "md",
@@ -73,7 +73,7 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	},
 	{
 		id: "industry",
-		header: "Industry",
+		header: "Rubro",
 		sortable: true,
 		width: "w-[16%]",
 		hideBelow: "lg",
@@ -86,7 +86,7 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	},
 	{
 		id: "owner",
-		header: "Owner",
+		header: "Responsable",
 		sortable: true,
 		width: "w-[16%]",
 		hideBelow: "md",
@@ -94,7 +94,7 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	},
 	{
 		id: "contacts",
-		header: "Contacts",
+		header: "Contactos",
 		sortable: true,
 		align: "right",
 		width: "w-[9%]",
@@ -103,7 +103,7 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	},
 	{
 		id: "deals",
-		header: "Open deals",
+		header: "Negocios abiertos",
 		sortable: true,
 		align: "right",
 		width: "w-[9%]",
@@ -111,8 +111,8 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	},
 	{
 		id: "createdAt",
-		header: "Created",
-		label: "Created date",
+		header: "Creada",
+		label: "Fecha de creación",
 		sortable: true,
 		align: "right",
 		width: "w-[10%]",
@@ -125,7 +125,7 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	},
 	{
 		id: "lastActivity",
-		header: "Last activity",
+		header: "Última actividad",
 		sortable: true,
 		align: "right",
 		width: "w-[12%]",
@@ -142,8 +142,8 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 	},
 	{
 		id: "enrichment",
-		header: "Enrichment",
-		label: "Enrichment status",
+		header: "Enriquecimiento",
+		label: "Estado de enriquecimiento",
 		defaultHidden: true,
 		width: "w-[14%]",
 		cell: (row) => (
@@ -154,8 +154,8 @@ const COLUMNS: DataTableColumn<CompanyRow>[] = [
 
 const ARCHIVED_COLUMN: DataTableColumn<CompanyRow> = {
 	id: "archivedAt",
-	header: "Archived",
-	label: "Archived date",
+	header: "Archivada",
+	label: "Fecha de archivo",
 	sortable: true,
 	align: "right",
 	width: "w-[12%]",
@@ -200,9 +200,9 @@ export function CompaniesTable() {
 	const facets: DataTableFacet[] = [
 		{
 			id: "owner",
-			label: "Owner",
+			label: "Responsable",
 			options: [
-				{ value: "unassigned", label: "Unassigned" },
+				{ value: "unassigned", label: "Sin asignar" },
 				...(users.data ?? []).map((user) => ({
 					value: user.id,
 					label: user.name,
@@ -211,21 +211,21 @@ export function CompaniesTable() {
 		},
 		{
 			id: "industry",
-			label: "Industry",
+			label: "Rubro",
 			options: Object.keys(facetCounts?.industry ?? {})
 				.sort()
 				.map((value) => ({ value, label: value })),
 		},
 		{
 			id: "enrichment",
-			label: "Enrichment",
+			label: "Enriquecimiento",
 			options: ENRICHMENT_FACET_OPTIONS.filter(
 				(option) => (facetCounts?.enrichment?.[option.value] ?? 0) > 0,
 			),
 		},
 		{
 			id: "activity",
-			label: "Activity",
+			label: "Actividad",
 			options: ACTIVITY_FACET_OPTIONS.filter(
 				(option) => (facetCounts?.activity?.[option.value] ?? 0) > 0,
 			),
@@ -245,7 +245,9 @@ export function CompaniesTable() {
 	return (
 		<DataTable
 			query={query}
-			search={<ListSearch placeholder="Search companies by name or domain…" />}
+			search={
+				<ListSearch placeholder="Buscar empresas por nombre o dominio…" />
+			}
 			actions={
 				<>
 					<SavedViewsMenu entity="COMPANY" table={table} />
@@ -256,7 +258,7 @@ export function CompaniesTable() {
 						onClick={() => setArchived(!input.archived)}
 					>
 						<Archive data-icon="inline-start" />
-						Archived
+						Archivadas
 					</Button>
 				</>
 			}
@@ -282,8 +284,8 @@ export function CompaniesTable() {
 			onRowClick={(row) => openRecord({ kind: "company", id: row.id })}
 			empty={
 				input.archived
-					? "No archived companies."
-					: "No companies match this view."
+					? "No hay empresas archivadas."
+					: "Ninguna empresa coincide con esta vista."
 			}
 		/>
 	);

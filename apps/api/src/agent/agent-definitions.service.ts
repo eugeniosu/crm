@@ -143,7 +143,7 @@ export class AgentDefinitionsService {
 			},
 		});
 
-		if (!row) throw new NotFoundException(`No agent with id ${id}.`);
+		if (!row) throw new NotFoundException(`No existe un agente con id ${id}.`);
 		const { versions, ...agent } = row;
 		const draft = versions[0];
 
@@ -253,7 +253,9 @@ export class AgentDefinitionsService {
 			if (replay) return { saved: false, versionId: replay.versionId };
 
 			if (!agent.currentVersionId) {
-				throw new BadRequestException("This agent has no deployed version.");
+				throw new BadRequestException(
+					"Este agente no tiene una versión desplegada.",
+				);
 			}
 
 			const current = await tx.agentVersion.findFirstOrThrow({
@@ -276,7 +278,8 @@ export class AgentDefinitionsService {
 				where: { versionId: agent.currentVersionId, path: input.path },
 				orderBy: { revision: "desc" },
 			});
-			if (!file) throw new NotFoundException(`No file at ${input.path}.`);
+			if (!file)
+				throw new NotFoundException(`No hay ningún archivo en ${input.path}.`);
 			if (file.content === input.content) {
 				return { saved: false, versionId: agent.currentVersionId };
 			}
@@ -359,7 +362,9 @@ export class AgentDefinitionsService {
 			if (replay) return replay.versionId;
 
 			if (!agent.currentVersionId) {
-				throw new BadRequestException("This agent has no deployed version.");
+				throw new BadRequestException(
+					"Este agente no tiene una versión desplegada.",
+				);
 			}
 
 			const current = await tx.agentVersion.findFirstOrThrow({
@@ -381,7 +386,7 @@ export class AgentDefinitionsService {
 			const parsed = agentManifest.safeParse(current.manifest);
 			if (!parsed.success) {
 				throw new BadRequestException(
-					"This version's manifest cannot be read, so it cannot be changed.",
+					"El manifiesto de esta versión no se puede leer, así que no se puede modificar.",
 				);
 			}
 
@@ -396,7 +401,9 @@ export class AgentDefinitionsService {
 				const keep = new Set(input.actions);
 				actions = actions.filter((action) => keep.has(action.type));
 				if (actions.length === 0) {
-					throw new BadRequestException("An agent needs at least one action.");
+					throw new BadRequestException(
+						"Un agente necesita al menos una acción.",
+					);
 				}
 			}
 
@@ -405,7 +412,7 @@ export class AgentDefinitionsService {
 			if (channel) {
 				if (!actions.some((action) => action.destination !== undefined)) {
 					throw new BadRequestException(
-						"None of this agent's actions post to a channel, so its channel cannot be changed.",
+						"Ninguna de las acciones de este agente publica en un canal, así que no se puede cambiar su canal.",
 					);
 				}
 
@@ -520,7 +527,7 @@ export class AgentDefinitionsService {
 			if (existing) {
 				if (existing.versionId !== input.versionId) {
 					throw new BadRequestException(
-						"That deployment request has already been used.",
+						"Esa solicitud de despliegue ya se usó.",
 					);
 				}
 
@@ -533,12 +540,14 @@ export class AgentDefinitionsService {
 			});
 
 			if (!version) {
-				throw new NotFoundException(`No version with id ${input.versionId}.`);
+				throw new NotFoundException(
+					`No existe una versión con id ${input.versionId}.`,
+				);
 			}
 
 			if (version.status !== "READY" && version.status !== "DEPLOYED") {
 				throw new BadRequestException(
-					"Only a validated agent version can be deployed.",
+					"Solo se puede desplegar una versión de agente validada.",
 				);
 			}
 			const metadata = versionMetadata(version.manifest);
@@ -609,7 +618,7 @@ export class AgentDefinitionsService {
 			"PAUSED",
 			"agent.paused",
 			"Paused agent",
-			"Only a live agent can be paused.",
+			"Solo se puede pausar un agente activo.",
 		);
 	}
 
@@ -621,7 +630,7 @@ export class AgentDefinitionsService {
 			"LIVE",
 			"agent.resumed",
 			"Resumed agent",
-			"Only a paused agent can be resumed.",
+			"Solo se puede reanudar un agente en pausa.",
 		);
 	}
 
@@ -633,7 +642,7 @@ export class AgentDefinitionsService {
 			"ARCHIVED",
 			"agent.archived",
 			"Archived agent",
-			"Only a live or paused agent can be archived.",
+			"Solo se puede archivar un agente activo o en pausa.",
 			{ archivedAt: new Date() },
 		);
 	}
@@ -646,7 +655,7 @@ export class AgentDefinitionsService {
 			"PAUSED",
 			"agent.restored",
 			"Restored agent",
-			"Only an archived agent can be restored.",
+			"Solo se puede restaurar un agente archivado.",
 			{ archivedAt: null },
 		);
 	}
@@ -666,7 +675,7 @@ export class AgentDefinitionsService {
 			`;
 
 			if (!current || current.status === "DELETED") {
-				throw new NotFoundException(`No agent with id ${id}.`);
+				throw new NotFoundException(`No existe un agente con id ${id}.`);
 			}
 
 			const disabledTriggers = await tx.agentTrigger.updateMany({
@@ -799,7 +808,7 @@ export class AgentDefinitionsService {
 		`;
 
 		if (!agent || agent.status === "DELETED") {
-			throw new NotFoundException(`No agent with id ${id}.`);
+			throw new NotFoundException(`No existe un agente con id ${id}.`);
 		}
 
 		return agent;

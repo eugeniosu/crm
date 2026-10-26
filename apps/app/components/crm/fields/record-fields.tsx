@@ -38,9 +38,9 @@ export type RecordFieldEntry = {
 
 const NONE = "__none__";
 
-const UNASSIGNED = "Unassigned";
+const UNASSIGNED = "Sin asignar";
 
-const FORMER_MEMBER = "Former member";
+const FORMER_MEMBER = "Ex miembro";
 
 export function FieldsCog({ kind }: { kind: RecordKind }) {
 	const { open } = useFieldsSheet();
@@ -50,10 +50,10 @@ export function FieldsCog({ kind }: { kind: RecordKind }) {
 			<TooltipTrigger asChild>
 				<Button variant="ghost" size="icon-sm" onClick={() => open(kind)}>
 					<Icon icon={Settings} />
-					<span className="sr-only">Fields</span>
+					<span className="sr-only">Campos</span>
 				</Button>
 			</TooltipTrigger>
-			<TooltipContent>Fields</TooltipContent>
+			<TooltipContent>Campos</TooltipContent>
 		</Tooltip>
 	);
 }
@@ -139,7 +139,7 @@ export function RecordFields({
 								label={field.label}
 								value={field.value === null ? NONE : String(field.value)}
 								options={[
-									{ value: NONE, label: "None" },
+									{ value: NONE, label: "Ninguno" },
 									...field.options.map((option) => ({
 										value: option.id,
 										label: option.label,

@@ -19,7 +19,7 @@ describe("Cloudflare tool descriptions", () => {
 			prose: "Execute JavaScript code that can manage Cloudflare resources.",
 			code: {
 				highlightedHTML: expect.stringContaining("shiki"),
-				label: "TypeScript API",
+				label: "API de TypeScript",
 				value: [
 					"interface CloudflareRequestOptions {",
 					"  method: string;",

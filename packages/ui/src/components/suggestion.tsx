@@ -41,7 +41,7 @@ export function Suggestion({
 							variant="ghost"
 							size="icon-xs"
 							onClick={onAccept}
-							aria-label="Accept"
+							aria-label="Aceptar"
 						>
 							<Icon icon={Checkmark} />
 						</Button>
@@ -49,7 +49,7 @@ export function Suggestion({
 							variant="ghost"
 							size="icon-xs"
 							onClick={onDismiss}
-							aria-label="Dismiss"
+							aria-label="Descartar"
 						>
 							<Icon icon={Close} />
 						</Button>

@@ -169,7 +169,7 @@ export function McpConnection({
 		trpc.mcp.disconnect.mutationOptions({
 			onSuccess: async () => {
 				await queryClient.invalidateQueries(trpc.mcp.list.queryFilter());
-				toast.success(`${entry.name} disconnected.`);
+				toast.success(`${entry.name} desconectado.`);
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -177,7 +177,7 @@ export function McpConnection({
 	const review = useMutation(
 		trpc.mcp.reviewTools.mutationOptions({
 			onSuccess: () => {
-				toast.success(`${entry.name} tools reviewed.`);
+				toast.success(`Herramientas de ${entry.name} revisadas.`);
 				router.refresh();
 			},
 			onError: (error) => toast.error(error.message),
@@ -205,7 +205,7 @@ export function McpConnection({
 				<div className="flex min-w-0 flex-col gap-2">
 					<Button asChild variant="link" size="inline">
 						<Link href={`/${slug}/settings/connections`}>
-							Back to connections
+							Volver a conexiones
 						</Link>
 					</Button>
 					<h1 className="flex items-center gap-3 font-medium text-2xl tracking-tight">
@@ -218,7 +218,7 @@ export function McpConnection({
 						{entry.name}
 					</h1>
 					<p className="text-muted-foreground text-sm">
-						Deployed agents receive only reviewed tools.
+						Los agentes desplegados solo reciben herramientas revisadas.
 					</p>
 				</div>
 				{connected && canManage ? (
@@ -227,7 +227,7 @@ export function McpConnection({
 							<DropdownMenuTrigger asChild>
 								<Button variant="ghost" size="icon-sm">
 									<Icon icon={OverflowMenuVertical} />
-									<span className="sr-only">More {entry.name} actions</span>
+									<span className="sr-only">Más acciones de {entry.name}</span>
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
@@ -236,7 +236,7 @@ export function McpConnection({
 										variant="destructive"
 										onSelect={() => setConfirmingDisconnect(true)}
 									>
-										Disconnect {entry.name}
+										Desconectar {entry.name}
 									</DropdownMenuItem>
 								</DropdownMenuGroup>
 							</DropdownMenuContent>
@@ -255,7 +255,7 @@ export function McpConnection({
 						<StatusIndicator
 							busy
 							tone="primary"
-							label={`Connecting to ${entry.name}`}
+							label={`Conectando con ${entry.name}`}
 						/>
 					</CardContent>
 				</Card>
@@ -264,9 +264,9 @@ export function McpConnection({
 			{!connected && !connecting ? (
 				<Card>
 					<CardHeader>
-						<CardTitle>Access</CardTitle>
+						<CardTitle>Acceso</CardTitle>
 						<CardDescription>
-							Choose what deployed agents can do.
+							Elige qué pueden hacer los agentes desplegados.
 						</CardDescription>
 					</CardHeader>
 
@@ -274,10 +274,12 @@ export function McpConnection({
 						<CardContent>
 							<Alert>
 								<Icon icon={Warning} />
-								<AlertTitle>MCP connections are not configured</AlertTitle>
+								<AlertTitle>
+									Las conexiones MCP no están configuradas
+								</AlertTitle>
 								<AlertDescription>
-									Set MCP_ENCRYPTION_KEY in the root .env file. Then restart the
-									API.
+									Define MCP_ENCRYPTION_KEY en el archivo .env de la raíz y
+									luego reinicia la API.
 								</AlertDescription>
 							</Alert>
 						</CardContent>
@@ -287,9 +289,10 @@ export function McpConnection({
 						<CardContent>
 							<Alert variant="destructive">
 								<Icon icon={Warning} />
-								<AlertTitle>{entry.name} needs authorization</AlertTitle>
+								<AlertTitle>{entry.name} necesita autorización</AlertTitle>
 								<AlertDescription>
-									Reconnect {entry.name}. The stored access is no longer usable.
+									Vuelve a conectar {entry.name}. El acceso guardado ya no se
+									puede usar.
 								</AlertDescription>
 							</Alert>
 						</CardContent>
@@ -298,7 +301,7 @@ export function McpConnection({
 					{!connected && configured && canManage ? (
 						<CardContent>
 							<p className="font-medium text-sm">
-								What can agents do in {entry.name}?
+								¿Qué pueden hacer los agentes en {entry.name}?
 							</p>
 							<ToggleGroup
 								type="single"
@@ -310,15 +313,17 @@ export function McpConnection({
 										setMode(value);
 								}}
 							>
-								<ToggleGroupItem value="read_only">Read only</ToggleGroupItem>
+								<ToggleGroupItem value="read_only">
+									Solo lectura
+								</ToggleGroupItem>
 								<ToggleGroupItem value="read_write">
-									Read and write
+									Lectura y escritura
 								</ToggleGroupItem>
 							</ToggleGroup>
 							<p className="text-muted-foreground text-sm">
 								{mode === "read_only"
-									? `Agents read ${entry.name} and change nothing.`
-									: `Agents read ${entry.name} and make approved changes.`}
+									? `Los agentes leen ${entry.name} y no cambian nada.`
+									: `Los agentes leen ${entry.name} y hacen los cambios aprobados.`}
 							</p>
 						</CardContent>
 					) : null}
@@ -327,7 +332,7 @@ export function McpConnection({
 						{!connected && configured && canManage ? (
 							<Button disabled={start.isPending} onClick={connect}>
 								{start.isPending ? <Spinner data-icon="inline-start" /> : null}
-								Continue to {entry.name}
+								Continuar a {entry.name}
 							</Button>
 						) : null}
 					</CardFooter>
@@ -337,11 +342,11 @@ export function McpConnection({
 			{connected ? (
 				<Card>
 					<CardHeader>
-						<CardTitle>Tool access</CardTitle>
+						<CardTitle>Acceso a herramientas</CardTitle>
 						<CardDescription>
 							{presentation.pendingReviewCount > 0
-								? `${presentation.pendingReviewCount} tools need review. Open a tool to inspect it.`
-								: "All tools are reviewed. Open a tool to inspect it."}
+								? `${presentation.pendingReviewCount} ${presentation.pendingReviewCount === 1 ? "herramienta requiere" : "herramientas requieren"} revisión. Abre una herramienta para inspeccionarla.`
+								: "Todas las herramientas están revisadas. Abre una herramienta para inspeccionarla."}
 						</CardDescription>
 						{presentation.pendingReadTools.length > 0 && canManage ? (
 							<CardAction>
@@ -358,7 +363,10 @@ export function McpConnection({
 									{review.isPending ? (
 										<Spinner data-icon="inline-start" />
 									) : null}
-									Review {presentation.pendingReadTools.length} read tools
+									Revisar {presentation.pendingReadTools.length}{" "}
+									{presentation.pendingReadTools.length === 1
+										? "herramienta de lectura"
+										: "herramientas de lectura"}
 								</Button>
 							</CardAction>
 						) : null}
@@ -390,7 +398,7 @@ export function McpConnection({
 							))}
 						</ToggleGroup>
 					</CardToolbar>
-					<CardPanel role="region" aria-label={`${entry.name} tools`}>
+					<CardPanel role="region" aria-label={`Herramientas de ${entry.name}`}>
 						<CardPanelScroll>
 							{toolGroups.map((group) => (
 								<CardPanelGroup key={group.kind}>
@@ -430,7 +438,7 @@ export function McpConnection({
 																		{tool.presentation.prose}
 																	</InlineReferenceText>
 																) : (
-																	tool.description || "No description provided."
+																	tool.description || "Sin descripción."
 																)}
 															</p>
 															{tool.presentation?.code ? (
@@ -461,7 +469,7 @@ export function McpConnection({
 																	})
 																}
 															>
-																Review tool
+																Revisar herramienta
 															</Button>
 														) : null}
 													</AccordionContent>
@@ -484,14 +492,14 @@ export function McpConnection({
 			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Disconnect {entry.name}?</AlertDialogTitle>
+						<AlertDialogTitle>¿Desconectar {entry.name}?</AlertDialogTitle>
 						<AlertDialogDescription>
-							Deployed agents stop using {entry.name} immediately.
+							Los agentes desplegados dejan de usar {entry.name} de inmediato.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel disabled={disconnect.isPending}>
-							Keep connected
+							Mantener conectado
 						</AlertDialogCancel>
 						<AlertDialogAction
 							variant="destructive"
@@ -501,7 +509,7 @@ export function McpConnection({
 							{disconnect.isPending ? (
 								<Spinner data-icon="inline-start" />
 							) : null}
-							Disconnect {entry.name}
+							Desconectar {entry.name}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -545,16 +553,17 @@ function ConnectionDetails({
 			{overview.scopeGroups.length > 0 ? (
 				<Card>
 					<CardHeader>
-						<CardTitle>Permissions</CardTitle>
+						<CardTitle>Permisos</CardTitle>
 						<CardAction>
 							<span className="text-muted-foreground text-xs tabular-nums">
-								{overview.scopeCount} scopes
+								{overview.scopeCount}{" "}
+								{overview.scopeCount === 1 ? "permiso" : "permisos"}
 							</span>
 						</CardAction>
 					</CardHeader>
 					<CardPanel
 						role="region"
-						aria-label="Granted permissions"
+						aria-label="Permisos otorgados"
 						size={overview.permissionPanelSize}
 					>
 						<CardPanelScroll>
@@ -595,7 +604,7 @@ function ConnectionDetails({
 			{overview.agents.length > 0 ? (
 				<Card>
 					<CardHeader>
-						<CardTitle>Used by</CardTitle>
+						<CardTitle>Usada por</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className="flex flex-col divide-y rounded-md border">

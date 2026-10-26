@@ -50,7 +50,7 @@ export class AuthService {
 
 		if (!user) {
 			this.logger.warn({ message: "Session user no longer exists", userId });
-			throw new NotFoundException(`No user with id ${userId}.`);
+			throw new NotFoundException(`No existe un usuario con id ${userId}.`);
 		}
 
 		const profile: UserProfile = {

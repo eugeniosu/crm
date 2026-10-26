@@ -43,12 +43,12 @@ export function ResearchForm() {
 		>
 			<FieldGroup>
 				<Field>
-					<FieldLabel htmlFor={keyId}>Context API key</FieldLabel>
+					<FieldLabel htmlFor={keyId}>Clave de API de Context</FieldLabel>
 					<Input
 						id={keyId}
 						name="apiKey"
 						type="password"
-						placeholder="Paste the key"
+						placeholder="Pega la clave"
 						autoComplete="off"
 						autoCapitalize="off"
 						autoCorrect="off"
@@ -57,14 +57,14 @@ export function ResearchForm() {
 						required
 					/>
 					<FieldDescription>
-						Don't have a Context API key?{" "}
+						¿No tienes una clave de API de Context?{" "}
 						<a
 							href={CONTEXT_DEV_SIGNUP_URL}
 							target="_blank"
 							rel="noreferrer"
 							className="underline underline-offset-4 hover:text-foreground"
 						>
-							Sign up here
+							Regístrate aquí
 						</a>
 					</FieldDescription>
 				</Field>
@@ -72,7 +72,7 @@ export function ResearchForm() {
 
 			<Button type="submit" disabled={save.isPending}>
 				{save.isPending ? <Spinner data-icon="inline-start" /> : null}
-				Continue
+				Continuar
 			</Button>
 		</form>
 	);

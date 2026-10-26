@@ -50,8 +50,8 @@ export function TrackingScript() {
 				await cache.tracking();
 				toast.success(
 					input.enabled
-						? "Tracking paused. The script stops recording within five minutes."
-						: "Tracking resumed.",
+						? "Seguimiento en pausa. El script deja de registrar en un máximo de cinco minutos."
+						: "Seguimiento reanudado.",
 				);
 			},
 			onError: (error) => toast.error(error.message),
@@ -62,7 +62,9 @@ export function TrackingScript() {
 		trpc.tracking.rotateSiteId.mutationOptions({
 			onSuccess: async () => {
 				await cache.tracking();
-				toast.success("Site ID rotated. Paste the new tag on your website.");
+				toast.success(
+					"ID del sitio rotado. Pega la nueva etiqueta en tu sitio web.",
+				);
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -84,14 +86,16 @@ export function TrackingScript() {
 		const clipboard = navigator.clipboard;
 
 		if (!value || !clipboard) {
-			toast.error("Could not copy the script. Select it instead.");
+			toast.error(
+				"No se pudo copiar el script. Selecciónalo y cópialo a mano.",
+			);
 			return;
 		}
 
 		clipboard
 			.writeText(value)
-			.then(() => toast.success("Script copied."))
-			.catch(() => toast.error("Could not copy the script."));
+			.then(() => toast.success("Script copiado."))
+			.catch(() => toast.error("No se pudo copiar el script."));
 	};
 
 	return (
@@ -99,22 +103,22 @@ export function TrackingScript() {
 			<CardHeader>
 				<CardTitle>
 					<div className="flex items-center gap-2">
-						Tracking script
+						Script de seguimiento
 						<StatusIndicator
 							size="sm"
 							tone={paused ? "warning" : receivingSince ? "success" : "neutral"}
 							label={
 								paused
-									? "Paused"
+									? "En pausa"
 									: receivingSince
-										? "Receiving page views"
-										: "No page views yet"
+										? "Recibiendo vistas de página"
+										: "Aún sin vistas de página"
 							}
 						/>
 					</div>
 				</CardTitle>
 				<CardDescription>
-					One tag, 4 KB, in the head of every page you measure.
+					Una etiqueta de 4 KB en el head de cada página que midas.
 				</CardDescription>
 
 				<CardAction>
@@ -126,7 +130,7 @@ export function TrackingScript() {
 						type="button"
 					>
 						<Icon icon={Copy} data-icon="inline-start" />
-						Copy
+						Copiar
 					</Button>
 				</CardAction>
 			</CardHeader>
@@ -139,7 +143,7 @@ export function TrackingScript() {
 					onValueChange={setSection}
 				>
 					<AccordionItem value="html">
-						<AccordionTrigger>Paste it into your HTML</AccordionTrigger>
+						<AccordionTrigger>Pégalo en tu HTML</AccordionTrigger>
 						<AccordionContent className="flex flex-col gap-4">
 							<pre className="overflow-x-auto rounded-md border bg-muted p-4 font-mono text-code-foreground text-xs/5">
 								<span className="text-code-accent">{"<script"}</span>
@@ -151,17 +155,16 @@ export function TrackingScript() {
 								<span className="text-code-accent">{"></script>"}</span>
 							</pre>
 							<p className="text-muted-foreground text-xs/relaxed">
-								Site ID{" "}
-								<span className="font-mono text-foreground">{siteId}</span> ·
-								Rotating it stops every copy of the old script at once.
+								ID del sitio{" "}
+								<span className="font-mono text-foreground">{siteId}</span> · Al
+								rotarlo, todas las copias del script anterior dejan de funcionar
+								de inmediato.
 							</p>
 						</AccordionContent>
 					</AccordionItem>
 
 					<AccordionItem value="gtm">
-						<AccordionTrigger>
-							Add it through Google Tag Manager
-						</AccordionTrigger>
+						<AccordionTrigger>Agrégalo con Google Tag Manager</AccordionTrigger>
 						<AccordionContent className="flex flex-col gap-4">
 							<pre className="overflow-x-auto rounded-md border bg-muted p-4 font-mono text-code-foreground text-xs/5">
 								<span className="text-code-accent">{"<script"}</span>
@@ -171,21 +174,26 @@ export function TrackingScript() {
 								<span className="text-code-accent">{"></script>"}</span>
 							</pre>
 							<ol className="flex list-decimal flex-col gap-1 pl-4 text-muted-foreground text-xs/relaxed">
-								<li>In Tag Manager, add a new Custom HTML tag.</li>
 								<li>
-									Paste this snippet — not the one above — as the tag's HTML.
+									En Tag Manager, agrega una etiqueta nueva de tipo HTML
+									personalizado.
 								</li>
 								<li>
-									Trigger it on All Pages, then publish the container. Keep{" "}
+									Pega este fragmento (no el de arriba) como el HTML de la
+									etiqueta.
+								</li>
+								<li>
+									Actívala en todas las páginas y publica el contenedor. Mantén{" "}
 									<span className="font-mono text-foreground">{scriptUrl}</span>{" "}
-									off any consent-blocked category you do not need.
+									fuera de cualquier categoría bloqueada por consentimiento que
+									no necesites.
 								</li>
 							</ol>
 							<p className="text-muted-foreground text-xs/relaxed">
-								Tag Manager drops a{" "}
+								Tag Manager elimina el atributo{" "}
 								<span className="font-mono text-foreground">data-site</span>{" "}
-								attribute when it injects a script, so this form carries the
-								site ID in the URL instead.
+								cuando inyecta un script, así que esta versión lleva el ID del
+								sitio en la URL.
 							</p>
 						</AccordionContent>
 					</AccordionItem>
@@ -196,10 +204,10 @@ export function TrackingScript() {
 						htmlFor="tracking-paused"
 						className="flex flex-col items-start gap-1"
 					>
-						<span className="text-sm">Pause tracking</span>
+						<span className="text-sm">Pausar el seguimiento</span>
 						<span className="font-normal text-muted-foreground text-xs">
-							The script keeps loading and records nothing. Your domains and
-							settings are kept
+							El script sigue cargando pero no registra nada. Se conservan tus
+							dominios y tu configuración
 						</span>
 					</Label>
 
@@ -222,28 +230,28 @@ export function TrackingScript() {
 									size="xs"
 									disabled={!canManage || rotate.isPending}
 								>
-									Rotate site ID
+									Rotar ID del sitio
 								</Button>
 							</AlertDialogTrigger>
 
 							<AlertDialogContent>
 								<AlertDialogHeader>
-									<AlertDialogTitle>Rotate the site ID?</AlertDialogTitle>
+									<AlertDialogTitle>¿Rotar el ID del sitio?</AlertDialogTitle>
 									<AlertDialogDescription>
-										Every copy of the old script stops recording at once,
-										including any you have forgotten about. You will need to
-										paste the new tag on every page that carries the old one.
-										Nothing already collected is lost.
+										Todas las copias del script anterior dejan de registrar de
+										inmediato, incluso las que hayas olvidado. Tendrás que pegar
+										la nueva etiqueta en cada página que lleve la anterior. No
+										se pierde nada de lo ya recopilado.
 									</AlertDialogDescription>
 								</AlertDialogHeader>
 
 								<AlertDialogFooter>
-									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogCancel>Cancelar</AlertDialogCancel>
 									<AlertDialogAction
 										variant="destructive"
 										onClick={() => rotate.mutate()}
 									>
-										Rotate
+										Rotar
 									</AlertDialogAction>
 								</AlertDialogFooter>
 							</AlertDialogContent>

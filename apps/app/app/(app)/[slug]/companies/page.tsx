@@ -22,7 +22,7 @@ import {
 } from "./import-companies-link";
 
 export const metadata: Metadata = {
-	title: "Companies",
+	title: "Empresas",
 };
 
 export default function CompaniesPage({
@@ -33,9 +33,9 @@ export default function CompaniesPage({
 		<PageShell className="min-h-0">
 			<PageShellHeader>
 				<PageShellHeading>
-					<PageShellTitle>Companies</PageShellTitle>
+					<PageShellTitle>Empresas</PageShellTitle>
 					<PageShellDescription>
-						Every account in the pipeline.
+						Todas las cuentas del embudo.
 					</PageShellDescription>
 				</PageShellHeading>
 				<PageShellActions>

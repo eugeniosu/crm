@@ -42,7 +42,7 @@ export function TaskEditor({
 		<ActivityForm
 			value={draft}
 			onValueChange={setDraft}
-			ariaLabel="Task"
+			ariaLabel="Tarea"
 			onSubmit={submit}
 			onEscape={onClose}
 		>
@@ -59,7 +59,7 @@ export function TaskEditor({
 				disabled={update.isPending}
 				onClick={onClose}
 			>
-				Cancel
+				Cancelar
 			</InputGroupButton>
 			<InputGroupButton
 				type="submit"
@@ -68,7 +68,7 @@ export function TaskEditor({
 				disabled={!text || update.isPending}
 			>
 				{update.isPending ? <Spinner /> : null}
-				Save
+				Guardar
 			</InputGroupButton>
 		</ActivityForm>
 	);

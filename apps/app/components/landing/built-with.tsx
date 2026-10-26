@@ -7,7 +7,7 @@ export function BuiltWith() {
 		<div className="flex w-full max-w-6xl select-none flex-col items-center gap-[14px] pt-10">
 			<div className="flex flex-col items-center gap-5">
 				<p className="font-mono text-[13px]/4 tracking-widest text-[#6E6E6E]">
-					BUILT WITH
+					HECHO CON
 				</p>
 
 				<ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-5 font-medium text-2xl/[30px] text-white tracking-[-0.01em]">

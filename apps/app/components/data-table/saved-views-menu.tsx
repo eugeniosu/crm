@@ -65,7 +65,7 @@ export function SavedViewsMenu({
 		trpc.savedViews.create.mutationOptions({
 			onSuccess: async () => {
 				await settle();
-				toast.success("View saved.");
+				toast.success("Vista guardada.");
 				closeDialog();
 			},
 			onError: (error) => toast.error(error.message),
@@ -76,7 +76,7 @@ export function SavedViewsMenu({
 		trpc.savedViews.delete.mutationOptions({
 			onSuccess: async () => {
 				await settle();
-				toast.success("View deleted.");
+				toast.success("Vista eliminada.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -96,15 +96,15 @@ export function SavedViewsMenu({
 						className="justify-start sm:justify-center"
 					>
 						<Bookmark data-icon="inline-start" />
-						Views
+						Vistas
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="min-w-56">
 					<DropdownMenuItem onSelect={() => setDialogOpen(true)}>
-						Save current view…
+						Guardar la vista actual…
 					</DropdownMenuItem>
 					{list.length > 0 && <DropdownMenuSeparator />}
-					{mine.length > 0 && <DropdownMenuLabel>My views</DropdownMenuLabel>}
+					{mine.length > 0 && <DropdownMenuLabel>Mis vistas</DropdownMenuLabel>}
 					{mine.map((view) => (
 						<ViewItem
 							key={view.id}
@@ -114,7 +114,7 @@ export function SavedViewsMenu({
 						/>
 					))}
 					{shared_.length > 0 && (
-						<DropdownMenuLabel>Shared with the team</DropdownMenuLabel>
+						<DropdownMenuLabel>Compartidas con el equipo</DropdownMenuLabel>
 					)}
 					{shared_.map((view) => (
 						<DropdownMenuItem
@@ -133,11 +133,11 @@ export function SavedViewsMenu({
 			>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Save this view</DialogTitle>
+						<DialogTitle>Guardar esta vista</DialogTitle>
 					</DialogHeader>
 					<div className="flex flex-col gap-4">
 						<Field>
-							<FieldLabel htmlFor="saved-view-name">Name</FieldLabel>
+							<FieldLabel htmlFor="saved-view-name">Nombre</FieldLabel>
 							<Input
 								id="saved-view-name"
 								value={name}
@@ -147,7 +147,7 @@ export function SavedViewsMenu({
 						</Field>
 						<Field orientation="horizontal">
 							<FieldLabel htmlFor="saved-view-shared">
-								Share with the team
+								Compartir con el equipo
 							</FieldLabel>
 							<Switch
 								id="saved-view-shared"
@@ -158,7 +158,7 @@ export function SavedViewsMenu({
 					</div>
 					<DialogFooter>
 						<Button variant="outline" onClick={closeDialog}>
-							Cancel
+							Cancelar
 						</Button>
 						<Button
 							disabled={name.trim() === "" || create.isPending}
@@ -171,7 +171,7 @@ export function SavedViewsMenu({
 								})
 							}
 						>
-							Save
+							Guardar
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -200,7 +200,7 @@ function ViewItem({
 				onSelect={onDelete}
 			>
 				<Close />
-				<span className="sr-only">Delete {view.name}</span>
+				<span className="sr-only">Eliminar {view.name}</span>
 			</DropdownMenuItem>
 		</div>
 	);

@@ -19,7 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
 	const { platformSlug } = await params;
 	const vendor = vendorBySlug(platformSlug);
-	return { title: vendor ? `${vendor.name} connection` : "Connection" };
+	return { title: vendor ? `Conexión con ${vendor.name}` : "Conexión" };
 }
 
 export default function McpConnectionPage({

@@ -96,7 +96,7 @@ const activityWindowSet: ReadonlySet<string> = new Set(ACTIVITY_WINDOWS);
 export const activityFacetInput = z
 	.array(z.string())
 	.refine((values) => values.every((value) => activityWindowSet.has(value)), {
-		message: `Activity must be one of: ${ACTIVITY_WINDOWS.join(", ")}.`,
+		message: `La actividad debe ser una de: ${ACTIVITY_WINDOWS.join(", ")}.`,
 	});
 
 function activityCutoff(days: number): Date {

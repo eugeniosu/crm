@@ -46,47 +46,47 @@ import { SalesDashboard } from "./sales-dashboard";
 
 const CELL = "px-3 py-2.5 align-middle";
 const OPEN_COLUMNS: SimpleTableColumn[] = [
-	{ id: "deal", header: "Deal" },
+	{ id: "deal", header: "Negocio" },
 	{
 		id: "stage",
-		header: "Stage",
+		header: "Etapa",
 		width: "w-32",
 		className: "hidden lg:table-cell",
 	},
 	{
 		id: "share",
-		srLabel: "Share of the largest",
+		srLabel: "Proporción respecto del mayor",
 		width: "w-24",
 		className: "hidden sm:table-cell",
 	},
-	{ id: "value", header: "Value", width: "w-20", align: "right" },
+	{ id: "value", header: "Valor", width: "w-20", align: "right" },
 ];
 const TASK_COLUMNS: SimpleTableColumn[] = [
-	{ id: "done", srLabel: "Done", width: "w-8" },
-	{ id: "task", header: "Task" },
-	{ id: "overdue", header: "Overdue", width: "w-24", align: "right" },
+	{ id: "done", srLabel: "Hecha", width: "w-8" },
+	{ id: "task", header: "Tarea" },
+	{ id: "overdue", header: "Atrasada", width: "w-24", align: "right" },
 ];
 const ACTIVITY_COLUMNS: SimpleTableColumn[] = [
-	{ id: "activity", header: "Activity" },
+	{ id: "activity", header: "Actividad" },
 	{
 		id: "company",
-		header: "Company",
+		header: "Empresa",
 		width: "w-44",
 		className: "hidden md:table-cell",
 	},
 	{
 		id: "deal",
-		header: "Deal",
+		header: "Negocio",
 		width: "w-48",
 		className: "hidden lg:table-cell",
 	},
 	{
 		id: "who",
-		header: "Who",
+		header: "Quién",
 		width: "w-32",
 		className: "hidden md:table-cell",
 	},
-	{ id: "when", header: "When", width: "w-20", align: "right" },
+	{ id: "when", header: "Cuándo", width: "w-20", align: "right" },
 ];
 
 export function DashboardSummary() {
@@ -134,20 +134,21 @@ export function DashboardSummary() {
 			<div className="grid gap-6 @3xl/page-content:grid-cols-2">
 				<Card className="min-w-0">
 					<CardHeader>
-						<CardTitle>Deals in progress</CardTitle>
+						<CardTitle>Negocios en curso</CardTitle>
 						<CardDescription>
-							The largest open deals, and how long each has sat in its stage
+							Los negocios abiertos más grandes y cuánto lleva cada uno en su
+							etapa
 						</CardDescription>
 						<CardAction>
 							<Button asChild variant="contrast" size="sm">
-								<Link href={workspaceUrl("/deals")}>Open deals</Link>
+								<Link href={workspaceUrl("/deals")}>Negocios abiertos</Link>
 							</Button>
 						</CardAction>
 					</CardHeader>
 					<CardPanel>
 						{biggestOpen.length === 0 ? (
 							<CardPanelEmpty>
-								Nothing open. Time to fill the pipeline.
+								No hay nada abierto. Es hora de llenar el embudo.
 							</CardPanelEmpty>
 						) : (
 							<SimpleTable
@@ -198,21 +199,21 @@ export function DashboardSummary() {
 
 				<Card className="min-w-0">
 					<CardHeader>
-						<CardTitle>Overdue tasks</CardTitle>
+						<CardTitle>Tareas atrasadas</CardTitle>
 						<CardDescription>
 							{overdueTasks.length === 0
-								? "Every task you have logged is either done or still to come"
-								: `${formatCount(overdueTasks.length, "task")} past due`}
+								? "Todas las tareas que has registrado están hechas o aún no vencen"
+								: `${formatCount(overdueTasks.length, "tarea", "tareas")} atrasadas`}
 						</CardDescription>
 						<CardAction>
 							<Button asChild variant="contrast" size="sm">
-								<Link href={workspaceUrl("/tasks")}>Open tasks</Link>
+								<Link href={workspaceUrl("/tasks")}>Abrir tareas</Link>
 							</Button>
 						</CardAction>
 					</CardHeader>
 					<CardPanel>
 						{overdueTasks.length === 0 ? (
-							<CardPanelEmpty>Nothing overdue. Good.</CardPanelEmpty>
+							<CardPanelEmpty>No hay nada atrasado. Bien.</CardPanelEmpty>
 						) : (
 							<SimpleTable
 								variant="panel"
@@ -225,7 +226,7 @@ export function DashboardSummary() {
 											<Checkbox
 												checked={false}
 												disabled={complete.isPending}
-												aria-label="Mark as done"
+												aria-label="Marcar como hecha"
 												onCheckedChange={() =>
 													complete.mutate({ id: task.id, completed: true })
 												}
@@ -254,7 +255,7 @@ export function DashboardSummary() {
 													task.dueAt ? (
 														<LocalRelativeTime date={task.dueAt} />
 													) : (
-														"No due date"
+														"Sin fecha de vencimiento"
 													)
 												}
 											/>
@@ -270,21 +271,21 @@ export function DashboardSummary() {
 			<Card className="min-w-0">
 				<CardHeader>
 					<CardTitle>
-						{mine ? "Your recent activity" : "Recent activity"}
+						{mine ? "Tu actividad reciente" : "Actividad reciente"}
 					</CardTitle>
 					<CardDescription>
 						{mine
-							? "Every note, task and stage change you have logged"
-							: "Every note, task and stage change across the workspace"}
+							? "Cada nota, tarea y cambio de etapa que has registrado"
+							: "Cada nota, tarea y cambio de etapa en el espacio de trabajo"}
 					</CardDescription>
 					<CardAction>
 						<Button asChild variant="contrast" size="sm">
-							<Link href={workspaceUrl("/companies")}>All companies</Link>
+							<Link href={workspaceUrl("/companies")}>Todas las empresas</Link>
 						</Button>
 					</CardAction>
 				</CardHeader>
 				{recentActivity.length === 0 ? (
-					<CardTableEmpty>Nothing has happened yet.</CardTableEmpty>
+					<CardTableEmpty>Todavía no ha pasado nada.</CardTableEmpty>
 				) : (
 					<SimpleTable columns={ACTIVITY_COLUMNS}>
 						{recentActivity.map((entry) => (

@@ -144,10 +144,10 @@ test("turns generic PlanetScale data into concise organization details", () => {
 				title: "Bounty",
 				reference: "org_1",
 				details: [
-					{ label: "Databases", value: "6" },
+					{ label: "Bases de datos", value: "6" },
 					{ label: "Plan", value: "Scaler Pro" },
-					{ label: "Access", value: "Read Write" },
-					{ label: "Updated", value: "Jan 2, 2026" },
+					{ label: "Acceso", value: "Read Write" },
+					{ label: "Actualizado", value: "2 ene. 2026" },
 				],
 				tags: [],
 			},
@@ -168,7 +168,7 @@ test("presents a single Notion account without a meaningless count", () => {
 	expect(result).toEqual({
 		slug: "notion",
 		provider: "Notion",
-		title: "Account",
+		title: "Cuenta",
 		items: [
 			{
 				key: "Caleb Perry-0",
@@ -193,7 +193,7 @@ test("omits a generic item title when the provider returns nested account data",
 	expect(result).toEqual({
 		slug: "notion",
 		provider: "Notion",
-		title: "Account",
+		title: "Cuenta",
 		items: [
 			{
 				key: "result-0",

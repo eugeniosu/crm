@@ -9,9 +9,9 @@ import { LandingNav } from "@/components/landing/landing-nav";
 import { ProductShot } from "@/components/landing/product-shot/product-shot";
 
 export const metadata: Metadata = {
-	title: "The CRM for agents",
+	title: "El CRM para agentes",
 	description:
-		"The first agentic CRM experience — durable research agents that read your inbox, keep every record current and book their own follow-ups.",
+		"La primera experiencia de CRM con agentes: agentes de investigación persistentes que leen tu bandeja de entrada, mantienen cada registro al día y agendan sus propios seguimientos.",
 };
 
 export default function Home() {

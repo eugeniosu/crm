@@ -10,13 +10,13 @@ export function LandingFooter() {
 				<div className="flex w-[280px] max-w-full shrink-0 flex-col gap-[14px]">
 					<Wordmark />
 					<p className="text-[13px]/[21px] text-muted-foreground">
-						The open source agentic CRM.
+						El CRM con agentes de código abierto.
 					</p>
 				</div>
 
 				<nav className="flex w-[180px] shrink-0 flex-col items-start gap-[14px]">
 					<p className="font-mono text-[11px]/4 text-muted-foreground tracking-widest">
-						PROJECT
+						PROYECTO
 					</p>
 					{REPO_LINKS.map((link) => (
 						<Link
@@ -36,7 +36,7 @@ export function LandingFooter() {
 			<div className="flex w-full justify-center border-border border-t">
 				<div className="flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-6 py-4 md:h-[60px] md:py-0">
 					<p className="flex flex-1 items-center gap-[5px] pt-[2px] text-[13px]/[21px] text-muted-foreground">
-						Built with love by
+						Hecho con cariño por
 						<Logo className="size-[13px] shrink-0 text-foreground" />
 						<Link
 							href="https://trycomp.ai?utm_source=crm_landing_footer&utm_medium=referral"
@@ -49,7 +49,7 @@ export function LandingFooter() {
 
 					<p className="flex items-center gap-2 text-[13px]/5 text-muted-foreground">
 						<span className="size-1.5 shrink-0 rounded-full bg-ring" />
-						All systems normal
+						Todos los sistemas funcionan con normalidad
 					</p>
 				</div>
 			</div>

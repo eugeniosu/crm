@@ -1,82 +1,83 @@
 import type { RecordKind } from "@/components/crm/record-sheet/record-stack";
 import type { FieldEntity } from "./fields-entity";
 
-export const SHEET_TITLE = "Fields";
+export const SHEET_TITLE = "Campos";
 
 const SUBTITLE = {
-	company: "This shapes every company in your CRM.",
-	contact: "This shapes every contact in your CRM.",
-	deal: "This shapes every deal in your CRM.",
+	company: "Esto define cada empresa de tu CRM.",
+	contact: "Esto define cada contacto de tu CRM.",
+	deal: "Esto define cada negocio de tu CRM.",
 } satisfies Record<RecordKind, string>;
 
 export function subtitleFor(kind: RecordKind): string {
 	return SUBTITLE[kind];
 }
 
-export const STANDARD_ROW = "Standard fields";
-export const STANDARD_NOTE = "reorder and hide only";
-export const SUGGESTED_ROW = "Suggested fields";
-export const SUGGESTED_NOTE = "one click to add";
-export const ADD = "Add";
-export const CUSTOM_GROUP = "Custom fields";
-export const DRAG_NOTE = "Drag to order";
-export const ARCHIVED_ROW = "Archived";
-export const ARCHIVED_NOTE = "values kept, hidden everywhere";
-export const NEW_FIELD = "New field";
-export const ORDER_NOTE = "Order here is the order on the sheet";
-export const MANUAL_ONLY = "Manual only";
-export const TABLE_NOTE = "also a column on the table";
-export const FILTER_NOTE = "also a filter";
+export const STANDARD_ROW = "Campos estándar";
+export const STANDARD_NOTE = "solo reordenar y ocultar";
+export const SUGGESTED_ROW = "Campos sugeridos";
+export const SUGGESTED_NOTE = "se agregan con un clic";
+export const ADD = "Agregar";
+export const CUSTOM_GROUP = "Campos personalizados";
+export const DRAG_NOTE = "Arrastra para ordenar";
+export const ARCHIVED_ROW = "Archivados";
+export const ARCHIVED_NOTE =
+	"los valores se conservan, ocultos en todas partes";
+export const NEW_FIELD = "Nuevo campo";
+export const ORDER_NOTE = "Este orden es el de la ficha";
+export const MANUAL_ONLY = "Solo manual";
+export const TABLE_NOTE = "también es una columna de la tabla";
+export const FILTER_NOTE = "también es un filtro";
 
-export const EMPTY_TITLE = "No custom fields yet";
+export const EMPTY_TITLE = "Todavía no hay campos personalizados";
 export const EMPTY_BODY =
-	"Create dynamic fields that your agents can research and pre-fill.";
+	"Crea campos dinámicos que tus agentes puedan investigar y rellenar.";
 
-export const ERROR_TITLE = "We could not load your fields";
+export const ERROR_TITLE = "No pudimos cargar tus campos";
 export const ERROR_BODY =
-	"Your fields are still there. Try again in a moment, before you create anything new.";
-export const RETRY = "Try again";
+	"Tus campos siguen ahí. Vuelve a intentarlo en un momento, antes de crear algo nuevo.";
+export const RETRY = "Vuelve a intentarlo";
 
-export const LABEL_LABEL = "Label";
-export const KEY_LABEL = "Key";
+export const LABEL_LABEL = "Etiqueta";
+export const KEY_LABEL = "Clave";
 export const KEY_HELP =
-	"What the API and your agents call it. Set from the label, fixed once saved — renaming the label later never breaks a caller.";
-export const AGENT_LABEL = "Let your agents fill this";
+	"Cómo lo llaman la API y tus agentes. Se genera desde la etiqueta y queda fija al guardar: cambiar la etiqueta después nunca rompe a quien lo use.";
+export const AGENT_LABEL = "Deja que tus agentes lo rellenen";
 export const AGENT_HELP =
-	"They propose a value with a source, and never overwrite yours.";
-export const BRIEF_LABEL = "What counts as an answer";
+	"Proponen un valor con su fuente y nunca sobrescriben el tuyo.";
+export const BRIEF_LABEL = "Qué cuenta como respuesta";
 export const BRIEF_HELP =
-	"Leave it empty and your agents work from the label and type alone.";
-export const TYPE_LABEL = "Type";
-export const OPTIONS_LABEL = "Options";
-export const ADD_OPTION = "Add option";
-export const ALL_FILLED = "Nothing left to fill";
+	"Si lo dejas vacío, tus agentes se guían solo por la etiqueta y el tipo.";
+export const TYPE_LABEL = "Tipo";
+export const OPTIONS_LABEL = "Opciones";
+export const ADD_OPTION = "Agregar opción";
+export const ALL_FILLED = "No queda nada por rellenar";
 
 export function optionLabel(index: number): string {
-	return `Option ${index + 1}`;
+	return `Opción ${index + 1}`;
 }
-export const ADD_FIELD = "Create field";
-export const CANCEL = "Cancel";
-export const SAVE = "Save changes";
-export const ARCHIVE = "Archive";
-export const FILL_REST = "Fill the rest";
+export const ADD_FIELD = "Crear campo";
+export const CANCEL = "Cancelar";
+export const SAVE = "Guardar cambios";
+export const ARCHIVE = "Archivar";
+export const FILL_REST = "Rellenar el resto";
 
 const SHEET_PLACEMENT = {
-	COMPANY: "Show on the company sheet",
-	CONTACT: "Show on the contact sheet",
-	DEAL: "Show on the deal sheet",
+	COMPANY: "Mostrar en la ficha de la empresa",
+	CONTACT: "Mostrar en la ficha del contacto",
+	DEAL: "Mostrar en la ficha del negocio",
 } satisfies Record<FieldEntity, string>;
 
 const TABLE_PLACEMENT = {
-	COMPANY: "Offer as a column on the Companies table",
-	CONTACT: "Offer as a column on the Contacts table",
-	DEAL: "Offer as a column on the Deals table",
+	COMPANY: "Ofrecer como columna en la tabla de Empresas",
+	CONTACT: "Ofrecer como columna en la tabla de Contactos",
+	DEAL: "Ofrecer como columna en la tabla de Negocios",
 } satisfies Record<FieldEntity, string>;
 
 const FILTER_PLACEMENT = {
-	COMPANY: "Offer as a filter on the Companies table",
-	CONTACT: "Offer as a filter on the Contacts table",
-	DEAL: "Offer as a filter on the Deals table",
+	COMPANY: "Ofrecer como filtro en la tabla de Empresas",
+	CONTACT: "Ofrecer como filtro en la tabla de Contactos",
+	DEAL: "Ofrecer como filtro en la tabla de Negocios",
 } satisfies Record<FieldEntity, string>;
 
 export function sheetPlacement(entity: FieldEntity): string {
@@ -92,7 +93,7 @@ export function filterPlacement(entity: FieldEntity): string {
 }
 
 export const ENTITY_TABS = [
-	{ kind: "company", label: "Companies" },
-	{ kind: "contact", label: "Contacts" },
-	{ kind: "deal", label: "Deals" },
+	{ kind: "company", label: "Empresas" },
+	{ kind: "contact", label: "Contactos" },
+	{ kind: "deal", label: "Negocios" },
 ] as const satisfies readonly { kind: RecordKind; label: string }[];

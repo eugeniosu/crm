@@ -80,7 +80,7 @@ describe("conversation resume snapshots", () => {
 
 		expect(event.data).toMatchObject({
 			result: { output: null },
-			error: { message: "The agent could not complete this action." },
+			error: { message: "El agente no pudo completar esta acción." },
 		});
 		expect(JSON.stringify(event)).not.toContain("password");
 	});

@@ -15,7 +15,7 @@ describe("Supabase tool descriptions", () => {
 			prose: "Search the Supabase documentation using GraphQL.",
 			code: {
 				highlightedHTML: expect.stringContaining("shiki"),
-				label: "GraphQL schema",
+				label: "Esquema GraphQL",
 				value: [
 					"schema {",
 					"  query: RootQueryType",

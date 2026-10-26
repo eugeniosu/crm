@@ -30,10 +30,10 @@ export function SetupPromptButton({ location }: { location: CtaLocation }) {
 			variant="outline"
 			size="xl"
 			onClick={copy}
-			aria-label="Copy the setup prompt"
+			aria-label="Copiar el prompt de instalación"
 		>
 			<ClaudeLogo data-icon="inline-start" className="size-4" />
-			{copied ? "Copied to clipboard" : "Copy the setup prompt"}
+			{copied ? "Copiado al portapapeles" : "Copiar el prompt de instalación"}
 			{copied ? (
 				<Checkmark
 					data-icon="inline-end"

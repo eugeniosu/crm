@@ -25,7 +25,7 @@ export function ChatThread({
 	suggestions,
 	notice,
 	busy = false,
-	label = "Messages",
+	label = "Mensajes",
 }: {
 	size: ChatThreadSize;
 	children?: ReactNode;

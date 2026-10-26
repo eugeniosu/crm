@@ -69,7 +69,7 @@ export class FieldsService {
 			include: WITH_OPTIONS,
 		});
 
-		if (!definition) throw new NotFoundException("That field does not exist.");
+		if (!definition) throw new NotFoundException("Ese campo no existe.");
 
 		return serializeField(definition);
 	}
@@ -78,7 +78,9 @@ export class FieldsService {
 		const key = fieldKeyFromLabel(input.label);
 
 		if (!key) {
-			throw new BadRequestException("That label does not make a usable key.");
+			throw new BadRequestException(
+				"Esa etiqueta no genera una clave utilizable.",
+			);
 		}
 
 		const taken = await this.db.fieldDefinition.findUnique({
@@ -87,11 +89,13 @@ export class FieldsService {
 		});
 
 		if (taken) {
-			throw new ConflictException(`There is already a field called "${key}".`);
+			throw new ConflictException(`Ya existe un campo llamado "${key}".`);
 		}
 
 		if (usesOptions(input.type) && input.options.length === 0) {
-			throw new BadRequestException("A select needs at least one option.");
+			throw new BadRequestException(
+				"Una lista de selección necesita al menos una opción.",
+			);
 		}
 
 		const last = await this.db.fieldDefinition.findFirst({
@@ -148,7 +152,7 @@ export class FieldsService {
 			include: WITH_OPTIONS,
 		});
 
-		if (!existing) throw new NotFoundException("That field does not exist.");
+		if (!existing) throw new NotFoundException("Ese campo no existe.");
 
 		const type = data.type ?? existing.type;
 
@@ -159,7 +163,7 @@ export class FieldsService {
 
 			if (values > 0) {
 				throw new ConflictException(
-					"This field already holds values, so its type cannot change. Archive it and make a new one.",
+					"Este campo ya tiene valores, así que no se puede cambiar su tipo. Archívalo y crea uno nuevo.",
 				);
 			}
 		}
@@ -169,7 +173,9 @@ export class FieldsService {
 			: existing.options.filter((option) => option.archivedAt === null).length;
 
 		if (usesOptions(type) && optionCount === 0) {
-			throw new BadRequestException("A select needs at least one option.");
+			throw new BadRequestException(
+				"Una lista de selección necesita al menos una opción.",
+			);
 		}
 
 		const definition = await this.db.$transaction(async (tx) => {
@@ -247,7 +253,7 @@ export class FieldsService {
 
 		if (owned.length !== input.ids.length) {
 			throw new BadRequestException(
-				"That order names a field which is not on this record type.",
+				"Ese orden menciona un campo que no está en este tipo de registro.",
 			);
 		}
 
@@ -313,11 +319,11 @@ export class FieldsService {
 			},
 		});
 
-		if (!definition) throw new NotFoundException("That field does not exist.");
+		if (!definition) throw new NotFoundException("Ese campo no existe.");
 
 		if (!definition.agentFilled || definition.archivedAt !== null) {
 			throw new BadRequestException(
-				"Your agents do not fill this field, so there is nothing to run.",
+				"Tus agentes no completan este campo, así que no hay nada que ejecutar.",
 			);
 		}
 
@@ -399,7 +405,7 @@ export class FieldsService {
 			select: { entity: true },
 		});
 
-		if (!definition) throw new NotFoundException("That field does not exist.");
+		if (!definition) throw new NotFoundException("Ese campo no existe.");
 
 		const column = recordColumn(definition.entity);
 
@@ -640,7 +646,7 @@ export class FieldsService {
 			cause instanceof PrismaNamespace.PrismaClientKnownRequestError &&
 			cause.code === "P2025"
 		) {
-			throw new NotFoundException("That field does not exist.");
+			throw new NotFoundException("Ese campo no existe.");
 		}
 
 		throw cause;

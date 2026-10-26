@@ -62,7 +62,7 @@ export function ChatReferenceChip({
 				{identity}
 				{onRemove ? (
 					<TokenFieldAction
-						aria-label={`Remove ${resource.label}`}
+						aria-label={`Quitar ${resource.label}`}
 						onClick={onRemove}
 					>
 						<Icon icon={Close} className="size-3" />
@@ -78,7 +78,7 @@ export function ChatReferenceChip({
 			{onRemove ? (
 				<button
 					type="button"
-					aria-label={`Remove ${resource.label}`}
+					aria-label={`Quitar ${resource.label}`}
 					onClick={onRemove}
 					className="flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/60"
 				>
@@ -167,7 +167,7 @@ export function ChatAttachmentChip({
 				<AttachmentActions>
 					<AttachmentAction
 						type="button"
-						aria-label={`Remove ${attachment.name}`}
+						aria-label={`Quitar ${attachment.name}`}
 						onClick={onRemove}
 					>
 						<Icon icon={Close} />
@@ -195,7 +195,7 @@ export function ChatCommandChip({
 				<Icon icon={icon} className="size-3.5" />
 				<span className="font-medium">{label}</span>
 				{onRemove ? (
-					<TokenFieldAction aria-label={`Remove ${label}`} onClick={onRemove}>
+					<TokenFieldAction aria-label={`Quitar ${label}`} onClick={onRemove}>
 						<Icon icon={Close} className="size-3" />
 					</TokenFieldAction>
 				) : null}
@@ -210,7 +210,7 @@ export function ChatCommandChip({
 			{onRemove ? (
 				<button
 					type="button"
-					aria-label={`Remove ${label}`}
+					aria-label={`Quitar ${label}`}
 					onClick={onRemove}
 					className="-mr-1 flex size-5 items-center justify-center rounded-sm outline-none hover:bg-primary-foreground/15 focus-visible:ring-2 focus-visible:ring-primary-foreground/60"
 				>

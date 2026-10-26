@@ -15,7 +15,7 @@ export function GitHubStarButton({ location }: { location: CtaLocation }) {
 				onClick={() => captureLanding("github_star_clicked", location)}
 			>
 				<GitHubLogo data-icon="inline-start" className="size-[15px]" />
-				Star on GitHub
+				Dar una estrella en GitHub
 				<span aria-hidden="true" className="h-4 w-px shrink-0 bg-border" />
 				<span
 					data-icon="inline-end"

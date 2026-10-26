@@ -220,7 +220,7 @@ export class DealsService {
 		});
 
 		if (!deal) {
-			throw new NotFoundException(`No deal with id ${id}.`);
+			throw new NotFoundException(`No existe un negocio con id ${id}.`);
 		}
 
 		const {
@@ -338,7 +338,7 @@ export class DealsService {
 			});
 
 			if (!current) {
-				throw new NotFoundException(`No deal with id ${id}.`);
+				throw new NotFoundException(`No existe un negocio con id ${id}.`);
 			}
 
 			const amount =
@@ -421,7 +421,7 @@ export class DealsService {
 
 				if (!row) {
 					if (guard) return null;
-					throw new NotFoundException(`No deal with id ${id}.`);
+					throw new NotFoundException(`No existe un negocio con id ${id}.`);
 				}
 				if (
 					guard &&
@@ -484,7 +484,7 @@ export class DealsService {
 			`;
 
 			if (!deal) {
-				throw new NotFoundException(`No deal with id ${input.id}.`);
+				throw new NotFoundException(`No existe un negocio con id ${input.id}.`);
 			}
 
 			if (deal.stage === input.stage) {
@@ -497,7 +497,7 @@ export class DealsService {
 			}
 			if (LOSING.has(input.stage) && !closedReason) {
 				throw new BadRequestException(
-					"Say why it was lost — a closed-lost deal with no reason teaches nobody anything.",
+					"Indica por qué se perdió: un negocio cerrado perdido sin motivo no le enseña nada a nadie.",
 				);
 			}
 
@@ -583,7 +583,7 @@ export class DealsService {
 		});
 
 		if (!deal) {
-			throw new NotFoundException(`No deal with id ${dealId}.`);
+			throw new NotFoundException(`No existe un negocio con id ${dealId}.`);
 		}
 
 		return this.db.contact.findMany({
@@ -605,12 +605,14 @@ export class DealsService {
 		});
 
 		if (!contact) {
-			throw new NotFoundException(`No contact with id ${input.contactId}.`);
+			throw new NotFoundException(
+				`No existe un contacto con id ${input.contactId}.`,
+			);
 		}
 
 		if (contact.companyId !== company.id) {
 			throw new BadRequestException(
-				`That contact does not work at ${company.name}.`,
+				`Ese contacto no trabaja en ${company.name}.`,
 			);
 		}
 
@@ -642,7 +644,7 @@ export class DealsService {
 		});
 
 		if (count === 0) {
-			throw new NotFoundException("That contact is not on this deal.");
+			throw new NotFoundException("Ese contacto no está en este negocio.");
 		}
 
 		this.logger.log({
@@ -663,7 +665,7 @@ export class DealsService {
 		});
 
 		if (count === 0) {
-			throw new NotFoundException("That contact is not on this deal.");
+			throw new NotFoundException("Ese contacto no está en este negocio.");
 		}
 
 		return { dealId: input.dealId, contactId: input.contactId, role };
@@ -701,7 +703,7 @@ export class DealsService {
 
 		if (LOSING.has(input.stage) && !closedReason) {
 			throw new BadRequestException(
-				"Say why they were lost — a closed-lost deal with no reason teaches nobody anything.",
+				"Indica por qué se perdieron: los negocios cerrados perdidos sin motivo no le enseñan nada a nadie.",
 			);
 		}
 
@@ -729,7 +731,7 @@ export class DealsService {
 		});
 
 		if (!deal) {
-			throw new NotFoundException(`No deal with id ${dealId}.`);
+			throw new NotFoundException(`No existe un negocio con id ${dealId}.`);
 		}
 
 		return deal.company;
@@ -832,7 +834,7 @@ export class DealsService {
 			cause instanceof PrismaNamespace.PrismaClientKnownRequestError &&
 			cause.code === "P2025"
 		) {
-			throw new NotFoundException(`No deal with id ${id}.`);
+			throw new NotFoundException(`No existe un negocio con id ${id}.`);
 		}
 		return this.translateRelations(cause);
 	}
@@ -842,9 +844,7 @@ export class DealsService {
 			cause instanceof PrismaNamespace.PrismaClientKnownRequestError &&
 			(cause.code === "P2003" || cause.code === "P2025")
 		) {
-			throw new BadRequestException(
-				"That company or owner does not exist any more.",
-			);
+			throw new BadRequestException("Esa empresa o responsable ya no existe.");
 		}
 		throw cause;
 	}
@@ -885,7 +885,7 @@ function parseDate(value: string | null | undefined): Date | null {
 	if (value === null || value === undefined || value === "") return null;
 	const date = new Date(value);
 	if (Number.isNaN(date.getTime())) {
-		throw new BadRequestException(`"${value}" is not a date.`);
+		throw new BadRequestException(`"${value}" no es una fecha.`);
 	}
 	return date;
 }

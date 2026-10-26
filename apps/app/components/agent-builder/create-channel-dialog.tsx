@@ -40,7 +40,7 @@ export function CreateChannelDialog({
 				await onCreated();
 				setOpen(false);
 				setName("");
-				toast.success("Creating the channel in Slack.");
+				toast.success("Creando el canal en Slack.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -55,26 +55,26 @@ export function CreateChannelDialog({
 
 			<DialogContent className="sm:max-w-(--container-narrow)">
 				<DialogHeader>
-					<DialogTitle>Create a channel</DialogTitle>
+					<DialogTitle>Crear un canal</DialogTitle>
 					<DialogDescription>
-						Comp AI makes it in Slack and joins it. You can put the agent in it
-						straight after.
+						Comp AI lo crea en Slack y se une. Después puedes poner al agente en
+						él.
 					</DialogDescription>
 				</DialogHeader>
 
 				<div className="flex flex-col gap-4">
 					<div className="flex flex-col gap-1.5">
-						<Label htmlFor="channel-name">Name</Label>
+						<Label htmlFor="channel-name">Nombre</Label>
 						<Input
 							id="channel-name"
 							onChange={(event) => setName(event.target.value)}
-							placeholder="renewals"
+							placeholder="renovaciones"
 							value={name}
 						/>
 						<p className="text-muted-foreground text-xs">
 							{slug && !valid
-								? "Use lowercase letters, numbers and dashes."
-								: `Slack will call it #${slug || "renewals"}.`}
+								? "Usa letras minúsculas, números y guiones."
+								: `En Slack se llamará #${slug || "renovaciones"}.`}
 						</p>
 					</div>
 
@@ -85,7 +85,7 @@ export function CreateChannelDialog({
 							onCheckedChange={setIsPrivate}
 						/>
 						<Label htmlFor="channel-private">
-							Private. Only people you invite can see it.
+							Privado. Solo lo ven las personas que invites.
 						</Label>
 					</div>
 				</div>
@@ -96,13 +96,13 @@ export function CreateChannelDialog({
 						onClick={() => setOpen(false)}
 						variant="outline"
 					>
-						Cancel
+						Cancelar
 					</Button>
 					<Button
 						disabled={!valid || create.isPending}
 						onClick={() => create.mutate({ name: slug, isPrivate })}
 					>
-						{create.isPending ? "Creating…" : "Create channel"}
+						{create.isPending ? "Creando…" : "Crear canal"}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

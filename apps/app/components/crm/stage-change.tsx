@@ -135,7 +135,7 @@ export function CloseReasonDialog() {
 	};
 
 	const setStage = useStageMutation(() => {
-		toast.success("Deal closed.");
+		toast.success("Negocio cerrado.");
 		close();
 	});
 
@@ -147,12 +147,14 @@ export function CloseReasonDialog() {
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>
-						{stage === "CLOSED_LOST" ? "Close as lost" : "Mark as unqualified"}
+						{stage === "CLOSED_LOST"
+							? "Cerrar como perdido"
+							: "Marcar como no calificado"}
 					</DialogTitle>
 					<DialogDescription>
 						{stage === "CLOSED_LOST"
-							? "What did we lose it to? This is the only place that answer gets recorded."
-							: "Why is this not a fit? It goes on the timeline so nobody re-runs the same deal."}
+							? "¿Con quién lo perdimos? Este es el único lugar donde queda registrada esa respuesta."
+							: "¿Por qué no calza? Queda en la cronología para que nadie repita el mismo negocio."}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -166,12 +168,12 @@ export function CloseReasonDialog() {
 					}}
 				>
 					<Field>
-						<FieldLabel htmlFor={reasonId}>Reason</FieldLabel>
+						<FieldLabel htmlFor={reasonId}>Motivo</FieldLabel>
 						<Textarea
 							id={reasonId}
 							value={reason}
 							onChange={(event) => setReason(event.target.value)}
-							placeholder="Went with an incumbent vendor"
+							placeholder="Se quedó con su proveedor actual"
 							rows={3}
 						/>
 					</Field>
@@ -184,10 +186,10 @@ export function CloseReasonDialog() {
 						disabled={setStage.isPending || reason.trim() === ""}
 					>
 						{setStage.isPending ? <Spinner /> : null}
-						Save
+						Guardar
 					</Button>
 					<Button variant="outline" onClick={close}>
-						Cancel
+						Cancelar
 					</Button>
 				</DialogFooter>
 			</DialogContent>

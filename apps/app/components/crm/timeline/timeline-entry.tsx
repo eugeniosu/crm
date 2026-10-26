@@ -78,7 +78,7 @@ export function TimelineEntry({
 		return (
 			<li className="flex gap-2.5 py-2">
 				<span className="mt-0.5 shrink-0 text-muted-foreground">
-					<Checkbox checked={done} disabled aria-label="Task status" />
+					<Checkbox checked={done} disabled aria-label="Estado de la tarea" />
 				</span>
 				<div className="min-w-0 flex-1">
 					<TaskEditor task={entry} onClose={closeEditor} />
@@ -94,8 +94,8 @@ export function TimelineEntry({
 	const synced = entry.meta?.synced === true;
 	const author = synced
 		? entry.emailThread
-			? "via Gmail"
-			: "via Calendar"
+			? "vía Gmail"
+			: "vía Calendar"
 		: entry.createdBy.name;
 
 	const headline = change
@@ -118,7 +118,7 @@ export function TimelineEntry({
 					<Checkbox
 						checked={done}
 						disabled={complete.isPending}
-						aria-label={done ? "Mark as not done" : "Mark as done"}
+						aria-label={done ? "Marcar como pendiente" : "Marcar como hecha"}
 						onCheckedChange={(checked) =>
 							complete.mutate({ id: entry.id, completed: checked === true })
 						}
@@ -179,7 +179,7 @@ export function TimelineEntry({
 							onClick={() => setEditing(true)}
 						>
 							<Icon icon={Edit} />
-							<span className="sr-only">Edit task</span>
+							<span className="sr-only">Editar tarea</span>
 						</Button>
 					) : null}
 				</div>
@@ -209,7 +209,7 @@ export function TimelineEntry({
 								tone={overdue ? "error" : "info"}
 								label={
 									<>
-										{overdue ? "Overdue" : "Due"}{" "}
+										{overdue ? "Atrasada" : "Vence"}{" "}
 										<LocalDay date={entry.dueAt} />
 									</>
 								}

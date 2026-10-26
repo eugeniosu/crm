@@ -326,7 +326,7 @@ export function InlineSelectField({
 	options,
 	onSave,
 	saving = false,
-	placeholder = "None",
+	placeholder = "Ninguno",
 }: {
 	label: string;
 	value: string;

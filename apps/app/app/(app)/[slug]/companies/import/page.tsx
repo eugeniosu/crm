@@ -13,7 +13,7 @@ import { workspaceUrl } from "@/lib/workspace-url";
 import { ImportWizard } from "./import-wizard";
 
 export const metadata: Metadata = {
-	title: "Import Companies",
+	title: "Importar empresas",
 };
 
 export default function ImportCompaniesPage({
@@ -23,9 +23,10 @@ export default function ImportCompaniesPage({
 		<PageShell>
 			<PageShellHeader>
 				<PageShellHeading>
-					<PageShellTitle>Import companies</PageShellTitle>
+					<PageShellTitle>Importar empresas</PageShellTitle>
 					<PageShellDescription>
-						Upload a CSV file and match its columns to company fields.
+						Sube un archivo CSV y asocia sus columnas a los campos de la
+						empresa.
 					</PageShellDescription>
 				</PageShellHeading>
 			</PageShellHeader>

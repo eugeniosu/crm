@@ -32,43 +32,43 @@ export type TimelineAnchor =
 	| { dealId: string };
 
 const TAB_LABELS = {
-	all: "All",
-	notes: "Notes",
-	email: "Email",
-	meetings: "Meetings",
-	upcoming: "Upcoming",
-	done: "Done",
+	all: "Todo",
+	notes: "Notas",
+	email: "Correos",
+	meetings: "Reuniones",
+	upcoming: "Próximas",
+	done: "Hechas",
 } satisfies Record<TimelineTab, string>;
 
 const EMPTY_STATES = {
 	all: {
-		title: "Nothing has happened yet",
+		title: "Todavía no ha pasado nada",
 		description:
-			"Calls, notes, emails and meetings all land here. Log the first one above, or wait for Gmail and Calendar to sync.",
+			"Las llamadas, notas, correos y reuniones llegan aquí. Registra la primera arriba o espera a que se sincronicen Gmail y Calendar.",
 	},
 	notes: {
-		title: "No notes",
+		title: "Sin notas",
 		description:
-			"Notes are what you write down for the next person to read — what they care about, who else is involved, what you promised.",
+			"Las notas son lo que dejas escrito para la próxima persona: qué le importa al cliente, quién más participa, qué prometiste.",
 	},
 	email: {
-		title: "No email",
+		title: "Sin correos",
 		description:
-			"Threads appear here as they are synced from Gmail. Nothing from before this mailbox was connected is imported.",
+			"Los hilos aparecen aquí a medida que se sincronizan desde Gmail. No se importa nada anterior a la conexión de este buzón.",
 	},
 	meetings: {
-		title: "No meetings",
+		title: "Sin reuniones",
 		description:
-			"Calendar events with someone from this record on them show up here, past and upcoming.",
+			"Aquí aparecen los eventos del calendario en que participa alguien de este registro, pasados y próximos.",
 	},
 	upcoming: {
-		title: "Nothing outstanding",
+		title: "Nada pendiente",
 		description:
-			"Tasks you have not finished appear here, and at the top of the All tab until they are done.",
+			"Las tareas que no has terminado aparecen aquí y al inicio de la pestaña Todo hasta que las completes.",
 	},
 	done: {
-		title: "Nothing finished yet",
-		description: "Tasks move here once you tick them off.",
+		title: "Todavía no hay nada terminado",
+		description: "Las tareas pasan aquí cuando las marcas como hechas.",
 	},
 } satisfies Record<TimelineTab, { title: string; description: string }>;
 
@@ -81,7 +81,7 @@ const EMPTY_ICONS = {
 	done: Checkmark,
 } satisfies Record<TimelineTab, CarbonIcon>;
 
-const dayFormat = new Intl.DateTimeFormat("en-US", {
+const dayFormat = new Intl.DateTimeFormat("es-CL", {
 	weekday: "short",
 	month: "short",
 	day: "numeric",
@@ -96,8 +96,8 @@ function dayLabel(day: string, local: boolean): string {
 		: new Date(Date.now() - 86_400_000);
 	const yesterday = dayKey(yesterdayDate.toISOString(), local);
 
-	if (day === today) return "Today";
-	if (day === yesterday) return "Yesterday";
+	if (day === today) return "Hoy";
+	if (day === yesterday) return "Ayer";
 	return dayFormat.format(new Date(`${day}T00:00:00`));
 }
 
@@ -225,7 +225,7 @@ export function Timeline({ anchor }: { anchor: TimelineAnchor }) {
 				<div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-4">
 					{pinnedEntries.length > 0 ? (
 						<TimelineDay
-							label="Outstanding"
+							label="Pendientes"
 							entries={pinnedEntries}
 							anchor={anchor}
 						/>
@@ -249,7 +249,7 @@ export function Timeline({ anchor }: { anchor: TimelineAnchor }) {
 							onClick={() => history.fetchNextPage()}
 						>
 							{history.isFetchingNextPage ? <Spinner /> : null}
-							Show older
+							Ver anteriores
 						</Button>
 					) : null}
 				</div>

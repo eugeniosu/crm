@@ -216,7 +216,7 @@ function QuestionnairePrevious({
 			)}
 			{...props}
 		>
-			{children ?? "Previous"}
+			{children ?? "Anterior"}
 		</QuestionnairePrimitive.Previous>
 	);
 }
@@ -241,7 +241,7 @@ function QuestionnaireSkip({
 			)}
 			{...props}
 		>
-			{children ?? "Skip"}
+			{children ?? "Omitir"}
 		</QuestionnairePrimitive.Skip>
 	);
 }
@@ -266,7 +266,7 @@ function QuestionnaireNext({
 			)}
 			{...props}
 		>
-			{children ?? "Next"}
+			{children ?? "Siguiente"}
 		</QuestionnairePrimitive.Next>
 	);
 }
@@ -291,7 +291,7 @@ function QuestionnaireSubmit({
 			)}
 			{...props}
 		>
-			{children ?? "Submit"}
+			{children ?? "Enviar"}
 		</QuestionnairePrimitive.Submit>
 	);
 }

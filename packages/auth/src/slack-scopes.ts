@@ -11,97 +11,99 @@ export const SLACK_SCOPES: readonly SlackScope[] = [
 	{
 		scope: "users:read",
 		group: "people",
-		grant: "See the people in your workspace",
+		grant: "Ver a las personas de tu espacio de trabajo",
 		sensitive: false,
 	},
 	{
 		scope: "users:read.email",
 		group: "people",
-		grant: "See their email addresses, so it can match them to CRM records",
+		grant: "Ver sus correos, para asociarlas con los registros del CRM",
 		sensitive: true,
 	},
 	{
 		scope: "channels:read",
 		group: "read",
-		grant: "See the name and topic of every public channel",
+		grant: "Ver el nombre y el tema de cada canal público",
 		sensitive: false,
 	},
 	{
 		scope: "groups:read",
 		group: "read",
-		grant: "See private channels it has been added to",
+		grant: "Ver los canales privados a los que la agregaron",
 		sensitive: false,
 	},
 	{
 		scope: "channels:history",
 		group: "read",
-		grant: "Read messages in public channels it has been added to",
+		grant: "Leer los mensajes de los canales públicos a los que la agregaron",
 		sensitive: true,
 	},
 	{
 		scope: "groups:history",
 		group: "read",
-		grant: "Read messages in private channels it has been added to",
+		grant: "Leer los mensajes de los canales privados a los que la agregaron",
 		sensitive: false,
 	},
 	{
 		scope: "chat:write",
 		group: "send",
-		grant: "Post messages as the app",
+		grant: "Publicar mensajes como la app",
 		sensitive: false,
 	},
 	{
 		scope: "chat:write.public",
 		group: "send",
-		grant: "Post to any public channel, including ones it has not joined",
+		grant: "Publicar en cualquier canal público, incluso en los que no está",
 		sensitive: true,
 	},
 	{
 		scope: "im:write",
 		group: "send",
-		grant: "Open a direct message with a person",
+		grant: "Abrir un mensaje directo con una persona",
 		sensitive: false,
 	},
 	{
 		scope: "channels:join",
 		group: "change",
-		grant: "Join a public channel by itself",
+		grant: "Unirse sola a un canal público",
 		sensitive: true,
 	},
 	{
 		scope: "channels:manage",
 		group: "change",
-		grant: "Create public channels, and rename or archive ones it is in",
+		grant:
+			"Crear canales públicos, y renombrar o archivar los canales donde está",
 		sensitive: true,
 	},
 	{
 		scope: "groups:write",
 		group: "change",
-		grant: "Create private channels, and rename or archive ones it is in",
+		grant:
+			"Crear canales privados, y renombrar o archivar los canales donde está",
 		sensitive: true,
 	},
 	{
 		scope: "channels:write.invites",
 		group: "change",
-		grant: "Invite people to a public channel",
+		grant: "Invitar personas a un canal público",
 		sensitive: true,
 	},
 	{
 		scope: "groups:write.invites",
 		group: "change",
-		grant: "Invite people to a private channel",
+		grant: "Invitar personas a un canal privado",
 		sensitive: true,
 	},
 	{
 		scope: "conversations.connect:write",
 		group: "change",
-		grant: "Send and accept Slack Connect invitations",
+		grant: "Enviar y aceptar invitaciones de Slack Connect",
 		sensitive: true,
 	},
 	{
 		scope: "links:write",
 		group: "send",
-		grant: "Show a preview under a link it posts",
+		grant: "Mostrar una vista previa bajo los enlaces que publica",
 		sensitive: false,
 	},
 ];
@@ -117,7 +119,7 @@ export const SLACK_USER_SCOPES = [
 
 export const SLACK_USER_GRANT = {
 	scope: "slack:user-invite",
-	grant: "Add itself to a private channel on your behalf",
+	grant: "Agregarse a un canal privado en tu nombre",
 	sensitive: true,
 } as const satisfies SlackScope;
 
@@ -128,26 +130,27 @@ export const SLACK_SCOPE_GROUPS: ReadonlyArray<{
 }> = [
 	{
 		id: "people",
-		label: "People",
+		label: "Personas",
 		summary:
-			"Names and email addresses, so it can match a Slack account to a CRM record.",
+			"Nombres y correos, para asociar una cuenta de Slack con un registro del CRM.",
 	},
 	{
 		id: "read",
-		label: "Channels it can read",
+		label: "Canales que puede leer",
 		summary:
-			"Names and topics of public channels, and the messages in any channel it has been added to.",
+			"Nombres y temas de los canales públicos, y los mensajes de cualquier canal al que la agregaron.",
 	},
 	{
 		id: "send",
-		label: "Messages it can send",
+		label: "Mensajes que puede enviar",
 		summary:
-			"Post as the app, open a direct message, and preview a link it posts.",
+			"Publicar como la app, abrir mensajes directos y mostrar vistas previas de sus enlaces.",
 	},
 	{
 		id: "change",
-		label: "Channels it can change",
-		summary: "Join, create, rename, archive, and invite people to channels.",
+		label: "Canales que puede modificar",
+		summary:
+			"Unirse a canales, crearlos, renombrarlos, archivarlos e invitar personas.",
 	},
 ];
 
@@ -195,7 +198,7 @@ export function describeSlackScopes(granted: readonly string[]): SlackScope[] {
 		(scope) =>
 			known.get(scope) ?? {
 				scope,
-				grant: `An undocumented permission named ${scope}`,
+				grant: `Un permiso sin documentar llamado ${scope}`,
 				sensitive: true,
 			},
 	);

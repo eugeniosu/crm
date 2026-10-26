@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { toolLabel } from "../lib/agent-tool-display";
 
-const base = { label: "Ran a tool", pending: false };
+const base = { label: "Ejecutó una herramienta", pending: false };
 
 describe("toolLabel", () => {
 	it("names the artifact a builder file write produced", () => {
@@ -12,7 +12,7 @@ describe("toolLabel", () => {
 				input: { path: "agent/instructions.md" },
 				pending: true,
 			}),
-		).toBe("Writing instructions");
+		).toBe("Escribiendo las instrucciones");
 	});
 
 	it("switches to the past tense once the write finished", () => {
@@ -22,7 +22,7 @@ describe("toolLabel", () => {
 				tool: "write_agent_file",
 				input: { path: "agent/manifest.json" },
 			}),
-		).toBe("Wrote the manifest");
+		).toBe("Escribió el manifiesto");
 	});
 
 	it("does not expose an untrusted artifact path", () => {
@@ -32,7 +32,7 @@ describe("toolLabel", () => {
 				tool: "write_agent_file",
 				input: { path: "agent/other.md" },
 			}),
-		).toBe("Wrote a file");
+		).toBe("Escribió un archivo");
 	});
 
 	it("does not expose an untrusted draft name", () => {
@@ -42,7 +42,7 @@ describe("toolLabel", () => {
 				tool: "save_agent_draft",
 				input: { name: "Collections nudge" },
 			}),
-		).toBe("Saved draft");
+		).toBe("Guardó el borrador");
 	});
 
 	it("uses a trusted catalog name for a connected tool", () => {
@@ -53,7 +53,7 @@ describe("toolLabel", () => {
 				input: { title: "Untrusted title" },
 				pending: true,
 			}),
-		).toBe("Using Linear");
+		).toBe("Usando Linear");
 	});
 
 	it("hides unknown provider and tool names", () => {
@@ -63,7 +63,7 @@ describe("toolLabel", () => {
 				tool: "fake-provider__delete_everything",
 				input: null,
 			}),
-		).toBe("Used a connected tool");
+		).toBe("Usó una herramienta conectada");
 	});
 
 	it("describes a connection call with trusted catalog data", () => {
@@ -74,7 +74,7 @@ describe("toolLabel", () => {
 				input: { connection: "linear", tool: "create_issue" },
 				pending: true,
 			}),
-		).toBe("Asking Linear to create issue");
+		).toBe("Usando Linear (create issue)");
 	});
 
 	it("hides an unknown connection call", () => {
@@ -84,18 +84,18 @@ describe("toolLabel", () => {
 				tool: "connection_execute",
 				input: { connection: "unknown", tool: "delete_everything" },
 			}),
-		).toBe("Used a connected tool");
+		).toBe("Usó una herramienta conectada");
 	});
 
 	it("keeps the generic label when the tool has no mapping", () => {
 		expect(
 			toolLabel({ ...base, tool: "web_search", input: { query: "acme" } }),
-		).toBe("Ran a tool");
+		).toBe("Ejecutó una herramienta");
 	});
 
 	it("uses a trusted generic file label when the input is missing", () => {
 		expect(toolLabel({ ...base, tool: "write_agent_file", input: null })).toBe(
-			"Wrote a file",
+			"Escribió un archivo",
 		);
 	});
 });

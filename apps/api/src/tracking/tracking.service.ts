@@ -144,7 +144,9 @@ export class TrackingService {
 		await this.assertCanManage(userId);
 
 		if (!COOKIE_LIFETIMES.some((entry) => entry.days === days)) {
-			throw new BadRequestException("That is not a cookie lifetime we offer.");
+			throw new BadRequestException(
+				"Esa no es una duración de cookie que ofrecemos.",
+			);
 		}
 
 		await this.db.appSetting.upsert({
@@ -165,7 +167,7 @@ export class TrackingService {
 		const host = normalizeHost(input.host);
 		if (!host) {
 			throw new BadRequestException(
-				"That is not a domain. Try something like acme.com.",
+				"Eso no es un dominio. Prueba con algo como acme.com.",
 			);
 		}
 
@@ -188,7 +190,7 @@ export class TrackingService {
 				error instanceof Prisma.PrismaClientKnownRequestError &&
 				error.code === "P2002"
 			) {
-				throw new BadRequestException(`${host} is already on the list.`);
+				throw new BadRequestException(`${host} ya está en la lista.`);
 			}
 
 			throw error;
@@ -205,7 +207,7 @@ export class TrackingService {
 				error instanceof Prisma.PrismaClientKnownRequestError &&
 				error.code === "P2025"
 			) {
-				throw new NotFoundException("That domain is already gone.");
+				throw new NotFoundException("Ese dominio ya no existe.");
 			}
 
 			throw error;
@@ -231,14 +233,14 @@ export class TrackingService {
 
 		if (!trackingReady(row?.trackingLimitToDomains ?? true, domains)) {
 			throw new BadRequestException(
-				"Add the domain your website runs on first — there is no script to find yet.",
+				"Primero agrega el dominio de tu sitio web: todavía no hay un script que buscar.",
 			);
 		}
 
 		const target = absolute(url);
 		if (!target) {
 			throw new BadRequestException(
-				"That is not a URL. Try something like acme.com/pricing.",
+				"Eso no es una URL. Prueba con algo como acme.com/pricing.",
 			);
 		}
 
@@ -253,8 +255,8 @@ export class TrackingService {
 				status: "unreachable",
 				host,
 				detail: fetched
-					? `The page answered ${fetched.response.status}.`
-					: "We could not reach that page.",
+					? `La página respondió ${fetched.response.status}.`
+					: "No se pudo acceder a esa página.",
 			};
 		}
 
@@ -475,7 +477,7 @@ export class TrackingService {
 	private async assertCanManage(userId: string): Promise<void> {
 		if (!canManageTracking(await this.roleOf(userId))) {
 			throw new ForbiddenException(
-				"Only an owner or an admin can change tracking.",
+				"Solo un propietario o un administrador puede cambiar el seguimiento.",
 			);
 		}
 	}

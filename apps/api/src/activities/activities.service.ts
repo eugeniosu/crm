@@ -241,7 +241,7 @@ export class ActivitiesService {
 	}
 
 	async update(input: ActivityUpdateInput): Promise<ActivityEntry> {
-		await this.requireTask(input.id, "Only tasks can be edited.");
+		await this.requireTask(input.id, "Solo se pueden editar tareas.");
 
 		const updated = await this.db.activity.update({
 			where: { id: input.id },
@@ -253,7 +253,7 @@ export class ActivitiesService {
 	}
 
 	async complete(id: string, completed: boolean): Promise<ActivityEntry> {
-		await this.requireTask(id, "Only tasks can be completed.");
+		await this.requireTask(id, "Solo se pueden completar tareas.");
 
 		const updated = await this.db.activity.update({
 			where: { id },
@@ -423,7 +423,7 @@ export class ActivitiesService {
 		});
 
 		if (!activity) {
-			throw new NotFoundException(`No activity with id ${id}.`);
+			throw new NotFoundException(`No existe una actividad con id ${id}.`);
 		}
 
 		if (activity.type !== ActivityType.TASK) {
@@ -438,7 +438,7 @@ export class ActivitiesService {
 		if (input.contactId) return { contactId: input.contactId };
 		if (input.companyId) return { companyId: input.companyId };
 		throw new BadRequestException(
-			"A timeline needs a company, a contact or a deal.",
+			"Una línea de tiempo necesita una empresa, un contacto o un negocio.",
 		);
 	}
 
@@ -453,7 +453,9 @@ export class ActivitiesService {
 				select: { companyId: true },
 			});
 			if (!deal) {
-				throw new NotFoundException(`No deal with id ${input.dealId}.`);
+				throw new NotFoundException(
+					`No existe un negocio con id ${input.dealId}.`,
+				);
 			}
 			return deal.companyId;
 		}
@@ -464,7 +466,9 @@ export class ActivitiesService {
 				select: { companyId: true },
 			});
 			if (!contact) {
-				throw new NotFoundException(`No contact with id ${input.contactId}.`);
+				throw new NotFoundException(
+					`No existe un contacto con id ${input.contactId}.`,
+				);
 			}
 			return contact.companyId;
 		}
@@ -540,7 +544,7 @@ function parseDate(value: string | null | undefined): Date | null {
 	if (value === null || value === undefined || value === "") return null;
 	const date = new Date(value);
 	if (Number.isNaN(date.getTime())) {
-		throw new BadRequestException(`"${value}" is not a date.`);
+		throw new BadRequestException(`"${value}" no es una fecha.`);
 	}
 	return date;
 }

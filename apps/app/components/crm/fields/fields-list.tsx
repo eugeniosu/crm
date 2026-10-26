@@ -72,12 +72,12 @@ function summaryOf(field: Field): string {
 		parts.push(
 			field.agentBrief ??
 				(field.options.length > 0
-					? `${field.options.length} options`
+					? `${field.options.length} opciones`
 					: field.label),
 		);
 	} else {
 		parts.push(MANUAL_ONLY);
-		if (field.required) parts.push("required");
+		if (field.required) parts.push("obligatorio");
 	}
 
 	if (field.showOnTable) parts.push(TABLE_NOTE);
@@ -357,19 +357,19 @@ export function FieldsList({
 													<Button variant="ghost" size="icon-xs">
 														<Icon icon={OverflowMenuVertical} />
 														<span className="sr-only">
-															More for {field.label}
+															Más opciones de {field.label}
 														</span>
 													</Button>
 												</DropdownMenuTrigger>
 												<DropdownMenuContent align="end">
 													<DropdownMenuItem onSelect={() => onEdit(field.key)}>
-														Edit
+														Editar
 													</DropdownMenuItem>
 													<DropdownMenuSeparator />
 													<DropdownMenuItem
 														onSelect={() => archive.mutate({ id: field.id })}
 													>
-														Archive
+														Archivar
 													</DropdownMenuItem>
 												</DropdownMenuContent>
 											</DropdownMenu>
@@ -398,7 +398,7 @@ export function FieldsList({
 												size="xs"
 												onClick={() => restore.mutate({ id: field.id })}
 											>
-												Restore
+												Restaurar
 											</Button>
 										</li>
 									))}

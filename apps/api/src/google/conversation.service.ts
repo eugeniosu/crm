@@ -48,7 +48,9 @@ export class ConversationService {
 		});
 
 		if (!thread) {
-			throw new NotFoundException(`No email thread with id ${threadId}.`);
+			throw new NotFoundException(
+				`No existe un hilo de correo con id ${threadId}.`,
+			);
 		}
 
 		const faces = await this.facesFor(
@@ -138,7 +140,9 @@ export class ConversationService {
 		});
 
 		if (!event) {
-			throw new NotFoundException(`No calendar event with id ${eventId}.`);
+			throw new NotFoundException(
+				`No existe un evento de calendario con id ${eventId}.`,
+			);
 		}
 
 		return {

@@ -107,15 +107,19 @@ describe("eventsOf", () => {
 
 describe("record context", () => {
 	it("asks about the thing you are actually looking at", () => {
-		expect(recordCopy("contact").title).toBe("Ask about this person");
-		expect(recordCopy("company").title).toBe("Ask about this company");
-		expect(recordCopy("deal").title).toBe("Ask about this deal");
+		expect(recordCopy("contact").title).toBe("Pregunta sobre esta persona");
+		expect(recordCopy("company").title).toBe("Pregunta sobre esta empresa");
+		expect(recordCopy("deal").title).toBe("Pregunta sobre este negocio");
 	});
 
 	it("offers questions that suit the record", () => {
-		expect(recordCopy("company").suggestions.join(" ")).not.toContain("person");
-		expect(recordCopy("deal").suggestions.join(" ")).not.toContain("person");
-		expect(recordCopy("contact").suggestions[0]).toBe("Who is this person?");
+		expect(recordCopy("company").suggestions.join(" ")).not.toContain(
+			"persona",
+		);
+		expect(recordCopy("deal").suggestions.join(" ")).not.toContain("persona");
+		expect(recordCopy("contact").suggestions[0]).toBe(
+			"¿Quién es esta persona?",
+		);
 	});
 
 	it("tells the agent which record it is on", () => {
@@ -155,7 +159,7 @@ describe("the panel", () => {
 	});
 
 	it("offers a way out of a thread that has ended", () => {
-		expect(source()).toContain("Start a new conversation");
+		expect(source()).toContain("Iniciar una conversación nueva");
 		expect(source()).toContain("onClick={onNewThread}");
 	});
 });

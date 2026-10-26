@@ -104,7 +104,7 @@ export class CurrencyService {
 	private async requireManager(userId: string): Promise<void> {
 		if (!canManageCurrency(await workspaceRoleOf(userId))) {
 			throw new ForbiddenException(
-				"Only an owner or an admin can change how money is reported.",
+				"Solo un propietario o un administrador puede cambiar cómo se reportan los montos.",
 			);
 		}
 	}
@@ -150,7 +150,7 @@ export class CurrencyService {
 
 		if (quoteCurrency === baseCurrency) {
 			throw new BadRequestException(
-				`${baseCurrency} is the reporting currency — its rate is always 1.`,
+				`${baseCurrency} es la moneda de reporte: su tasa siempre es 1.`,
 			);
 		}
 
@@ -214,7 +214,9 @@ export class CurrencyService {
 		const refresh = await this.rates.refresh();
 
 		if (!refresh.ok) {
-			throw new BadRequestException(refresh.reason ?? "Could not fetch rates.");
+			throw new BadRequestException(
+				refresh.reason ?? "No se pudieron obtener las tasas.",
+			);
 		}
 
 		await this.conversion.fillMissing();

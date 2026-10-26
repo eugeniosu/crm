@@ -82,27 +82,28 @@ export function parseCsv(text: string): ParsedCsv {
 	const records = parseRecords(text.replace(/^\uFEFF/, ""));
 	const [headerRecord, ...dataRecords] = records;
 	if (!headerRecord || headerRecord.every((field) => field.trim() === "")) {
-		throw new Error("The CSV file has no headers.");
+		throw new Error("El archivo CSV no tiene encabezados.");
 	}
 
 	const headers = headerRecord.map((header) => header.trim());
 	for (const [index, header] of headers.entries()) {
-		if (header === "") throw new Error(`Column ${index + 1} needs a header.`);
+		if (header === "")
+			throw new Error(`La columna ${index + 1} necesita un encabezado.`);
 	}
 
 	if (dataRecords.length === 0) {
-		throw new Error("The CSV file has no company rows.");
+		throw new Error("El archivo CSV no tiene filas de empresas.");
 	}
 	if (dataRecords.length > COMPANY_IMPORT.maxRows) {
 		throw new Error(
-			`The CSV file has ${dataRecords.length} rows. The limit is ${COMPANY_IMPORT.maxRows}.`,
+			`El archivo CSV tiene ${dataRecords.length} filas. El límite es ${COMPANY_IMPORT.maxRows}.`,
 		);
 	}
 
 	for (const [index, row] of dataRecords.entries()) {
 		if (row.length !== headers.length) {
 			throw new Error(
-				`Row ${index + 2} has ${row.length} columns. The header has ${headers.length}.`,
+				`La fila ${index + 2} tiene ${row.length} columnas. El encabezado tiene ${headers.length}.`,
 			);
 		}
 	}
@@ -126,17 +127,19 @@ export function buildImportRows(
 	mapping: CompanyImportMapping,
 ): CompanyImportRow[] {
 	if (mapping.length !== parsed.headers.length) {
-		throw new Error("Map every CSV column before importing.");
+		throw new Error("Asocia cada columna del CSV antes de importar.");
 	}
 
 	const mappedFields = mapping.filter(
 		(field): field is CompanyImportField => field !== null,
 	);
 	if (!mappedFields.includes("name")) {
-		throw new Error("Map one CSV column to Name before importing.");
+		throw new Error("Asocia una columna del CSV a Nombre antes de importar.");
 	}
 	if (new Set(mappedFields).size !== mappedFields.length) {
-		throw new Error("Each company field can use only one CSV column.");
+		throw new Error(
+			"Cada campo de la empresa solo puede usar una columna del CSV.",
+		);
 	}
 
 	const rows = parsed.rows.map((row) => {
@@ -157,7 +160,7 @@ export function reduceImportWizard(
 	if (action.type === "file-loaded") {
 		return {
 			step: "map",
-			message: `${action.parsed.rows.length} company rows are ready to map.`,
+			message: `${action.parsed.rows.length} filas de empresas están listas para asociar.`,
 			parsed: action.parsed,
 			mapping: action.mapping,
 		};
@@ -171,7 +174,7 @@ export function reduceImportWizard(
 		return { ...state, mapping, error: undefined };
 	}
 	if (action.type === "back") {
-		return { step: "upload", message: "Choose a CSV file." };
+		return { step: "upload", message: "Elige un archivo CSV." };
 	}
 	if (action.type === "failed") {
 		return state.step === "result"
@@ -181,12 +184,12 @@ export function reduceImportWizard(
 	if (action.type === "import-finished") {
 		return {
 			step: "result",
-			message: `${action.result.created} companies imported.`,
+			message: `${action.result.created} empresas importadas.`,
 			result: action.result,
 		};
 	}
 	if (action.type === "restart") {
-		return { step: "upload", message: "Choose a CSV file." };
+		return { step: "upload", message: "Elige un archivo CSV." };
 	}
 	return state;
 }
@@ -225,11 +228,13 @@ function parseRecords(text: string): string[][] {
 			character !== "\n" &&
 			character !== "\r"
 		) {
-			throw new Error(`Row ${rowNumber} has text after a quoted field.`);
+			throw new Error(
+				`La fila ${rowNumber} tiene texto después de un campo entre comillas.`,
+			);
 		}
 		if (character === '"') {
 			if (field !== "")
-				throw new Error(`Row ${rowNumber} has an unexpected quote.`);
+				throw new Error(`La fila ${rowNumber} tiene una comilla inesperada.`);
 			quoted = true;
 			closedQuote = false;
 			continue;
@@ -254,7 +259,9 @@ function parseRecords(text: string): string[][] {
 	}
 
 	if (quoted)
-		throw new Error(`Row ${rowNumber} has an unterminated quoted field.`);
+		throw new Error(
+			`La fila ${rowNumber} tiene un campo entre comillas sin cerrar.`,
+		);
 	if (field !== "" || record.length > 0) {
 		record.push(field);
 		records.push(record);

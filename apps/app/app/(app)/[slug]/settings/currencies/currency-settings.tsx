@@ -39,16 +39,16 @@ import { useTRPC } from "@/lib/trpc/client";
 const CELL = "px-3 py-2.5 align-middle";
 
 const RATE_COLUMNS: SimpleTableColumn[] = [
-	{ id: "currency", header: "Currency" },
-	{ id: "rate", header: "Rate", width: "w-32", align: "right" },
-	{ id: "source", header: "Source", width: "w-28" },
-	{ id: "asOf", header: "As of", width: "w-24", align: "right" },
-	{ id: "actions", srLabel: "Actions", width: "w-20" },
+	{ id: "currency", header: "Moneda" },
+	{ id: "rate", header: "Tasa", width: "w-32", align: "right" },
+	{ id: "source", header: "Origen", width: "w-28" },
+	{ id: "asOf", header: "Al", width: "w-24", align: "right" },
+	{ id: "actions", srLabel: "Acciones", width: "w-20" },
 ];
 
 const USAGE_COLUMNS: SimpleTableColumn[] = [
-	{ id: "currency", header: "Currency" },
-	{ id: "deals", header: "Deals", width: "w-20", align: "right" },
+	{ id: "currency", header: "Moneda" },
+	{ id: "deals", header: "Negocios", width: "w-20", align: "right" },
 	{ id: "convertible", header: "Convertible", width: "w-32", align: "right" },
 ];
 
@@ -72,7 +72,7 @@ export function CurrencySettings() {
 			onSuccess: async (next) => {
 				await invalidate();
 				toast.success(
-					`Every total is now reported in ${next.reportingCurrency}.`,
+					`Todos los totales ahora se reportan en ${next.reportingCurrency}.`,
 				);
 			},
 			onError: (error) => toast.error(error.message),
@@ -85,7 +85,7 @@ export function CurrencySettings() {
 				await invalidate();
 				setDraftCurrency("");
 				setDraftRate("");
-				toast.success("Rate saved.");
+				toast.success("Tasa guardada.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -95,7 +95,7 @@ export function CurrencySettings() {
 		trpc.currency.removeManualRate.mutationOptions({
 			onSuccess: async () => {
 				await invalidate();
-				toast.success("Rate removed.");
+				toast.success("Tasa eliminada.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -105,7 +105,7 @@ export function CurrencySettings() {
 		trpc.currency.refreshRates.mutationOptions({
 			onSuccess: async () => {
 				await invalidate();
-				toast.success("Rates refreshed.");
+				toast.success("Tasas actualizadas.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -133,16 +133,16 @@ export function CurrencySettings() {
 		<div className="flex flex-col gap-6">
 			<Card>
 				<CardHeader>
-					<CardTitle>Reporting currency</CardTitle>
+					<CardTitle>Moneda de reporte</CardTitle>
 					<CardDescription>
-						Every total, chart and average in the CRM is expressed in this
-						currency. Each deal keeps the currency it was sold in.
+						Todos los totales, gráficos y promedios del CRM se expresan en esta
+						moneda. Cada negocio conserva la moneda en que se vendió.
 					</CardDescription>
 				</CardHeader>
 
 				<CardContent>
 					<Field>
-						<FieldLabel htmlFor={baseId}>Report totals in</FieldLabel>
+						<FieldLabel htmlFor={baseId}>Reportar totales en</FieldLabel>
 						<Select
 							value={reportingCurrency}
 							disabled={busy}
@@ -161,8 +161,8 @@ export function CurrencySettings() {
 						</Select>
 						<FieldDescription>
 							{canManage
-								? "Changing this re-converts every deal at today's rates. Figures already reported will move."
-								: "Only an owner or an admin can change how money is reported."}
+								? "Al cambiarla, todos los negocios se convierten de nuevo con las tasas de hoy. Las cifras ya reportadas van a cambiar."
+								: "Solo un propietario o un administrador puede cambiar cómo se reporta el dinero."}
 						</FieldDescription>
 					</Field>
 				</CardContent>
@@ -170,10 +170,11 @@ export function CurrencySettings() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Exchange rates</CardTitle>
+					<CardTitle>Tipos de cambio</CardTitle>
 					<CardDescription>
-						How many {reportingCurrency} one unit of each currency buys. Fetched
-						daily from open.er-api.com; a rate you enter here wins.
+						Cuántos {reportingCurrency} equivale una unidad de cada moneda. Se
+						obtienen cada día desde open.er-api.com; una tasa que ingreses aquí
+						tiene prioridad.
 					</CardDescription>
 					<CardAction>
 						<Button
@@ -183,7 +184,7 @@ export function CurrencySettings() {
 							onClick={() => refresh.mutate()}
 						>
 							{refresh.isPending ? <Spinner data-icon="inline-start" /> : null}
-							Refresh
+							Actualizar
 						</Button>
 					</CardAction>
 				</CardHeader>
@@ -195,21 +196,21 @@ export function CurrencySettings() {
 							event.preventDefault();
 							const rate = Number.parseFloat(draftRate);
 							if (!Number.isFinite(rate) || rate <= 0) {
-								toast.error("A rate has to be a number greater than zero.");
+								toast.error("La tasa debe ser un número mayor que cero.");
 								return;
 							}
 							setRate.mutate({ currency: draftCurrency, rate });
 						}}
 					>
 						<Field className="w-48">
-							<FieldLabel htmlFor={rateCurrencyId}>Currency</FieldLabel>
+							<FieldLabel htmlFor={rateCurrencyId}>Moneda</FieldLabel>
 							<Select
 								value={draftCurrency}
 								disabled={busy}
 								onValueChange={setDraftCurrency}
 							>
 								<SelectTrigger id={rateCurrencyId} className="w-full">
-									<SelectValue placeholder="Pick one" />
+									<SelectValue placeholder="Elige una" />
 								</SelectTrigger>
 								<SelectContent>
 									{CURRENCIES.filter(
@@ -225,7 +226,7 @@ export function CurrencySettings() {
 
 						<Field className="w-48">
 							<FieldLabel htmlFor={rateValueId}>
-								1 {draftCurrency || "unit"} = ? {reportingCurrency}
+								1 {draftCurrency || "unidad"} = ? {reportingCurrency}
 							</FieldLabel>
 							<Input
 								id={rateValueId}
@@ -242,14 +243,15 @@ export function CurrencySettings() {
 							disabled={busy || draftCurrency === "" || draftRate.trim() === ""}
 						>
 							{setRate.isPending ? <Spinner data-icon="inline-start" /> : null}
-							Save rate
+							Guardar tasa
 						</Button>
 					</form>
 				</CardContent>
 
 				{rates.length === 0 ? (
 					<CardTableEmpty>
-						No rates yet. Refresh to fetch them, or enter one by hand.
+						Todavía no hay tasas. Actualiza para obtenerlas o ingresa una a
+						mano.
 					</CardTableEmpty>
 				) : (
 					<SimpleTable columns={RATE_COLUMNS}>
@@ -268,7 +270,7 @@ export function CurrencySettings() {
 									<StatusIndicator
 										size="sm"
 										tone={rate.source === "MANUAL" ? "warning" : "success"}
-										label={rate.source === "MANUAL" ? "By hand" : "Fetched"}
+										label={rate.source === "MANUAL" ? "A mano" : "Obtenida"}
 									/>
 								</TableCell>
 								<TableCell
@@ -286,7 +288,7 @@ export function CurrencySettings() {
 												removeRate.mutate({ currency: rate.currency })
 											}
 										>
-											Remove
+											Eliminar
 										</Button>
 									) : null}
 								</TableCell>
@@ -298,22 +300,23 @@ export function CurrencySettings() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Currencies in use</CardTitle>
+					<CardTitle>Monedas en uso</CardTitle>
 					<CardDescription>
 						{unconverted.count === 0
-							? "Every deal with an amount can be converted into the reporting currency."
-							: `${formatCount(unconverted.count, "deal")} cannot be converted, so ${unconverted.count === 1 ? "it is" : "they are"} left out of every total.`}
+							? "Todos los negocios con monto se pueden convertir a la moneda de reporte."
+							: `${formatCount(unconverted.count, "negocio")} ${unconverted.count === 1 ? "no se puede convertir y queda fuera" : "no se pueden convertir y quedan fuera"} de todos los totales.`}
 						{refreshedAt ? (
 							<>
 								{" "}
-								Rates last fetched <LocalRelativeTime date={refreshedAt} />.
+								Última obtención de tasas:{" "}
+								<LocalRelativeTime date={refreshedAt} />.
 							</>
 						) : null}
 					</CardDescription>
 				</CardHeader>
 
 				{inUse.length === 0 ? (
-					<CardTableEmpty>No deals have an amount yet.</CardTableEmpty>
+					<CardTableEmpty>Todavía no hay negocios con monto.</CardTableEmpty>
 				) : (
 					<SimpleTable columns={USAGE_COLUMNS}>
 						{inUse.map((row) => (
@@ -326,7 +329,7 @@ export function CurrencySettings() {
 									{row.currency === reportingCurrency ? (
 										<span className="text-muted-foreground">
 											{" "}
-											· reporting currency
+											· moneda de reporte
 										</span>
 									) : null}
 								</TableCell>
@@ -335,9 +338,9 @@ export function CurrencySettings() {
 								</TableCell>
 								<TableCell className={`${CELL} text-right`}>
 									{row.convertible ? (
-										<StatusIndicator size="sm" tone="success" label="Yes" />
+										<StatusIndicator size="sm" tone="success" label="Sí" />
 									) : (
-										<StatusIndicator size="sm" tone="error" label="No rate" />
+										<StatusIndicator size="sm" tone="error" label="Sin tasa" />
 									)}
 								</TableCell>
 							</SimpleTableRow>

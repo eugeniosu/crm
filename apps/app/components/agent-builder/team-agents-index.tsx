@@ -9,6 +9,15 @@ import { useTRPC } from "@/lib/trpc/client";
 import type { RouterOutputs } from "@/lib/trpc/types";
 import { useWorkspaceUrl } from "@/lib/use-workspace-url";
 
+const STATUS_LABELS = new Map([
+	["DRAFT", "borrador"],
+	["DEPLOYING", "publicando"],
+	["LIVE", "activo"],
+	["PAUSED", "en pausa"],
+	["ARCHIVED", "archivado"],
+	["DELETED", "eliminado"],
+]);
+
 type Agents = RouterOutputs["agents"]["list"];
 
 export function TeamAgentsIndex({ initialAgents }: { initialAgents: Agents }) {
@@ -40,18 +49,21 @@ export function TeamAgentsIndex({ initialAgents }: { initialAgents: Agents }) {
 										{agent.name}
 									</span>
 									<span className="shrink-0 text-muted-foreground text-xs">
-										{agent.status.toLowerCase()}
+										{STATUS_LABELS.get(agent.status) ??
+											agent.status.toLowerCase()}
 									</span>
 								</span>
 								<span className="mt-1 block wrap-break-word text-muted-foreground text-xs sm:mt-0 sm:truncate">
-									{agent.description ?? "No description"}
+									{agent.description ?? "Sin descripción"}
 								</span>
 								<span className="mt-2 block font-mono text-muted-foreground text-xs sm:hidden">
-									{agent.runCount} runs
+									{agent.runCount}{" "}
+									{agent.runCount === 1 ? "ejecución" : "ejecuciones"}
 								</span>
 							</span>
 							<span className="hidden shrink-0 font-mono text-muted-foreground text-xs sm:inline">
-								{agent.runCount} runs
+								{agent.runCount}{" "}
+								{agent.runCount === 1 ? "ejecución" : "ejecuciones"}
 							</span>
 							<Icon
 								icon={ArrowRight}
@@ -63,16 +75,18 @@ export function TeamAgentsIndex({ initialAgents }: { initialAgents: Agents }) {
 			) : (
 				<div className="flex min-h-64 flex-col items-center justify-center rounded-lg border border-dashed px-6 text-center">
 					<Icon icon={Bot} className="size-6 text-muted-foreground" />
-					<h2 className="mt-4 font-medium text-sm">No team agents yet</h2>
+					<h2 className="mt-4 font-medium text-sm">
+						Todavía no hay agentes del equipo
+					</h2>
 					<p className="mt-1 text-muted-foreground text-xs">
-						Create one from a private chat, then review its access before
-						deploying it.
+						Crea uno desde un chat privado y revisa su acceso antes de
+						publicarlo.
 					</p>
 					<Link
 						href={workspaceUrl("/chat")}
 						className="mt-4 text-primary text-xs hover:underline"
 					>
-						Open chat
+						Abrir chat
 					</Link>
 				</div>
 			)}

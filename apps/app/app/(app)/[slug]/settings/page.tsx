@@ -28,7 +28,7 @@ export default function GeneralSettingsPage() {
 				<PageShellHeading>
 					<PageShellTitle>General</PageShellTitle>
 					<PageShellDescription>
-						Who you are, and the model the research agent thinks with.
+						Quién eres y el modelo con el que piensa el agente de investigación.
 					</PageShellDescription>
 				</PageShellHeading>
 			</PageShellHeader>

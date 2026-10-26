@@ -13,7 +13,7 @@ import { requireSession } from "@/lib/session";
 import { getServerQueryClient, getServerTrpc } from "@/lib/trpc/server";
 import { AddConnectionDialog } from "./add-connection-dialog";
 
-export const metadata: Metadata = { title: "Connections" };
+export const metadata: Metadata = { title: "Conexiones" };
 
 export default function ConnectionsSettingsPage(
 	props: PageProps<"/[slug]/settings/connections">,
@@ -47,7 +47,7 @@ async function ConnectionsSettingsPageContent({
 		return [
 			{
 				name: vendor.name,
-				status: "Connected",
+				status: "Conectado",
 				bringsIn: vendor.presentation.bringsIn,
 				sends:
 					entry.connection.accessMode === "read_write"
@@ -70,9 +70,9 @@ async function ConnectionsSettingsPageContent({
 			? [
 					{
 						name: "Google Workspace",
-						status: "Connected",
-						bringsIn: "Emails, meetings and the people on them",
-						sends: "Nothing yet",
+						status: "Conectado",
+						bringsIn: "Correos, reuniones y las personas que participan",
+						sends: "Todavía nada",
 						href: `/${slug}/settings/connections/google`,
 						mark: <GoogleLogo className="size-5 shrink-0" />,
 					},
@@ -83,10 +83,11 @@ async function ConnectionsSettingsPageContent({
 					{
 						name: "Slack",
 						status: slack.workspace
-							? `Connected to ${slack.workspace}`
-							: "Connected",
-						bringsIn: "Workspace members and channels the app has joined",
-						sends: "Messages to approved channels and people",
+							? `Conectado a ${slack.workspace}`
+							: "Conectado",
+						bringsIn:
+							"Miembros del espacio de trabajo y canales a los que se unió la app",
+						sends: "Mensajes a canales y personas aprobados",
 						href: `/${slug}/settings/connections/slack`,
 						mark: <SlackLogo className="size-5 shrink-0" />,
 					},
@@ -96,9 +97,9 @@ async function ConnectionsSettingsPageContent({
 			? [
 					{
 						name: "Microsoft 365",
-						status: "Connected",
-						bringsIn: "Outlook email and the people on it",
-						sends: "Nothing yet",
+						status: "Conectado",
+						bringsIn: "Correos de Outlook y las personas que participan",
+						sends: "Todavía nada",
 						href: `/${slug}/settings/connections/microsoft`,
 						mark: <MicrosoftLogo className="size-5 shrink-0" />,
 					},
@@ -114,16 +115,16 @@ async function ConnectionsSettingsPageContent({
 					<header className="flex items-start justify-between gap-4 px-(--spacing-block-inline)">
 						<div className="flex flex-col gap-2">
 							<h1 className="font-medium text-2xl tracking-tight">
-								Connections
+								Conexiones
 							</h1>
 							<p className="max-w-2xl text-muted-foreground text-sm">
-								Where your CRM gets its information, and what it is allowed to
-								send on your behalf.
+								De dónde obtiene información tu CRM y qué puede enviar en tu
+								nombre.
 							</p>
 						</div>
 						<Button asChild variant="outline">
 							<Link href={`/${slug}/settings/connections?add=1`}>
-								Add connection
+								Agregar conexión
 							</Link>
 						</Button>
 					</header>
@@ -137,41 +138,41 @@ async function ConnectionsSettingsPageContent({
 				<div className="mx-auto flex w-full max-w-(--container-narrow) flex-1 flex-col justify-center gap-(--spacing-page-gap) text-center">
 					<div className="flex flex-col gap-2 px-(--spacing-block-inline)">
 						<h1 className="font-medium text-2xl tracking-tight">
-							Nothing is connected yet
+							Todavía no hay nada conectado
 						</h1>
 						<p className="text-muted-foreground text-sm leading-relaxed">
-							Right now every deal, contact and note has to be typed in by hand.
-							Connect a tool and the CRM starts filling itself in from the work
-							your team already does.
+							Hoy todos los negocios, contactos y notas hay que ingresarlos a
+							mano. Conecta una herramienta y el CRM empieza a completarse solo
+							con el trabajo que tu equipo ya hace.
 						</p>
 					</div>
 					<div className="flex flex-col divide-y rounded-lg border bg-card px-(--spacing-block-inline)">
 						<StarterRow
 							logo={GoogleLogo}
 							name="Google Workspace"
-							description="File email and meetings against the right company"
+							description="Asocia correos y reuniones a la empresa correcta"
 							href={`/${slug}/settings/connections/google`}
 						/>
 						<StarterRow
 							logo={SlackLogo}
 							name="Slack"
-							description="Let deployed agents notify approved channels and people"
+							description="Permite que los agentes desplegados avisen a canales y personas aprobados"
 							href={`/${slug}/settings/connections/slack`}
 						/>
 						<StarterRow
 							logo={MicrosoftLogo}
 							name="Microsoft 365"
-							description="File Outlook email against the right company"
+							description="Asocia correos de Outlook a la empresa correcta"
 							href={`/${slug}/settings/connections/microsoft`}
 						/>
 					</div>
 					<p className="px-(--spacing-block-inline) text-muted-foreground text-sm">
-						Looking for something else?{" "}
+						¿Buscas otra cosa?{" "}
 						<Link
 							className="font-medium text-foreground underline underline-offset-4"
 							href={`/${slug}/settings/connections?add=1`}
 						>
-							Browse all connections
+							Ver todas las conexiones
 						</Link>
 					</p>
 				</div>
@@ -225,12 +226,12 @@ function ConnectionCard({
 					{status}
 				</p>
 				<Button asChild size="sm" variant="outline">
-					<Link href={href}>Manage</Link>
+					<Link href={href}>Administrar</Link>
 				</Button>
 			</div>
 			<div className="flex flex-col gap-2 pl-8 text-sm">
-				<CapabilityRow label="Brings in" value={bringsIn} />
-				<CapabilityRow label="Sends" value={sends} />
+				<CapabilityRow label="Trae" value={bringsIn} />
+				<CapabilityRow label="Envía" value={sends} />
 			</div>
 		</section>
 	);
@@ -264,7 +265,7 @@ function StarterRow({
 				<p className="text-muted-foreground text-xs">{description}</p>
 			</div>
 			<Button asChild variant="outline" size="sm">
-				<Link href={href}>Connect</Link>
+				<Link href={href}>Conectar</Link>
 			</Button>
 		</div>
 	);

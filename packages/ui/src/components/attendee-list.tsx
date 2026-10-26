@@ -28,10 +28,10 @@ const RESPONSE_TONE: Record<string, StatusTone> = {
 };
 
 const RESPONSE_LABEL: Record<string, string> = {
-	accepted: "Accepted",
-	declined: "Declined",
-	tentative: "Maybe",
-	needsAction: "No reply",
+	accepted: "Aceptó",
+	declined: "Rechazó",
+	tentative: "Tal vez",
+	needsAction: "Sin respuesta",
 };
 
 function AttendeeList({
@@ -76,7 +76,7 @@ function AttendeeList({
 									tone={RESPONSE_TONE[attendee.responseStatus ?? "needsAction"] ?? "neutral"}
 									label={
 										RESPONSE_LABEL[attendee.responseStatus ?? "needsAction"] ??
-										"No reply"
+										"Sin respuesta"
 									}
 								/>
 							</span>

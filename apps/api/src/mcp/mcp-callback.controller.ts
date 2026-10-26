@@ -30,7 +30,9 @@ export class McpCallbackController {
 		@Res() response: Response,
 	) {
 		if (!state || !code) {
-			throw new BadRequestException("The MCP callback is incomplete.");
+			throw new BadRequestException(
+				"La respuesta de autorización de MCP está incompleta.",
+			);
 		}
 		try {
 			const redirect = await this.connections.callback({

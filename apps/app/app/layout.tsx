@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 		default: "Comp AI - CRM",
 		template: "%s · Comp AI CRM",
 	},
-	description: "Customer Relationship Management for Comp AI",
+	description: "Gestión de relaciones con clientes para Comp AI",
 	icons: {
 		icon: [
 			{ url: "/favicon.svg", type: "image/svg+xml" },
@@ -42,7 +42,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html
-			lang="en"
+			lang="es"
 			suppressHydrationWarning
 			className={cn(fontSans.variable, fontMono.variable, "h-full antialiased")}
 		>

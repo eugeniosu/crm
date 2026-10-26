@@ -40,7 +40,10 @@ export const mcpStartInput = z.object({
 	returnPath: z
 		.string()
 		.startsWith("/")
-		.refine((value) => !value.startsWith("//"), "Return path must stay local"),
+		.refine(
+			(value) => !value.startsWith("//"),
+			"La ruta de retorno debe ser local.",
+		),
 });
 
 export const mcpStartOutput = z.object({ authorizationUrl: z.url() });
@@ -57,7 +60,10 @@ export const mcpReconnectInput = z.object({
 	returnPath: z
 		.string()
 		.startsWith("/")
-		.refine((value) => !value.startsWith("//"), "Return path must stay local"),
+		.refine(
+			(value) => !value.startsWith("//"),
+			"La ruta de retorno debe ser local.",
+		),
 });
 
 export const mcpReconnectOutput = z.object({ authorizationUrl: z.url() });

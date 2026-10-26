@@ -67,12 +67,13 @@ export const activityCreateInput = z
 		dealId: z.string().optional(),
 	})
 	.refine((input) => input.companyId || input.contactId || input.dealId, {
-		message: "An activity has to be about a company, a contact or a deal.",
+		message:
+			"Una actividad debe estar asociada a una empresa, un contacto o un negocio.",
 	})
 	.refine(
 		(input) => input.type !== ActivityType.TASK || Boolean(input.subject),
 		{
-			message: "A task needs a subject — it is the thing to do.",
+			message: "Una tarea necesita un asunto: es lo que hay que hacer.",
 			path: ["subject"],
 		},
 	);
@@ -82,7 +83,7 @@ export type ActivityCreateInput = z.infer<typeof activityCreateInput>;
 export const activityUpdateInput = z.object({
 	id: z.string(),
 	subject: z.string().trim().min(1, {
-		message: "A task needs a subject — it is the thing to do.",
+		message: "Una tarea necesita un asunto: es lo que hay que hacer.",
 	}),
 	dueAt: taskDueDayInput.nullable(),
 });

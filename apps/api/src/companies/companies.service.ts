@@ -234,7 +234,7 @@ export class CompaniesService {
 		});
 
 		if (!company) {
-			throw new NotFoundException(`No company with id ${id}.`);
+			throw new NotFoundException(`No existe una empresa con id ${id}.`);
 		}
 
 		const {
@@ -288,7 +288,7 @@ export class CompaniesService {
 				});
 				if (existing) {
 					throw new ConflictException(
-						`${existing.name} already uses the domain ${domain}.`,
+						`${existing.name} ya usa el dominio ${domain}.`,
 					);
 				}
 			}
@@ -331,7 +331,10 @@ export class CompaniesService {
 			const rowNumber = index + 2;
 			const name = row.name.trim();
 			if (!name) {
-				skips.push({ row: rowNumber, reason: "A company needs a name." });
+				skips.push({
+					row: rowNumber,
+					reason: "Una empresa necesita un nombre.",
+				});
 				return [];
 			}
 
@@ -340,7 +343,7 @@ export class CompaniesService {
 			if (website && !domain) {
 				skips.push({
 					row: rowNumber,
-					reason: `"${website}" is not a valid domain.`,
+					reason: `"${website}" no es un dominio válido.`,
 				});
 				return [];
 			}
@@ -387,14 +390,14 @@ export class CompaniesService {
 				if (candidate.domain && existing.has(candidate.domain)) {
 					skips.push({
 						row: candidate.row,
-						reason: `${candidate.domain} already belongs to a company.`,
+						reason: `${candidate.domain} ya pertenece a una empresa.`,
 					});
 					continue;
 				}
 				if (candidate.domain && seen.has(candidate.domain)) {
 					skips.push({
 						row: candidate.row,
-						reason: `${candidate.domain} appears more than once in this file.`,
+						reason: `${candidate.domain} aparece más de una vez en este archivo.`,
 					});
 					continue;
 				}
@@ -474,7 +477,7 @@ export class CompaniesService {
 			const domain = normalizeDomain(input.domain);
 			if (input.domain.trim() && !domain) {
 				throw new BadRequestException(
-					`"${input.domain}" is not a domain — try something like "stripe.com".`,
+					`"${input.domain}" no es un dominio; prueba con algo como "stripe.com".`,
 				);
 			}
 			data.domain = domain;
@@ -569,7 +572,7 @@ export class CompaniesService {
 
 				if (!row) {
 					if (guard) return null;
-					throw new NotFoundException(`No company with id ${id}.`);
+					throw new NotFoundException(`No existe una empresa con id ${id}.`);
 				}
 				if (
 					guard &&
@@ -683,7 +686,7 @@ export class CompaniesService {
 		});
 
 		if (!company) {
-			throw new NotFoundException(`No company with id ${id}.`);
+			throw new NotFoundException(`No existe una empresa con id ${id}.`);
 		}
 
 		const queued = await this.agent.companyRequested(
@@ -708,12 +711,12 @@ export class CompaniesService {
 		});
 
 		if (!company) {
-			throw new NotFoundException(`No company with id ${id}.`);
+			throw new NotFoundException(`No existe una empresa con id ${id}.`);
 		}
 
 		if (!company.domain) {
 			throw new BadRequestException(
-				"There is nothing to read without a domain — add one first.",
+				"No hay nada que leer sin un dominio: agrega uno primero.",
 			);
 		}
 
@@ -732,11 +735,13 @@ export class CompaniesService {
 				select: { companyId: true },
 			});
 			if (!contact) {
-				throw new NotFoundException(`No contact with id ${contactId}.`);
+				throw new NotFoundException(
+					`No existe un contacto con id ${contactId}.`,
+				);
 			}
 			if (contact.companyId !== companyId) {
 				throw new BadRequestException(
-					"That contact does not work at this company.",
+					"Ese contacto no trabaja en esta empresa.",
 				);
 			}
 		}
@@ -848,12 +853,10 @@ export class CompaniesService {
 	private translate(cause: unknown, id: string): never {
 		if (cause instanceof PrismaNamespace.PrismaClientKnownRequestError) {
 			if (cause.code === "P2025") {
-				throw new NotFoundException(`No company with id ${id}.`);
+				throw new NotFoundException(`No existe una empresa con id ${id}.`);
 			}
 			if (cause.code === "P2002") {
-				throw new ConflictException(
-					"Another company already uses that domain.",
-				);
+				throw new ConflictException("Otra empresa ya usa ese dominio.");
 			}
 		}
 		throw cause;

@@ -290,10 +290,10 @@ describe("Eve public stream", () => {
 
 		expect(action.data.result.output).toBeNull();
 		expect(action.data.error.message).toBe(
-			"The agent could not complete this action.",
+			"El agente no pudo completar esta acción.",
 		);
 		expect(task.data.error.message).toBe(
-			"The agent could not complete this task.",
+			"El agente no pudo completar esta tarea.",
 		);
 	});
 

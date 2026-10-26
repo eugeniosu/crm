@@ -10,23 +10,23 @@ import { OWNER } from "./companies";
 import { CompanyMark } from "./company-mark";
 
 const TABS = [
-	{ label: "Overview" },
-	{ label: "Contacts", count: "1" },
-	{ label: "Deals" },
-	{ label: "Activity" },
-	{ label: "Agent", active: true },
+	{ label: "Resumen" },
+	{ label: "Contactos", count: "1" },
+	{ label: "Negocios" },
+	{ label: "Actividad" },
+	{ label: "Agente", active: true },
 ];
 
 const STATS = [
-	{ label: "Open pipeline", value: "$0" },
-	{ label: "Open deals", value: "0" },
-	{ label: "Next close", value: "—", muted: true },
+	{ label: "Embudo abierto", value: "$0" },
+	{ label: "Negocios abiertos", value: "0" },
+	{ label: "Próximo cierre", value: "—", muted: true },
 ];
 
 const QUESTIONS = [
-	"What do they do?",
-	"Who do we know here?",
-	"What has changed recently?",
+	"¿A qué se dedican?",
+	"¿A quién conocemos aquí?",
+	"¿Qué ha cambiado últimamente?",
 ];
 
 /**
@@ -61,7 +61,7 @@ function SheetHeader({ compact }: { compact?: boolean }) {
 						Comp AI
 					</p>
 					<p className="text-muted-foreground text-xs/[162.5%]">
-						trycomp.ai · Compliance
+						trycomp.ai · Cumplimiento
 					</p>
 				</div>
 
@@ -69,12 +69,12 @@ function SheetHeader({ compact }: { compact?: boolean }) {
 					{compact ? null : (
 						<span className="flex h-7 items-center gap-1 rounded-md border border-border bg-muted pr-2.5 pl-1.5 font-medium text-xs/[133%] shadow-2xs">
 							<Renew size={14} className="shrink-0" />
-							Re-enrich
+							Volver a enriquecer
 						</span>
 					)}
 					<span className="flex h-7 items-center gap-1 rounded-md bg-primary pr-2.5 pl-1.5 font-medium text-primary-foreground text-xs/[133%] shadow-2xs">
 						<MagicWand size={14} className="shrink-0" />
-						Research
+						Investigar
 					</span>
 					{compact ? null : (
 						<>
@@ -97,8 +97,8 @@ function SheetStats({ compact }: { compact?: boolean }) {
 	if (compact) {
 		return (
 			<div className="grid shrink-0 grid-cols-2 border-border border-b bg-muted/40">
-				<Stat label="Open pipeline" value="$0" className="border-r" />
-				<Stat label="Open deals" value="0" />
+				<Stat label="Embudo abierto" value="$0" className="border-r" />
+				<Stat label="Negocios abiertos" value="0" />
 			</div>
 		);
 	}
@@ -116,7 +116,9 @@ function SheetStats({ compact }: { compact?: boolean }) {
 			))}
 
 			<div className="flex min-w-0 grow basis-0 flex-col gap-1 px-5 py-2.5">
-				<p className="line-clamp-1 text-muted-foreground text-xs/5">Owner</p>
+				<p className="line-clamp-1 text-muted-foreground text-xs/5">
+					Responsable
+				</p>
 				<div className="flex min-w-0 items-center gap-2">
 					<Image
 						src={OWNER.avatar}
@@ -207,12 +209,12 @@ function AgentEmptyState({ compact }: { compact?: boolean }) {
 					</span>
 				</span>
 				<p className="text-center font-medium text-sm/5">
-					Ask about this company
+					Pregunta sobre esta empresa
 				</p>
 				{compact ? null : (
 					<p className="text-center text-muted-foreground text-xs/[19px]">
-						It reads their site and our own history with them, and shows its
-						working.
+						Lee su sitio web y nuestro historial con ellos, y muestra cómo llegó
+						a la respuesta.
 					</p>
 				)}
 			</div>
@@ -240,9 +242,7 @@ function SheetComposer({ compact }: { compact?: boolean }) {
 			)}
 		>
 			<div className="flex h-8 min-w-0 grow items-center rounded-md border border-border px-3">
-				<span className="text-muted-foreground text-xs">
-					What do they sell?
-				</span>
+				<span className="text-muted-foreground text-xs">¿Qué venden?</span>
 			</div>
 			<span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted">
 				<Send size={14} />

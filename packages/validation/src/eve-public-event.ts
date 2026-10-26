@@ -110,7 +110,7 @@ const taskSettled = z
 		return data.status === "failed"
 			? {
 					...safe,
-					error: { message: "The agent could not complete this task." },
+					error: { message: "El agente no pudo completar esta tarea." },
 				}
 			: safe;
 	});
@@ -134,7 +134,7 @@ const authorization = z.object({
 const failureEvent = position.transform((data) => ({
 	...data,
 	code: "agent_error",
-	message: "The agent could not complete this step.",
+	message: "El agente no pudo completar este paso.",
 }));
 
 const eventData = {
@@ -205,7 +205,7 @@ const eventData = {
 					result: { ...data.result, output: null },
 					error: {
 						code: "agent_error",
-						message: "The agent could not complete this action.",
+						message: "El agente no pudo completar esta acción.",
 					},
 				},
 	),
@@ -297,7 +297,7 @@ const eventData = {
 		.transform((data) => ({
 			...data,
 			code: "agent_error",
-			message: "The agent session failed.",
+			message: "Falló la sesión del agente.",
 		})),
 } satisfies Readonly<Record<string, z.ZodType>>;
 

@@ -134,7 +134,7 @@ describe("bringing a contact onto a deal", () => {
 	it("refuses somebody who works somewhere else", async () => {
 		await expect(
 			deals.attachContact({ dealId, contactId: outsiderId }),
-		).rejects.toThrow(`That contact does not work at People Co ${suffix}.`);
+		).rejects.toThrow(`Ese contacto no trabaja en People Co ${suffix}.`);
 	});
 
 	it("blanks a role rather than storing an empty string", async () => {
@@ -152,7 +152,7 @@ describe("bringing a contact onto a deal", () => {
 				contactId: colleagueId,
 				role: "Blocker",
 			}),
-		).rejects.toThrow("That contact is not on this deal.");
+		).rejects.toThrow("Ese contacto no está en este negocio.");
 	});
 
 	it("takes them off again, leaving the contact in the CRM", async () => {
@@ -167,6 +167,6 @@ describe("bringing a contact onto a deal", () => {
 	it("says so when they were never on it", async () => {
 		await expect(
 			deals.detachContact({ dealId, contactId: championId }),
-		).rejects.toThrow("That contact is not on this deal.");
+		).rejects.toThrow("Ese contacto no está en este negocio.");
 	});
 });

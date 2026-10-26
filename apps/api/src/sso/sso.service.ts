@@ -167,7 +167,7 @@ export class SsoService {
 
 		if (domains.length === 0) {
 			throw new BadRequestException(
-				"Give the email domain your people sign in with, for example acme.com.",
+				"Indica el dominio de correo con el que tu equipo inicia sesión, por ejemplo acme.com.",
 			);
 		}
 
@@ -252,7 +252,8 @@ export class SsoService {
 					STATUS_BY_CODE.get(error.body?.code ?? "") ?? error.statusCode;
 
 				throw new HttpException(
-					error.body?.message ?? "The identity provider could not be saved.",
+					error.body?.message ??
+						"No se pudo guardar el proveedor de identidad.",
 					status,
 				);
 			}
@@ -263,7 +264,7 @@ export class SsoService {
 			);
 
 			throw new InternalServerErrorException(
-				"Could not reach the identity provider.",
+				"No se pudo conectar con el proveedor de identidad.",
 			);
 		}
 	}
@@ -271,7 +272,7 @@ export class SsoService {
 	private async requireConfigurer(userId: string): Promise<void> {
 		if (!canConfigureSso(await workspaceRoleOf(userId, this.db))) {
 			throw new ForbiddenException(
-				"Only an owner or an admin can change how people sign in.",
+				"Solo un propietario o un administrador puede cambiar cómo inicia sesión la gente.",
 			);
 		}
 	}

@@ -12,7 +12,7 @@ const amountCents = z
 	.number()
 	.int()
 	.min(0)
-	.max(MAX_AMOUNT_CENTS, "That amount is too large to record.")
+	.max(MAX_AMOUNT_CENTS, "Ese monto es demasiado grande para registrarlo.")
 	.nullable()
 	.optional();
 
@@ -42,9 +42,9 @@ const stageEnum = z.enum(
 );
 
 export const dealCreateInput = z.object({
-	name: z.string().trim().min(1, "A deal needs a name."),
-	companyId: z.string().min(1, "A deal belongs to a company."),
-	ownerId: z.string().min(1, "A deal needs an owner."),
+	name: z.string().trim().min(1, "Un negocio necesita un nombre."),
+	companyId: z.string().min(1, "Un negocio pertenece a una empresa."),
+	ownerId: z.string().min(1, "Un negocio necesita un responsable."),
 	stage: stageEnum.optional(),
 	amountCents,
 	currency: currencyCode.optional(),
@@ -84,14 +84,14 @@ export type SetStageInput = z.infer<typeof setStageInput>;
 const dealContactRole = z
 	.string()
 	.trim()
-	.max(80, "That role is too long.")
+	.max(80, "Ese rol es demasiado largo.")
 	.nullable();
 
 export const dealContactsInput = z.object({ dealId: z.string() });
 
 export const dealAttachContactInput = z.object({
 	dealId: z.string(),
-	contactId: z.string().min(1, "Choose somebody to bring onto the deal."),
+	contactId: z.string().min(1, "Elige a alguien para sumar al negocio."),
 	role: dealContactRole.optional(),
 });
 
@@ -115,7 +115,7 @@ export type DealContactRoleInput = z.infer<typeof dealContactRoleInput>;
 export const dealBulkInput = bulkIdsInput;
 
 export const dealBulkOwnerInput = bulkIdsInput.extend({
-	ownerId: z.string().min(1, "A deal needs an owner."),
+	ownerId: z.string().min(1, "Un negocio necesita un responsable."),
 });
 
 export type DealBulkOwnerInput = z.infer<typeof dealBulkOwnerInput>;

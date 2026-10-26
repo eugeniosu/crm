@@ -20,7 +20,7 @@ function TokenField({
 	children,
 	disabled = false,
 	loading = false,
-	loadingLabel = "Loading",
+	loadingLabel = "Cargando",
 	tabIndex,
 	"aria-busy": ariaBusy,
 	"aria-disabled": ariaDisabled,

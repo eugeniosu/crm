@@ -18,19 +18,25 @@ import type { DealListItem, DealListResult } from "@/lib/agent-transcript";
 import { DEAL_STAGE_OPTIONS } from "@/lib/deal-stage";
 
 const COLUMNS: SimpleTableColumn[] = [
-	{ id: "deal", header: "Deal", width: "w-[20%]" },
-	{ id: "company", header: "Company", width: "w-[18%]" },
-	{ id: "stage", header: "Stage", width: "w-[18%]" },
+	{ id: "deal", header: "Negocio", width: "w-[20%]" },
+	{ id: "company", header: "Empresa", width: "w-[18%]" },
+	{ id: "stage", header: "Etapa", width: "w-[18%]" },
 	{
 		id: "amount",
-		header: "Amount",
+		header: "Monto",
 		width: "w-[12%]",
 		align: "right",
 	},
-	{ id: "owner", header: "Owner", width: "w-[14%]" },
-	{ id: "close", header: "Close date", width: "w-[12%]" },
-	{ id: "idle", header: "Idle", width: "w-[8%]", align: "right" },
+	{ id: "owner", header: "Responsable", width: "w-[14%]" },
+	{ id: "close", header: "Fecha de cierre", width: "w-[12%]" },
+	{ id: "idle", header: "Inactivo", width: "w-[8%]", align: "right" },
 ];
+
+const STATUS_ADJECTIVES = new Map([
+	["open", "abierto"],
+	["won", "ganado"],
+	["lost", "perdido"],
+]);
 
 export function DealListResultTable({ result }: { result: DealListResult }) {
 	const openRecord = useOpenRecord();
@@ -51,7 +57,7 @@ export function DealListResultTable({ result }: { result: DealListResult }) {
 							colSpan={COLUMNS.length}
 							className="h-32 whitespace-normal py-8 text-center align-middle text-muted-foreground"
 						>
-							No deals met these pipeline filters.
+							Ningún negocio cumple estos filtros del embudo.
 						</TableCell>
 					</SimpleTableRow>
 				) : (
@@ -105,7 +111,7 @@ export function DealListResultTable({ result }: { result: DealListResult }) {
 									className="overflow-hidden px-3 py-3 text-right text-muted-foreground tabular-nums"
 									title={
 										deal.neverActive
-											? "No activity has ever been recorded"
+											? "Nunca se ha registrado actividad"
 											: undefined
 									}
 								>
@@ -119,7 +125,7 @@ export function DealListResultTable({ result }: { result: DealListResult }) {
 			<div className="flex flex-wrap items-center justify-between gap-3 text-muted-foreground text-xs">
 				<span>{tableMeta(result)}</span>
 				<span>
-					As of <LocalDay date={result.asOf} />
+					Al <LocalDay date={result.asOf} />
 				</span>
 			</div>
 		</section>
@@ -139,22 +145,26 @@ function Stage({ stage }: { stage: string }) {
 
 function tableTitle(result: DealListResult): string {
 	const count = result.deals.length;
+	const plural = count === 1 ? "" : "s";
 	const status =
-		result.criteria.status === "all" ? "" : `${result.criteria.status} `;
-	const stale = result.criteria.inactiveForDays === null ? "" : "stale ";
+		result.criteria.status === "all"
+			? ""
+			: ` ${STATUS_ADJECTIVES.get(result.criteria.status) ?? result.criteria.status}${plural}`;
+	const stale =
+		result.criteria.inactiveForDays === null ? "" : ` estancado${plural}`;
 	return count === 0
-		? "No matching deals"
-		: `${count} ${stale}${status}deal${count === 1 ? "" : "s"}`;
+		? "Sin negocios coincidentes"
+		: `${count} ${count === 1 ? "negocio" : "negocios"}${status}${stale}`;
 }
 
 function tableMeta(result: DealListResult): string {
 	const details = [
-		`${result.deals.length} deal${result.deals.length === 1 ? "" : "s"}`,
+		`${result.deals.length} ${result.deals.length === 1 ? "negocio" : "negocios"}`,
 		pipelineTotal(result.deals),
 		result.criteria.inactiveForDays === null
 			? null
-			: `${result.criteria.inactiveForDays}+ days inactive`,
-		result.hasMore ? "More results available" : null,
+			: `${result.criteria.inactiveForDays}+ días de inactividad`,
+		result.hasMore ? "Hay más resultados" : null,
 	].filter((detail): detail is string => Boolean(detail));
 
 	return details.join(" · ");
@@ -176,5 +186,5 @@ function pipelineTotal(deals: readonly DealListItem[]): string | null {
 	if (!currency) return null;
 
 	const amount = deals.reduce((sum, deal) => sum + (deal.amount ?? 0), 0);
-	return `${formatMoney(Math.round(amount * 100), currency)} pipeline`;
+	return `${formatMoney(Math.round(amount * 100), currency)} en el embudo`;
 }

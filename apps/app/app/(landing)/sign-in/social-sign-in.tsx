@@ -16,8 +16,8 @@ type ProviderChoice = {
 };
 
 const PROVIDERS = {
-	google: { label: "Continue with Google", Logo: GoogleLogo },
-	microsoft: { label: "Continue with Microsoft", Logo: MicrosoftLogo },
+	google: { label: "Continuar con Google", Logo: GoogleLogo },
+	microsoft: { label: "Continuar con Microsoft", Logo: MicrosoftLogo },
 } as const satisfies Record<MailboxProviderId, ProviderChoice>;
 
 export function SocialSignIn({ provider }: { provider: MailboxProviderId }) {
@@ -27,7 +27,9 @@ export function SocialSignIn({ provider }: { provider: MailboxProviderId }) {
 
 	function fail(message?: string) {
 		setPending(false);
-		toast.error(message ?? "Could not reach the sign-in service.");
+		toast.error(
+			message ?? "No se pudo conectar con el servicio de inicio de sesión.",
+		);
 	}
 
 	async function handleClick() {

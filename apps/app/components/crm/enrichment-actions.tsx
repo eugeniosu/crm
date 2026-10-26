@@ -26,8 +26,8 @@ export function EnrichmentActions({
 				await cache.company(companyId);
 				toast.success(
 					result.queued
-						? "Looking it up — this page will update when it finishes."
-						: "Already running.",
+						? "Buscando información: esta página se actualizará cuando termine."
+						: "Ya está en curso.",
 				);
 			},
 			onError: (error) => toast.error(error.message),
@@ -40,8 +40,8 @@ export function EnrichmentActions({
 				await cache.activity();
 				toast.success(
 					result.queued
-						? "Researching — the brief lands on the timeline when it finishes."
-						: "Already researching.",
+						? "Investigando: el informe aparecerá en la cronología cuando termine."
+						: "Ya se está investigando.",
 				);
 			},
 			onError: (error) => toast.error(error.message),
@@ -61,7 +61,7 @@ export function EnrichmentActions({
 				) : (
 					<Icon icon={Renew} data-icon="inline-start" />
 				)}
-				<span className="hidden sm:inline">Re-enrich</span>
+				<span className="hidden sm:inline">Volver a enriquecer</span>
 			</Button>
 
 			<Button
@@ -74,7 +74,7 @@ export function EnrichmentActions({
 				) : (
 					<Icon icon={MagicWand} data-icon="inline-start" />
 				)}
-				<span className="hidden sm:inline">Research</span>
+				<span className="hidden sm:inline">Investigar</span>
 			</Button>
 		</>
 	);
@@ -90,8 +90,8 @@ export function ContactEnrichmentAction({ contactId }: { contactId: string }) {
 				await cache.contact(contactId);
 				toast.success(
 					result.queued
-						? "Taking another look — this page will update when it finishes."
-						: "Already running.",
+						? "Revisando de nuevo: esta página se actualizará cuando termine."
+						: "Ya está en curso.",
 				);
 			},
 			onError: (error) => toast.error(error.message),
@@ -110,7 +110,7 @@ export function ContactEnrichmentAction({ contactId }: { contactId: string }) {
 			) : (
 				<Icon icon={Renew} data-icon="inline-start" />
 			)}
-			<span className="hidden sm:inline">Re-enrich</span>
+			<span className="hidden sm:inline">Volver a enriquecer</span>
 		</Button>
 	);
 }

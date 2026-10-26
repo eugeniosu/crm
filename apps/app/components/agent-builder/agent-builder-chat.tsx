@@ -117,7 +117,12 @@ export type SupportedChatConnection = {
 	brand: ProviderBrand | null;
 };
 
-const BUILDER_STEPS = ["Scope", "Instructions", "Manifest", "Review"] as const;
+const BUILDER_STEPS = [
+	"Alcance",
+	"Instrucciones",
+	"Manifiesto",
+	"Revisión",
+] as const;
 const BUILDER_STEP_ARTIFACTS = [
 	null,
 	"agent/instructions.md",
@@ -357,7 +362,7 @@ export function AgentBuilderChat({
 					className="flex flex-1 items-center justify-center p-8"
 					aria-busy="true"
 				>
-					<span className="text-muted-foreground text-sm">Opening chat…</span>
+					<span className="text-muted-foreground text-sm">Abriendo chat…</span>
 				</main>
 			);
 		}
@@ -547,7 +552,7 @@ export function AgentBuilderChat({
 									className="flex items-center gap-2 text-muted-foreground text-sm"
 								>
 									<ThinkingIndicator />
-									<span>Restoring this chat…</span>
+									<span>Restaurando este chat…</span>
 								</div>
 							</ChatMessage>
 						</ChatThreadItem>
@@ -651,7 +656,7 @@ export function AgentBuilderChat({
 								onContinue={() =>
 									send({
 										commandType: "CHAT",
-										message: "Continue with my request.",
+										message: "Continúa con mi solicitud.",
 										resources: [],
 										attachments: [],
 									})
@@ -856,18 +861,22 @@ function SharedAgentChat({
 		<main className="flex min-h-0 flex-1 flex-col">
 			<header className="flex h-12 shrink-0 items-center gap-3 border-b px-5">
 				<h1 className="min-w-0 flex-1 truncate font-medium text-sm">
-					{conversation.agent?.name ?? conversation.title ?? "Agent builder"}
+					{conversation.agent?.name ??
+						conversation.title ??
+						"Creador de agentes"}
 				</h1>
-				<span className="text-muted-foreground text-xs">Read-only</span>
+				<span className="text-muted-foreground text-xs">Solo lectura</span>
 			</header>
 
 			<ChatThread size="page" busy={working}>
 				<ChatThreadItem id="shared-chat-notice">
 					<div className="rounded-lg border bg-card px-4 py-3 text-sm">
-						<p className="font-medium">Shared by {conversation.ownerName}</p>
+						<p className="font-medium">
+							Compartido por {conversation.ownerName}
+						</p>
 						<p className="mt-1 text-muted-foreground text-xs">
-							You can read this builder chat, but only its owner can continue or
-							change it.
+							Puedes leer este chat del creador, pero solo su dueño puede
+							continuarlo o cambiarlo.
 						</p>
 					</div>
 				</ChatThreadItem>
@@ -923,14 +932,14 @@ function ChatHeader({
 	const title =
 		(creatingAgent ? conversation.agent?.name : null) ??
 		conversation.title ??
-		"Agent chat";
+		"Chat del agente";
 
 	return (
 		<header className="flex h-12 shrink-0 items-center gap-2 border-b px-4 sm:gap-2.5 sm:pr-4 sm:pl-5">
 			<div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
 				<h1 className="truncate font-medium text-sm">{title}</h1>
 				<span className="hidden shrink-0 text-muted-foreground text-xs sm:inline">
-					Private
+					Privado
 				</span>
 				{working ? (
 					<span className="flex shrink-0 items-center gap-2 text-muted-foreground text-xs">
@@ -939,15 +948,15 @@ function ChatHeader({
 							className="size-3.5 animate-spin text-ring"
 							motion="none"
 						/>
-						<span className="sr-only">Working in background</span>
+						<span className="sr-only">Trabajando en segundo plano</span>
 						<span aria-hidden="true" className="hidden sm:inline">
-							Working in background
+							Trabajando en segundo plano
 						</span>
 					</span>
 				) : null}
 			</div>
 			<Button asChild variant="ghost" size="icon-sm">
-				<Link href={workspaceUrl("/chat")} aria-label="Start a new chat">
+				<Link href={workspaceUrl("/chat")} aria-label="Empezar un chat nuevo">
 					<Icon icon={Add} />
 				</Link>
 			</Button>
@@ -976,7 +985,7 @@ function UserSubmission({
 	sending?: boolean;
 }) {
 	const message = submission.message;
-	const messageText = message.text ?? "Message unavailable";
+	const messageText = message.text ?? "Mensaje no disponible";
 	const command =
 		submission.commandType === "CREATE_AGENT"
 			? consumeBuilderCommand(messageText)
@@ -991,7 +1000,7 @@ function UserSubmission({
 			error={
 				failed ? (
 					<div className="flex items-center justify-end gap-2">
-						<span>This message could not be sent.</span>
+						<span>No se pudo enviar este mensaje.</span>
 						{onRetry ? (
 							<Button
 								variant="outline"
@@ -1000,7 +1009,7 @@ function UserSubmission({
 								aria-busy={retrying}
 								onClick={onRetry}
 							>
-								{retrying ? "Sending" : "Send again"}
+								{retrying ? "Enviando" : "Enviar de nuevo"}
 							</Button>
 						) : null}
 					</div>
@@ -1016,12 +1025,12 @@ function UserSubmission({
 				{response ? (
 					<div className="flex items-center gap-1.5 text-muted-foreground text-xs">
 						<Icon icon={Reply} className="size-3.5" />
-						<span>Answer to follow-up</span>
+						<span>Respuesta a la consulta</span>
 					</div>
 				) : null}
 				{submission.commandType === "CREATE_AGENT" ? (
 					<div className="flex flex-wrap gap-1">
-						<ChatCommandChip label="Create agent" icon={Application} />
+						<ChatCommandChip label="Crear agente" icon={Application} />
 					</div>
 				) : null}
 				<p className="wrap-break-word">{text}</p>
@@ -1088,7 +1097,7 @@ function AssistantMessage({
 							className="flex items-center gap-2 text-muted-foreground text-sm"
 						>
 							<ThinkingIndicator />
-							<span>Thinking…</span>
+							<span>Pensando…</span>
 						</div>
 					);
 				}
@@ -1153,9 +1162,9 @@ function FollowUpTranscriptItem({
 	return (
 		<div className="w-full max-w-sm border-ring/50 border-l-2 bg-muted/40 px-3 py-2.5">
 			<div className="flex items-center justify-between gap-3 text-xs">
-				<span className="font-medium">Follow-up</span>
+				<span className="font-medium">Consulta</span>
 				<span className="text-muted-foreground">
-					{answered ? "Answered" : "Waiting for your answer"}
+					{answered ? "Respondida" : "Esperando tu respuesta"}
 				</span>
 			</div>
 			<Markdown className="mt-1.5 wrap-break-word text-sm leading-5">
@@ -1177,17 +1186,17 @@ const PERMISSION_MODES: ReadonlyArray<{
 	{
 		value: "manual",
 		label: "Manual",
-		description: "Ask before every change.",
+		description: "Pregunta antes de cada cambio.",
 	},
 	{
 		value: "auto",
-		label: "Auto",
-		description: "Ask only before sensitive changes.",
+		label: "Automático",
+		description: "Pregunta solo antes de cambios sensibles.",
 	},
 	{
 		value: "bypass",
-		label: "Bypass",
-		description: "Run changes without asking.",
+		label: "Sin aprobación",
+		description: "Aplica los cambios sin preguntar.",
 	},
 ];
 
@@ -1209,14 +1218,14 @@ function PermissionModeMenu({
 					variant="ghost"
 					size="sm"
 					disabled={pending}
-					aria-label={`Permission mode: ${selected?.label ?? "Manual"}`}
+					aria-label={`Modo de permisos: ${selected?.label ?? "Manual"}`}
 				>
 					<Icon icon={Security} data-icon="inline-start" />
 					{selected?.label ?? "Manual"}
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="start" className="w-64">
-				<DropdownMenuLabel>Permission mode</DropdownMenuLabel>
+				<DropdownMenuLabel>Modo de permisos</DropdownMenuLabel>
 				<DropdownMenuRadioGroup
 					value={mode}
 					onValueChange={(value) => {
@@ -1254,7 +1263,7 @@ function AgentApprovalCard({
 	const label = toolLabel({
 		tool: approval.action.toolName,
 		input: approval.action.input,
-		label: "Requested a change",
+		label: "Solicitó un cambio",
 		pending: true,
 	});
 
@@ -1263,10 +1272,10 @@ function AgentApprovalCard({
 			disabled={pending}
 			className="w-full max-w-lg overflow-hidden rounded-lg border bg-card"
 		>
-			<legend className="sr-only">Approval required</legend>
+			<legend className="sr-only">Se requiere aprobación</legend>
 			<div className="flex items-start gap-3 p-4">
 				<div className="min-w-0 flex-1">
-					<p className="font-medium text-sm">Approval required</p>
+					<p className="font-medium text-sm">Se requiere aprobación</p>
 					<p className="mt-1 text-muted-foreground text-xs">{label}</p>
 					<p className="mt-2 text-pretty text-sm leading-5">
 						{approval.prompt}
@@ -1280,10 +1289,10 @@ function AgentApprovalCard({
 					size="sm"
 					onClick={() => onDecision("cancel")}
 				>
-					Decline
+					Rechazar
 				</Button>
 				<Button type="button" size="sm" onClick={() => onDecision("approve")}>
-					{pending ? "Approving" : "Approve"}
+					{pending ? "Aprobando" : "Aprobar"}
 				</Button>
 			</div>
 		</fieldset>
@@ -1304,9 +1313,9 @@ function AgentSessionLimitCard({
 			disabled={pending}
 			className="w-full max-w-lg overflow-hidden rounded-lg border bg-card"
 		>
-			<legend className="sr-only">Session limit reached</legend>
+			<legend className="sr-only">Se alcanzó el límite de la sesión</legend>
 			<div className="p-4">
-				<p className="font-medium text-sm">Session limit reached</p>
+				<p className="font-medium text-sm">Se alcanzó el límite de la sesión</p>
 				<p className="mt-2 text-pretty text-sm leading-5">{request.prompt}</p>
 			</div>
 			<div className="flex items-center justify-end gap-2 border-t bg-muted px-4 py-3">
@@ -1316,10 +1325,10 @@ function AgentSessionLimitCard({
 					size="sm"
 					onClick={() => onDecision("stop")}
 				>
-					Stop
+					Detener
 				</Button>
 				<Button type="button" size="sm" onClick={() => onDecision("continue")}>
-					{pending ? "Continuing" : "Continue"}
+					{pending ? "Continuando" : "Continuar"}
 				</Button>
 			</div>
 		</fieldset>
@@ -1332,10 +1341,10 @@ function CopyResponseAction({ markdown }: { markdown: string }) {
 			<Button
 				variant="ghost"
 				size="icon-xs"
-				aria-label="Copy response as Markdown"
+				aria-label="Copiar respuesta como Markdown"
 				onClick={() => {
 					void navigator.clipboard.writeText(markdown);
-					toast.success("Response copied as Markdown.");
+					toast.success("Respuesta copiada como Markdown.");
 				}}
 			>
 				<Icon icon={Copy} />
@@ -1375,10 +1384,10 @@ function ResponseActions({
 			<Button
 				variant="ghost"
 				size="icon-xs"
-				aria-label="Copy response as Markdown"
+				aria-label="Copiar respuesta como Markdown"
 				onClick={() => {
 					void navigator.clipboard.writeText(markdown);
-					toast.success("Response copied as Markdown.");
+					toast.success("Respuesta copiada como Markdown.");
 				}}
 			>
 				<Icon icon={Copy} />
@@ -1386,7 +1395,7 @@ function ResponseActions({
 			<Button
 				variant="ghost"
 				size="icon-xs"
-				aria-label="Rate response helpful"
+				aria-label="Valorar respuesta como útil"
 				aria-pressed={rating === "UP"}
 				className={cn(rating === "UP" && "bg-muted text-foreground")}
 				onClick={() => choose("UP")}
@@ -1396,7 +1405,7 @@ function ResponseActions({
 			<Button
 				variant="ghost"
 				size="icon-xs"
-				aria-label="Rate response not helpful"
+				aria-label="Valorar respuesta como no útil"
 				aria-pressed={rating === "DOWN"}
 				className={cn(rating === "DOWN" && "bg-muted text-foreground")}
 				onClick={() => choose("DOWN")}
@@ -1426,13 +1435,16 @@ function BuildingAgentCard({
 			<div className="overflow-hidden rounded-lg border bg-card">
 				<div className="flex items-center gap-2 px-4 pt-4">
 					<span className="min-w-0 flex-1 font-medium text-sm">
-						Building the agent
+						Creando el agente
 					</span>
 					<span className="shrink-0 font-mono text-muted-foreground text-xs">
-						{completed} of 4
+						{completed} de 4
 					</span>
 				</div>
-				<ol className="flex flex-col gap-1 p-3" aria-label="Agent creation">
+				<ol
+					className="flex flex-col gap-1 p-3"
+					aria-label="Creación del agente"
+				>
 					{BUILDER_STEPS.map((label, index) => {
 						const done = index < completed;
 						const active =
@@ -1482,15 +1494,15 @@ function BuildingAgentCard({
 										{done && artifact
 											? artifact.replace("agent/", "")
 											: done
-												? "Done"
+												? "Listo"
 												: active
-													? "Working"
-													: "Queued"}
+													? "En curso"
+													: "En espera"}
 									</span>
 								</div>
 								{active && writingPath ? (
 									<p className="pl-7 font-mono text-muted-foreground text-xs">
-										Writing {writingPath}
+										Escribiendo {writingPath}
 									</p>
 								) : null}
 							</li>
@@ -1499,7 +1511,7 @@ function BuildingAgentCard({
 				</ol>
 				<footer className="flex items-center gap-2 border-t bg-muted px-4 py-3">
 					<p className="min-w-0 flex-1 text-pretty text-muted-foreground text-xs">
-						Runs in the background
+						Se ejecuta en segundo plano
 					</p>
 				</footer>
 			</div>
@@ -1567,21 +1579,21 @@ function AgentConnectionCard({
 					<div className="flex min-w-0 flex-1 flex-col gap-1">
 						<p className="font-medium text-sm">
 							{connected
-								? `${connection.name} is ready`
-								: `Connect ${connection.name}`}
+								? `${connection.name} está lista`
+								: `Conectar ${connection.name}`}
 						</p>
 						<p className="text-pretty text-muted-foreground text-sm">
 							{connected
-								? "Continue the request with this connection."
+								? "Continúa la solicitud con esta conexión."
 								: connecting
-									? "Reading the available tools."
+									? "Leyendo las herramientas disponibles."
 									: connection.description}
 						</p>
 					</div>
 				</div>
 				<div className="flex flex-wrap items-center justify-between gap-3 border-t bg-muted px-4 py-3">
 					{connected ? (
-						<p className="text-muted-foreground text-xs">Connected</p>
+						<p className="text-muted-foreground text-xs">Conectado</p>
 					) : canConnect ? (
 						<div className="flex items-center gap-1">
 							<Button
@@ -1590,7 +1602,7 @@ function AgentConnectionCard({
 								aria-pressed={accessMode === "read_only"}
 								onClick={() => setAccessMode("read_only")}
 							>
-								Read only
+								Solo lectura
 							</Button>
 							<Button
 								variant={accessMode === "read_write" ? "secondary" : "ghost"}
@@ -1598,17 +1610,17 @@ function AgentConnectionCard({
 								aria-pressed={accessMode === "read_write"}
 								onClick={() => setAccessMode("read_write")}
 							>
-								Read and write
+								Lectura y escritura
 							</Button>
 						</div>
 					) : (
 						<p className="text-muted-foreground text-xs">
-							Connection access needs an administrator.
+							El acceso a la conexión requiere un administrador.
 						</p>
 					)}
 					{connected ? (
 						<Button size="sm" onClick={() => void onContinue()}>
-							Continue
+							Continuar
 						</Button>
 					) : canConnect ? (
 						<Button
@@ -1617,14 +1629,14 @@ function AgentConnectionCard({
 							aria-busy={connecting || start.isPending}
 							onClick={connect}
 						>
-							{connecting || start.isPending ? "Connecting" : "Connect"}
+							{connecting || start.isPending ? "Conectando" : "Conectar"}
 						</Button>
 					) : (
 						<Button asChild size="sm" variant="outline">
 							<Link
 								href={workspaceUrl(`/settings/connections/${connection.slug}`)}
 							>
-								Open settings
+								Abrir configuración
 							</Link>
 						</Button>
 					)}
@@ -1647,14 +1659,14 @@ function BuilderFailureCard({
 }) {
 	const message =
 		failure.kind === "cancelled"
-			? "You stopped this request. Ask again when you are ready."
+			? "Detuviste esta solicitud. Vuelve a pedirlo cuando quieras."
 			: failure.kind === "rate-limit"
-				? "Vercel AI Gateway rate-limited this model before it could start. Try again in a moment or add AI Gateway credits in Vercel."
+				? "Vercel AI Gateway limitó el uso de este modelo antes de que pudiera empezar. Vuelve a intentarlo en un momento o agrega créditos de AI Gateway en Vercel."
 				: failure.kind === "restricted"
-					? "This model requires paid AI Gateway credits. Add credits in Vercel, then try again."
+					? "Este modelo requiere créditos de pago de AI Gateway. Agrega créditos en Vercel y vuelve a intentarlo."
 					: failure.kind === "credits"
-						? "Vercel AI Gateway has no available credits. Add credits in Vercel, then try again."
-						: "The builder could not finish this request. Try again.";
+						? "Vercel AI Gateway no tiene créditos disponibles. Agrega créditos en Vercel y vuelve a intentarlo."
+						: "El creador no pudo terminar esta solicitud. Vuelve a intentarlo.";
 
 	return (
 		<div
@@ -1665,7 +1677,9 @@ function BuilderFailureCard({
 				<Icon icon={WarningAlt} className="mt-0.5 size-4 text-destructive" />
 				<div className="min-w-0 flex-1">
 					<p className="font-medium text-sm">
-						{creatingAgent ? "Agent creation stopped" : "Response stopped"}
+						{creatingAgent
+							? "Se detuvo la creación del agente"
+							: "Se detuvo la respuesta"}
 					</p>
 					<p className="mt-0.5 text-pretty text-muted-foreground text-xs leading-5">
 						{message}
@@ -1682,9 +1696,9 @@ function BuilderFailureCard({
 				>
 					<AsyncButtonContent
 						status={retrying ? "pending" : "idle"}
-						pendingLabel="Asking"
+						pendingLabel="Pidiendo"
 					>
-						Ask again
+						Pedir de nuevo
 					</AsyncButtonContent>
 				</Button>
 			) : null}
@@ -1711,27 +1725,27 @@ function ReviewAgentCard({
 	return (
 		<div className="flex flex-col gap-5">
 			<p className="max-w-[640px] text-pretty text-sm leading-5">
-				Your private draft is ready to review.
+				Tu borrador privado está listo para revisar.
 			</p>
-			<AgentCardShell name={manifest.name ?? agent.name} status="Private">
+			<AgentCardShell name={manifest.name ?? agent.name} status="Privado">
 				<div className="flex flex-col gap-2 p-4">
-					<ReviewRow label="When" value={manifest.trigger} />
-					<ReviewRow label="Find" value={manifest.looksAt} />
-					<ReviewRow label="Then" value={manifest.action} />
-					<ReviewRow label="Scope">
+					<ReviewRow label="Cuándo" value={manifest.trigger} />
+					<ReviewRow label="Busca" value={manifest.looksAt} />
+					<ReviewRow label="Luego" value={manifest.action} />
+					<ReviewRow label="Alcance">
 						<AgentScopeBadges
 							scopes={manifest.access}
-							fallback="Bounded CRM read access"
+							fallback="Acceso de lectura acotado al CRM"
 						/>
 					</ReviewRow>
 				</div>
-				<AgentCardFooter note="Sandboxed · credentials never enter the sandbox">
+				<AgentCardFooter note="En entorno aislado · las credenciales nunca entran al entorno aislado">
 					<Button asChild size="sm">
 						<Link
 							href={workspaceUrl(`/agents/${agent.id}`)}
 							transitionTypes={["nav-forward"]}
 						>
-							View details
+							Ver detalles
 							<Icon icon={ArrowRight} data-icon="inline-end" />
 						</Link>
 					</Button>
@@ -1816,7 +1830,7 @@ function DeployedAgentCard({
 				await queryClient.invalidateQueries({
 					queryKey: trpc.agents.history.pathKey(),
 				});
-				toast.success("Agent run queued.");
+				toast.success("Ejecución del agente en cola.");
 			},
 			onError: (error) => toast.error(error.message),
 		}),
@@ -1834,21 +1848,21 @@ function DeployedAgentCard({
 	const nextRun =
 		enabledTriggers.length === 1 ? enabledTriggers[0]?.nextRunAt : null;
 	const triggerSummary =
-		enabledTriggers.map((trigger) => trigger.name).join(" · ") || "Manual only";
+		enabledTriggers.map((trigger) => trigger.name).join(" · ") || "Solo manual";
 
 	return (
 		<div className="flex flex-col gap-[18px]">
 			<div className="flex flex-col gap-1">
-				<p className="text-sm leading-5">{agent.name} is live.</p>
+				<p className="text-sm leading-5">{agent.name} está activo.</p>
 				<p className="text-muted-foreground text-sm leading-5">
-					I created the Eve agent, applied its bounded CRM and integration
-					access, and made it live for the team.
+					Creé el agente de Eve, le apliqué su acceso acotado al CRM y a las
+					integraciones, y lo dejé activo para el equipo.
 				</p>
 			</div>
-			<AgentCardShell name={agent.name} status="Live">
+			<AgentCardShell name={agent.name} status="Activo">
 				<div className="flex flex-col gap-2 p-4">
 					<ReviewRow
-						label="Trigger"
+						label="Disparador"
 						value={
 							nextRun ? (
 								<LocalDateTime
@@ -1865,10 +1879,16 @@ function DeployedAgentCard({
 							)
 						}
 					/>
-					<ReviewRow label="Runs in" value="Eve runtime · isolated sandbox" />
-					<ReviewRow label="Owner" value={`Team · ${agent.createdBy.name}`} />
+					<ReviewRow
+						label="Se ejecuta en"
+						value="Entorno de Eve · espacio aislado"
+					/>
+					<ReviewRow
+						label="Responsable"
+						value={`Equipo · ${agent.createdBy.name}`}
+					/>
 				</div>
-				<AgentCardFooter note="The chat stays private. The agent is team-owned.">
+				<AgentCardFooter note="El chat sigue siendo privado. El agente es del equipo.">
 					<div className="flex items-center gap-2">
 						<Button
 							variant="outline"
@@ -1879,17 +1899,17 @@ function DeployedAgentCard({
 						>
 							<AsyncButtonContent
 								status={runAction.status}
-								pendingLabel="Queueing"
-								successLabel="Queued"
-								errorLabel="Try again"
+								pendingLabel="Poniendo en cola"
+								successLabel="En cola"
+								errorLabel="Vuelve a intentarlo"
 							>
 								<Icon icon={Play} data-icon="inline-start" />
-								Run now
+								Ejecutar ahora
 							</AsyncButtonContent>
 						</Button>
 						<Button asChild size="sm">
 							<Link href={workspaceUrl(`/agents/${agent.id}`)}>
-								Open agent
+								Abrir agente
 								<Icon icon={ArrowRight} data-icon="inline-end" />
 							</Link>
 						</Button>
@@ -1899,21 +1919,26 @@ function DeployedAgentCard({
 
 			<div>
 				<p className="flex h-7 items-center text-muted-foreground text-sm">
-					Suggested follow-ups
+					Seguimientos sugeridos
 				</p>
-				{["Add another teammate to the notification"].map((suggestion) => (
-					<button
-						key={suggestion}
-						type="button"
-						onClick={() => void onFollowUp(suggestion)}
-						className="flex w-full items-center gap-3 border-t py-2.5 text-left outline-none hover:bg-muted/50 focus-visible:bg-muted/50"
-					>
-						<span className="min-w-0 flex-1 wrap-break-word text-sm">
-							{suggestion}
-						</span>
-						<Icon icon={ArrowRight} className="size-4 text-muted-foreground" />
-					</button>
-				))}
+				{["Agrega a otra persona del equipo a la notificación"].map(
+					(suggestion) => (
+						<button
+							key={suggestion}
+							type="button"
+							onClick={() => void onFollowUp(suggestion)}
+							className="flex w-full items-center gap-3 border-t py-2.5 text-left outline-none hover:bg-muted/50 focus-visible:bg-muted/50"
+						>
+							<span className="min-w-0 flex-1 wrap-break-word text-sm">
+								{suggestion}
+							</span>
+							<Icon
+								icon={ArrowRight}
+								className="size-4 text-muted-foreground"
+							/>
+						</button>
+					),
+				)}
 			</div>
 		</div>
 	);
@@ -1925,12 +1950,12 @@ function ChatUnavailable() {
 	return (
 		<main className="flex flex-1 items-center justify-center p-8">
 			<div className="max-w-md text-center">
-				<h1 className="font-medium text-lg">Chat unavailable</h1>
+				<h1 className="font-medium text-lg">Chat no disponible</h1>
 				<p className="mt-2 text-muted-foreground text-sm">
-					This chat does not exist or you do not have access to it.
+					Este chat no existe o no tienes acceso a él.
 				</p>
 				<Button asChild variant="outline" className="mt-5">
-					<Link href={workspaceUrl("/chat")}>Start a new chat</Link>
+					<Link href={workspaceUrl("/chat")}>Empezar un chat nuevo</Link>
 				</Button>
 			</div>
 		</main>
@@ -2012,20 +2037,20 @@ function manifestOf(manifest: AgentManifestSummary) {
 			manifest.triggers
 				.map((trigger) =>
 					trigger.type === "MANUAL"
-						? "On demand"
+						? "Bajo demanda"
 						: compactSummary(
 								trigger.summary,
-								trigger.type === "EVENT" ? "On CRM event" : "On schedule",
+								trigger.type === "EVENT" ? "Con evento del CRM" : "Programada",
 							),
 				)
-				.join(" · ") || "On demand",
+				.join(" · ") || "Bajo demanda",
 		looksAt: textOf(
 			manifest.dataScope.summary,
-			"CRM records in the approved scope",
+			"Registros del CRM dentro del alcance aprobado",
 		),
 		action: compactSummary(
 			manifest.actions[0]?.summary,
-			"Perform the requested team action",
+			"Realizar la acción del equipo solicitada",
 		),
 		access: manifest.access,
 	};

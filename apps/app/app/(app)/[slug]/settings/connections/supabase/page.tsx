@@ -8,7 +8,7 @@ import { McpConnection } from "../mcp-connection";
 import { presentMcpConnection } from "../mcp-connection-presentation";
 import { presentSupabaseToolDescription } from "./supabase-tool-description";
 
-export const metadata: Metadata = { title: "Supabase connection" };
+export const metadata: Metadata = { title: "Conexión con Supabase" };
 
 export default function SupabaseConnectionPage(
 	props: PageProps<"/[slug]/settings/connections/supabase">,

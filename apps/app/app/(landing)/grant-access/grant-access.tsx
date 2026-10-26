@@ -23,12 +23,12 @@ type ProviderGrant = {
 
 const PROVIDERS = {
 	google: {
-		label: "Grant Google access",
+		label: "Otorgar acceso a Google",
 		scopes: [...SYNC_SCOPES],
 		Logo: GoogleLogo,
 	},
 	microsoft: {
-		label: "Grant Microsoft access",
+		label: "Otorgar acceso a Microsoft",
 		scopes: [...MICROSOFT_SYNC_SCOPES],
 		Logo: MicrosoftLogo,
 	},
@@ -43,7 +43,7 @@ export function GrantAccess({
 
 	function fail(message?: string) {
 		setPending(null);
-		toast.error(message ?? "Could not reach the provider.");
+		toast.error(message ?? "No se pudo conectar con el proveedor.");
 	}
 
 	async function handleGrant(provider: MailboxProviderId) {
@@ -83,7 +83,7 @@ export function GrantAccess({
 						) : (
 							<Logo data-icon="inline-start" className="size-4" />
 						)}
-						{single ? "Grant access" : label}
+						{single ? "Otorgar acceso" : label}
 					</Button>
 				);
 			})}
@@ -91,12 +91,14 @@ export function GrantAccess({
 			<Button
 				className="w-full"
 				onClick={() => {
-					signOutAndRedirect().catch(() => toast.error("Could not sign out."));
+					signOutAndRedirect().catch(() =>
+						toast.error("No se pudo cerrar la sesión."),
+					);
 				}}
 				type="button"
 				variant="ghost"
 			>
-				Sign out
+				Cerrar sesión
 			</Button>
 		</div>
 	);

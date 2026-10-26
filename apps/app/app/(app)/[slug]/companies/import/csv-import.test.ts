@@ -19,18 +19,20 @@ describe("company CSV parsing", () => {
 	});
 
 	it("rejects files without headers or company rows", () => {
-		expect(() => parseCsv("\n\n")).toThrow("The CSV file has no headers.");
+		expect(() => parseCsv("\n\n")).toThrow(
+			"El archivo CSV no tiene encabezados.",
+		);
 		expect(() => parseCsv("name,website\n")).toThrow(
-			"The CSV file has no company rows.",
+			"El archivo CSV no tiene filas de empresas.",
 		);
 	});
 
 	it("rejects malformed rows and unterminated quoted fields", () => {
 		expect(() => parseCsv("name,website\nAcme,acme.test,extra")).toThrow(
-			"Row 2 has 3 columns. The header has 2.",
+			"La fila 2 tiene 3 columnas. El encabezado tiene 2.",
 		);
 		expect(() => parseCsv('name\n"Acme')).toThrow(
-			"Row 2 has an unterminated quoted field.",
+			"La fila 2 tiene un campo entre comillas sin cerrar.",
 		);
 	});
 
@@ -62,7 +64,7 @@ describe("company CSV mapping", () => {
 	it("rejects duplicate destinations", () => {
 		const parsed = parseCsv("company,account\nAcme,Alias");
 		expect(() => buildImportRows(parsed, ["name", "name"])).toThrow(
-			"Each company field can use only one CSV column.",
+			"Cada campo de la empresa solo puede usar una columna del CSV.",
 		);
 	});
 });
@@ -84,7 +86,7 @@ describe("company import wizard", () => {
 		expect(result.step).toBe("result");
 		expect(reduceImportWizard(result, { type: "restart" })).toEqual({
 			step: "upload",
-			message: "Choose a CSV file.",
+			message: "Elige un archivo CSV.",
 		});
 	});
 

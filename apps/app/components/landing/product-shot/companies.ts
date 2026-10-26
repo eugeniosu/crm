@@ -18,11 +18,11 @@ export const MOCK_COMPANIES: MockCompany[] = [
 	{
 		name: "Comp AI",
 		domain: "trycomp.ai",
-		industry: "Retail & E-commerce",
+		industry: "Retail y comercio electrónico",
 		owner: OWNER,
 		contacts: "1",
 		deals: "0",
-		lastActivity: "2h ago",
+		lastActivity: "hace 2 h",
 	},
 	{
 		name: "Tristar Fulfillment",
@@ -62,11 +62,11 @@ export const MOCK_COMPANIES: MockCompany[] = [
 ];
 
 export const COMPANY_COLUMNS = [
-	{ label: "Company", width: "26%" },
-	{ label: "Domain", width: "16%" },
-	{ label: "Industry", width: "16%" },
-	{ label: "Owner", width: "16%" },
-	{ label: "Contacts", width: "9%" },
-	{ label: "Deals", width: "9%" },
-	{ label: "Last activity", width: "12%" },
+	{ label: "Empresa", width: "26%" },
+	{ label: "Dominio", width: "16%" },
+	{ label: "Rubro", width: "16%" },
+	{ label: "Responsable", width: "16%" },
+	{ label: "Contactos", width: "9%" },
+	{ label: "Negocios", width: "9%" },
+	{ label: "Última actividad", width: "12%" },
 ] as const;

@@ -14,7 +14,7 @@ export async function ImportCompaniesLink({
 		<Button asChild variant="outline">
 			<Link href={workspaceUrl(slug, "/companies/import")}>
 				<Icon icon={Upload} data-icon="inline-start" />
-				Import CSV
+				Importar CSV
 			</Link>
 		</Button>
 	);
@@ -24,7 +24,7 @@ export function ImportCompaniesLinkFallback() {
 	return (
 		<Button variant="outline" disabled>
 			<Icon icon={Upload} data-icon="inline-start" />
-			Import CSV
+			Importar CSV
 		</Button>
 	);
 }

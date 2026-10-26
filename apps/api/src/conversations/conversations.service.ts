@@ -374,7 +374,9 @@ export class ConversationsService {
 		});
 
 		if (!row) {
-			throw new NotFoundException(`No builder conversation with id ${id}.`);
+			throw new NotFoundException(
+				`No existe una conversación del constructor con id ${id}.`,
+			);
 		}
 
 		const { pendingInputRequests, ...conversation } = row;
@@ -521,7 +523,7 @@ export class ConversationsService {
 
 		if (!conversation) {
 			throw new NotFoundException(
-				`No builder conversation with id ${input.id}.`,
+				`No existe una conversación del constructor con id ${input.id}.`,
 			);
 		}
 
@@ -587,13 +589,13 @@ export class ConversationsService {
 
 		if (!conversation) {
 			throw new NotFoundException(
-				`No builder conversation with id ${input.id}.`,
+				`No existe una conversación del constructor con id ${input.id}.`,
 			);
 		}
 
 		if (!conversation.sessionId || !conversation.continuationToken) {
 			throw new BadRequestException(
-				"The agent is no longer waiting for that answer.",
+				"El agente ya no está esperando esa respuesta.",
 			);
 		}
 
@@ -607,12 +609,12 @@ export class ConversationsService {
 		);
 		if (!question) {
 			throw new BadRequestException(
-				"The agent is no longer waiting for that answer.",
+				"El agente ya no está esperando esa respuesta.",
 			);
 		}
 		if (question.requestId !== input.requestId) {
 			throw new BadRequestException(
-				"That follow-up question is no longer active.",
+				"Esa pregunta de seguimiento ya no está activa.",
 			);
 		}
 
@@ -623,20 +625,20 @@ export class ConversationsService {
 
 		if (input.optionId && !selected) {
 			throw new BadRequestException(
-				"That answer is not available for this question.",
+				"Esa respuesta no está disponible para esta pregunta.",
 			);
 		}
 
 		const acceptsText = question.allowFreeform || question.display === "text";
 		if (input.text && !acceptsText) {
 			throw new BadRequestException(
-				"Choose one of the available answers for this question.",
+				"Elige una de las respuestas disponibles para esta pregunta.",
 			);
 		}
 
 		const answer = input.optionId ?? input.text;
 		if (!answer) {
-			throw new BadRequestException("Choose an answer before submitting.");
+			throw new BadRequestException("Elige una respuesta antes de enviar.");
 		}
 
 		const displayText = selected?.label ?? answer;
@@ -689,7 +691,7 @@ export class ConversationsService {
 			});
 			if (answered) {
 				throw new BadRequestException(
-					"That follow-up question has already been answered.",
+					"Esa pregunta de seguimiento ya fue respondida.",
 				);
 			}
 
@@ -721,13 +723,13 @@ export class ConversationsService {
 
 		if (!conversation) {
 			throw new NotFoundException(
-				`No builder conversation with id ${input.id}.`,
+				`No existe una conversación del constructor con id ${input.id}.`,
 			);
 		}
 
 		if (!conversation.sessionId || !conversation.continuationToken) {
 			throw new BadRequestException(
-				"The agent is no longer waiting for that approval.",
+				"El agente ya no está esperando esa aprobación.",
 			);
 		}
 
@@ -741,12 +743,14 @@ export class ConversationsService {
 		);
 		if (!approval || approval.requestId !== input.requestId) {
 			throw new BadRequestException(
-				"That approval request is no longer active.",
+				"Esa solicitud de aprobación ya no está activa.",
 			);
 		}
 
 		if (!approval.options.some((option) => option.id === input.decision)) {
-			throw new BadRequestException("That approval decision is not available.");
+			throw new BadRequestException(
+				"Esa decisión de aprobación no está disponible.",
+			);
 		}
 
 		try {
@@ -790,7 +794,7 @@ export class ConversationsService {
 			}
 
 			throw new BadRequestException(
-				"That approval request has already been answered.",
+				"Esa solicitud de aprobación ya fue respondida.",
 			);
 		}
 	}
@@ -819,13 +823,13 @@ export class ConversationsService {
 
 		if (!conversation) {
 			throw new NotFoundException(
-				`No builder conversation with id ${input.id}.`,
+				`No existe una conversación del constructor con id ${input.id}.`,
 			);
 		}
 
 		if (!conversation.sessionId || !conversation.continuationToken) {
 			throw new BadRequestException(
-				"The agent is no longer waiting for that decision.",
+				"El agente ya no está esperando esa decisión.",
 			);
 		}
 
@@ -839,7 +843,7 @@ export class ConversationsService {
 		);
 		if (!limit || limit.requestId !== input.requestId) {
 			throw new BadRequestException(
-				"That session limit request is no longer active.",
+				"Esa solicitud de límite de sesión ya no está activa.",
 			);
 		}
 
@@ -847,7 +851,7 @@ export class ConversationsService {
 			(candidate) => candidate.id === input.decision,
 		);
 		if (!option) {
-			throw new BadRequestException("That decision is not available.");
+			throw new BadRequestException("Esa decisión no está disponible.");
 		}
 
 		try {
@@ -891,7 +895,7 @@ export class ConversationsService {
 			}
 
 			throw new BadRequestException(
-				"That session limit request has already been answered.",
+				"Esa solicitud de límite de sesión ya fue respondida.",
 			);
 		}
 	}
@@ -908,7 +912,7 @@ export class ConversationsService {
 
 		if (updated.count !== 1) {
 			throw new NotFoundException(
-				`No builder conversation with id ${input.id}.`,
+				`No existe una conversación del constructor con id ${input.id}.`,
 			);
 		}
 
@@ -923,7 +927,9 @@ export class ConversationsService {
 		});
 
 		if (updated.count === 0) {
-			throw new NotFoundException(`No builder conversation with id ${id}.`);
+			throw new NotFoundException(
+				`No existe una conversación del constructor con id ${id}.`,
+			);
 		}
 
 		return { id };
@@ -973,7 +979,7 @@ export class ConversationsService {
 		});
 
 		if (!row) {
-			throw new NotFoundException("That attachment is unavailable.");
+			throw new NotFoundException("Ese adjunto no está disponible.");
 		}
 
 		return {
@@ -994,7 +1000,7 @@ export class ConversationsService {
 
 		if (!conversation) {
 			throw new NotFoundException(
-				`No builder conversation with id ${input.id}.`,
+				`No existe una conversación del constructor con id ${input.id}.`,
 			);
 		}
 
@@ -1042,7 +1048,7 @@ export class ConversationsService {
 		}) => {
 			if (existing.userId !== userId || existing.kind !== "RECORD") {
 				throw new NotFoundException(
-					`No record conversation with session ${input.sessionId}.`,
+					`No existe una conversación de registro con sesión ${input.sessionId}.`,
 				);
 			}
 
@@ -1050,7 +1056,7 @@ export class ConversationsService {
 				existing.contactId ?? existing.companyId ?? existing.dealId;
 			if (existingRecordId !== recordId) {
 				throw new BadRequestException(
-					"A conversation cannot be moved to another CRM record.",
+					"Una conversación no se puede mover a otro registro del CRM.",
 				);
 			}
 
@@ -1073,7 +1079,7 @@ export class ConversationsService {
 
 			if (updated.count !== 1) {
 				throw new NotFoundException(
-					`No record conversation with session ${input.sessionId}.`,
+					`No existe una conversación de registro con sesión ${input.sessionId}.`,
 				);
 			}
 
@@ -1139,7 +1145,9 @@ export class ConversationsService {
 		});
 
 		if (!conversation || conversation.userId !== userId) {
-			throw new NotFoundException(`No conversation with id ${input.id}.`);
+			throw new NotFoundException(
+				`No existe una conversación con id ${input.id}.`,
+			);
 		}
 		if (conversation.kind === "BUILDER") {
 			await this.assertWorkspaceMember(userId);
@@ -1190,7 +1198,7 @@ export class ConversationsService {
 		});
 
 		if (!conversation || conversation.userId !== userId) {
-			throw new NotFoundException(`No conversation with id ${id}.`);
+			throw new NotFoundException(`No existe una conversación con id ${id}.`);
 		}
 		if (conversation.kind === "BUILDER") {
 			await this.assertWorkspaceMember(userId);
@@ -1231,7 +1239,7 @@ export class ConversationsService {
 
 		if (!recordId || recordIds.length !== 1) {
 			throw new BadRequestException(
-				"Choose exactly one contact, company or deal.",
+				"Elige exactamente un contacto, una empresa o un negocio.",
 			);
 		}
 
@@ -1297,7 +1305,7 @@ export class ConversationsService {
 
 		if (referencedIds.some((id) => !referencedById.has(id))) {
 			throw new BadRequestException(
-				"One or more attachments are no longer available.",
+				"Uno o más adjuntos ya no están disponibles.",
 			);
 		}
 
@@ -1315,7 +1323,7 @@ export class ConversationsService {
 			const stored = referencedById.get(attachment.id);
 			if (!stored) {
 				throw new BadRequestException(
-					"One or more attachments are no longer available.",
+					"Uno o más adjuntos ya no están disponibles.",
 				);
 			}
 			return {
@@ -1337,7 +1345,9 @@ export class ConversationsService {
 		});
 
 		if (!member) {
-			throw new NotFoundException("No workspace membership was found.");
+			throw new NotFoundException(
+				"No se encontró ninguna membresía del espacio de trabajo.",
+			);
 		}
 	}
 
@@ -1363,7 +1373,7 @@ export class ConversationsService {
 			existing.conversation.userId !== userId ||
 			existing.conversation.kind !== "BUILDER"
 		) {
-			throw new BadRequestException("That request has already been used.");
+			throw new BadRequestException("Esa solicitud ya se usó.");
 		}
 
 		return { id: existing.conversation.id };
@@ -1378,7 +1388,7 @@ export class ConversationsService {
 			existing.conversationId !== conversationId ||
 			existing.submittedById !== userId
 		) {
-			throw new BadRequestException("That request has already been used.");
+			throw new BadRequestException("Esa solicitud ya se usó.");
 		}
 
 		return { id: existing.id };

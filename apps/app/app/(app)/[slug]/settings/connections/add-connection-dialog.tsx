@@ -47,9 +47,9 @@ export function AddConnectionDialog({
 		>
 			<DialogContent className="max-w-(--container-narrow) gap-0 p-0 md:left-[calc(50%+calc((56px+213px)/2))]">
 				<DialogHeader className="gap-2 px-(--spacing-block-inline) pt-5 pb-4">
-					<DialogTitle className="text-base">Add a connection</DialogTitle>
+					<DialogTitle className="text-base">Agregar una conexión</DialogTitle>
 					<DialogDescription>
-						Nothing moves until you finish setting one up.
+						No se mueve nada hasta que termines de configurar una.
 					</DialogDescription>
 				</DialogHeader>
 				<div className="flex max-h-[min(60vh,32rem)] flex-col overflow-y-auto border-y px-2 py-2">
@@ -57,7 +57,7 @@ export function AddConnectionDialog({
 						<CatalogRow
 							logo={GoogleLogo}
 							name="Google Workspace"
-							description="Bring in Gmail messages and Google Calendar meetings"
+							description="Trae mensajes de Gmail y reuniones de Google Calendar"
 							href={`/${slug}/settings/connections/google`}
 						/>
 					) : null}
@@ -65,7 +65,7 @@ export function AddConnectionDialog({
 						<CatalogRow
 							logo={SlackLogo}
 							name="Slack"
-							description="Let deployed agents notify approved channels and people"
+							description="Permite que los agentes desplegados avisen a canales y personas aprobados"
 							href={`/${slug}/settings/connections/slack`}
 						/>
 					) : null}
@@ -73,7 +73,7 @@ export function AddConnectionDialog({
 						<CatalogRow
 							logo={MicrosoftLogo}
 							name="Microsoft 365"
-							description="Bring in Outlook email and the people on it"
+							description="Trae correos de Outlook y las personas que participan"
 							href={`/${slug}/settings/connections/microsoft`}
 						/>
 					) : null}
@@ -102,18 +102,18 @@ export function AddConnectionDialog({
 					<CatalogRow
 						logo={StripeLogo}
 						name="Stripe"
-						description="Coming soon"
+						description="Próximamente"
 					/>
 					<CatalogRow
 						logo={DocusignLogo}
 						name="Docusign"
-						description="Coming soon"
+						description="Próximamente"
 					/>
 				</div>
 				<p className="px-(--spacing-block-inline) py-4 text-muted-foreground text-xs">
 					{connected.length > 0
-						? `${connected.join(", ")} ${connected.length === 1 ? "is" : "are"} already connected.`
-						: "Nothing is connected yet."}
+						? `${connected.join(", ")} ${connected.length === 1 ? "ya está conectado" : "ya están conectados"}.`
+						: "Todavía no hay nada conectado."}
 				</p>
 			</DialogContent>
 		</Dialog>
@@ -125,8 +125,9 @@ function mcpDescription(
 	configured: boolean,
 	canManage: boolean,
 ) {
-	if (!configured) return "Set MCP_ENCRYPTION_KEY to enable";
-	if (!canManage) return "An owner or admin can connect this service";
+	if (!configured) return "Define MCP_ENCRYPTION_KEY para habilitarlo";
+	if (!canManage)
+		return "Un propietario o administrador puede conectar este servicio";
 	return description;
 }
 

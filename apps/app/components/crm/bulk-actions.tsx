@@ -39,15 +39,15 @@ export function reportBulk(
 	done: (count: number) => string,
 ): void {
 	if (result.succeeded === 0) {
-		toast.error(result.message ?? "Nothing changed.");
+		toast.error(result.message ?? "No se cambió nada.");
 		return;
 	}
 
 	if (result.failed > 0) {
 		toast.error(
 			`${done(result.succeeded)} ${result.failed} ${
-				result.failed === 1 ? "was" : "were"
-			} left alone${result.message ? ` — ${result.message}` : "."}`,
+				result.failed === 1 ? "quedó" : "quedaron"
+			} sin cambios${result.message ? `: ${result.message}` : "."}`,
 		);
 		return;
 	}
@@ -71,7 +71,7 @@ export function BulkActionsMenu({
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" size="sm" disabled={pending}>
 					{pending ? <Spinner /> : null}
-					Actions
+					Acciones
 					<ChevronDown data-icon="inline-end" className="opacity-60" />
 				</Button>
 			</DropdownMenuTrigger>
@@ -93,7 +93,7 @@ export function BulkOwnerMenu({
 }) {
 	return (
 		<DropdownMenuSub>
-			<DropdownMenuSubTrigger>Assign owner</DropdownMenuSubTrigger>
+			<DropdownMenuSubTrigger>Asignar responsable</DropdownMenuSubTrigger>
 			<DropdownMenuSubContent className="max-h-72 overflow-y-auto">
 				<DropdownMenuGroup>
 					{unassignedLabel && (
@@ -102,7 +102,9 @@ export function BulkOwnerMenu({
 						</DropdownMenuItem>
 					)}
 					{users.length === 0 ? (
-						<DropdownMenuLabel>Nobody else works here yet.</DropdownMenuLabel>
+						<DropdownMenuLabel>
+							Todavía no hay nadie más aquí.
+						</DropdownMenuLabel>
 					) : (
 						users.map((user) => (
 							<DropdownMenuItem
@@ -141,9 +143,9 @@ export function BulkDeleteDialog({
 				</AlertDialogHeader>
 
 				<AlertDialogFooter>
-					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogCancel>Cancelar</AlertDialogCancel>
 					<AlertDialogAction variant="destructive" onClick={onConfirm}>
-						Delete
+						Eliminar
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

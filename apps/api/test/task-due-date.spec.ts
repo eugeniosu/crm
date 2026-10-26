@@ -16,7 +16,7 @@ describe("task calendar days", () => {
 
 	it("rejects an instant where a calendar day is required", () => {
 		expect(() => parseTaskDueDay("2026-10-22T14:00:00.000Z")).toThrow(
-			"is not a calendar day",
+			"no es un día del calendario",
 		);
 	});
 

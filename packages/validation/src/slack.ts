@@ -13,7 +13,7 @@ export const createPayload = z.object({
 		.trim()
 		.min(1)
 		.max(80)
-		.regex(/^[a-z0-9-_]+$/, "Use lowercase letters, numbers and dashes."),
+		.regex(/^[a-z0-9-_]+$/, "Usa letras minúsculas, números y guiones."),
 	isPrivate: z.boolean(),
 });
 

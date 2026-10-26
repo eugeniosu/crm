@@ -15,7 +15,7 @@ import { getServerQueryClient, getServerTrpc } from "@/lib/trpc/server";
 import { normalizeTasksInput, tasksSearchParams } from "./tasks-search-params";
 import { TasksTable } from "./tasks-table";
 
-export const metadata: Metadata = { title: "Tasks" };
+export const metadata: Metadata = { title: "Tareas" };
 
 export default function TasksPage({
 	searchParams,
@@ -24,9 +24,9 @@ export default function TasksPage({
 		<PageShell className="min-h-0">
 			<PageShellHeader>
 				<PageShellHeading>
-					<PageShellTitle>Tasks</PageShellTitle>
+					<PageShellTitle>Tareas</PageShellTitle>
 					<PageShellDescription>
-						Work that needs a next step.
+						Trabajo que necesita un siguiente paso.
 					</PageShellDescription>
 				</PageShellHeading>
 			</PageShellHeader>

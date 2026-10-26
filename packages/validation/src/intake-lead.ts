@@ -25,7 +25,7 @@ export const intakeMeeting = z
 		externalEventId: z.string().trim().min(1).max(INTAKE_LIMITS.eventId),
 	})
 	.refine((meeting) => Date.parse(meeting.end) > Date.parse(meeting.start), {
-		message: "meeting.end must be after meeting.start",
+		message: "meeting.end debe ser posterior a meeting.start",
 		path: ["end"],
 	});
 

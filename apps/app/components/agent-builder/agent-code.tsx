@@ -95,7 +95,7 @@ export function AgentCode({
 		if (failed || remaining.length > 0) return;
 
 		setEditing(false);
-		toast.success("Saved.");
+		toast.success("Guardado.");
 	}, [agentId, queryClient, save, trpc]);
 
 	const editorOptions = useMemo<EditorOptions<undefined>>(
@@ -147,8 +147,8 @@ export function AgentCode({
 		return (
 			<p className="text-muted-foreground text-sm">
 				{code.isPending
-					? "Reading the agent's files…"
-					: "This agent has no files yet. The builder writes them when it deploys."}
+					? "Leyendo los archivos del agente…"
+					: "Este agente todavía no tiene archivos. El creador los escribe al publicarlo."}
 			</p>
 		);
 	}
@@ -158,9 +158,9 @@ export function AgentCode({
 			<section className="flex flex-col gap-3.5">
 				<div className="flex items-end justify-between gap-4">
 					<div>
-						<h2 className="font-semibold text-lg tracking-tight">Code</h2>
+						<h2 className="font-semibold text-lg tracking-tight">Código</h2>
 						<p className="text-muted-foreground text-sm">
-							What the agent actually runs.
+							Lo que el agente ejecuta realmente.
 						</p>
 					</div>
 
@@ -171,7 +171,7 @@ export function AgentCode({
 								size="sm"
 								variant="outline"
 							>
-								{showDiff ? "Hide changes" : "Changes"}
+								{showDiff ? "Ocultar cambios" : "Cambios"}
 							</Button>
 						) : null}
 						{canManage ? (
@@ -183,7 +183,7 @@ export function AgentCode({
 								size="sm"
 								variant="outline"
 							>
-								{editing ? "Done" : "Edit"}
+								{editing ? "Listo" : "Editar"}
 							</Button>
 						) : null}
 					</div>
@@ -228,12 +228,12 @@ export function AgentCode({
 			</section>
 
 			<SaveBar
-				description={`${changed.length} file${changed.length === 1 ? "" : "s"} changed. Saving writes a new revision.`}
+				description={`${changed.length} ${changed.length === 1 ? "archivo modificado" : "archivos modificados"}. Al guardar se escribe una revisión nueva.`}
 				open={changed.length > 0}
-				title="Unsaved code"
+				title="Código sin guardar"
 			>
 				<Button disabled={saving} onClick={discard} size="sm" variant="outline">
-					Discard
+					Descartar
 				</Button>
 				<Button
 					disabled={saving}
@@ -242,7 +242,7 @@ export function AgentCode({
 					}}
 					size="sm"
 				>
-					{saving ? "Saving…" : "Save"}
+					{saving ? "Guardando…" : "Guardar"}
 				</Button>
 			</SaveBar>
 		</EditProvider>

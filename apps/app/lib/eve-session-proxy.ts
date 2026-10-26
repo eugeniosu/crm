@@ -86,7 +86,7 @@ export async function eveProxyBody(
 		new TextEncoder().encode(text).byteLength >
 		EVE_SESSION_PROXY.request.maxBodyBytes
 	) {
-		throw new EveProxyRequestError(413, "The request is too large.");
+		throw new EveProxyRequestError(413, "La solicitud es demasiado grande.");
 	}
 
 	let value: z.infer<typeof json> = {};
@@ -94,13 +94,19 @@ export async function eveProxyBody(
 		try {
 			value = json.parse(JSON.parse(text));
 		} catch {
-			throw new EveProxyRequestError(400, "The request body is invalid.");
+			throw new EveProxyRequestError(
+				400,
+				"El cuerpo de la solicitud no es válido.",
+			);
 		}
 	}
 
 	const parsed = commandSchemas[kind].safeParse(value);
 	if (!parsed.success) {
-		throw new EveProxyRequestError(400, "The request body is invalid.");
+		throw new EveProxyRequestError(
+			400,
+			"El cuerpo de la solicitud no es válido.",
+		);
 	}
 	const serialized = JSON.stringify(parsed.data);
 	return serialized === "{}" ? null : serialized;

@@ -30,17 +30,17 @@ const TYPES = ["NOTE", "CALL", "EMAIL", "MEETING", "TASK"] as const;
 
 type ComposableType = (typeof TYPES)[number];
 
-const dueFormat = new Intl.DateTimeFormat("en-US", {
+const dueFormat = new Intl.DateTimeFormat("es-CL", {
 	month: "short",
 	day: "numeric",
 });
 
 const PLACEHOLDER = {
-	NOTE: "Log a note, call, email, meeting or task…",
-	CALL: "What came out of the call?",
-	EMAIL: "What was said?",
-	MEETING: "What came out of the meeting?",
-	TASK: "What needs doing?",
+	NOTE: "Registra una nota, llamada, correo, reunión o tarea…",
+	CALL: "¿Qué salió de la llamada?",
+	EMAIL: "¿Qué se dijo?",
+	MEETING: "¿Qué salió de la reunión?",
+	TASK: "¿Qué hay que hacer?",
 } satisfies Record<ComposableType, string>;
 
 export function ActivityComposer({ anchor }: { anchor: TimelineAnchor }) {
@@ -92,7 +92,7 @@ export function ActivityComposer({ anchor }: { anchor: TimelineAnchor }) {
 					value={draft}
 					onChange={(event) => setDraft(event.target.value)}
 					placeholder={PLACEHOLDER[type]}
-					aria-label="What happened"
+					aria-label="Qué pasó"
 					onKeyDown={(event) => {
 						if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
 							event.preventDefault();
@@ -127,7 +127,7 @@ export function ActivityComposer({ anchor }: { anchor: TimelineAnchor }) {
 							<PopoverTrigger asChild>
 								<InputGroupButton variant="ghost" size="xs">
 									<Icon icon={Calendar} data-icon="inline-start" />
-									{dueAt ? dueFormat.format(dueAt) : "Due date"}
+									{dueAt ? dueFormat.format(dueAt) : "Fecha de vencimiento"}
 								</InputGroupButton>
 							</PopoverTrigger>
 							<PopoverContent size="fit" align="start">
@@ -150,7 +150,9 @@ export function ActivityComposer({ anchor }: { anchor: TimelineAnchor }) {
 							disabled={create.isPending}
 						>
 							{create.isPending ? <Spinner /> : null}
-							{isTask ? "Add task" : `Log ${activityLabel(type).toLowerCase()}`}
+							{isTask
+								? "Agregar tarea"
+								: `Registrar ${activityLabel(type).toLowerCase()}`}
 						</InputGroupButton>
 					)}
 				</InputGroupAddon>

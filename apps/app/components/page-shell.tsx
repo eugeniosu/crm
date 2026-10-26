@@ -152,7 +152,7 @@ function PageShellFallback() {
 				</div>
 			</div>
 			<span role="status" className="sr-only">
-				Loading page…
+				Cargando la página…
 			</span>
 		</PageShell>
 	);

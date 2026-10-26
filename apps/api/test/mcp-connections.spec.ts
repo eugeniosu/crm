@@ -115,7 +115,7 @@ describe("MCP connections", () => {
 				"read_databases",
 				"database:write_database",
 			]),
-		).toThrow("unexpected access");
+		).toThrow("acceso inesperado");
 	});
 
 	it("reports missing optional encryption without breaking the catalog", async () => {
@@ -138,7 +138,7 @@ describe("MCP connections", () => {
 				accessMode: "read_only",
 				returnPath: "/tripwire/settings/connections/linear",
 			}),
-		).rejects.toThrow("Only an owner or an admin");
+		).rejects.toThrow("Solo un propietario o un administrador");
 	});
 
 	it("refuses an expired OAuth state", async () => {
@@ -154,7 +154,7 @@ describe("MCP connections", () => {
 
 		expect(
 			service.callback({ state: "expired", code: "code", userId }),
-		).rejects.toThrow("authorization state is invalid");
+		).rejects.toThrow("estado de autorización de MCP no es válido");
 	});
 
 	it("refuses a replayed OAuth state", async () => {
@@ -170,7 +170,7 @@ describe("MCP connections", () => {
 
 		expect(
 			service.callback({ state: "replayed", code: "code", userId }),
-		).rejects.toThrow("authorization state is invalid");
+		).rejects.toThrow("estado de autorización de MCP no es válido");
 	});
 
 	it("refreshes a cached registration after the encryption key changes", async () => {
@@ -284,7 +284,7 @@ describe("MCP connections", () => {
 
 		expect(
 			service.callback({ state: rawState, code: "code", userId }),
-		).rejects.toThrow("authorization must restart");
+		).rejects.toThrow("debe reiniciarse");
 	});
 
 	it("wakes MCP discovery after OAuth completes", async () => {

@@ -34,7 +34,7 @@ export function DueDateButton({
 			<PopoverTrigger asChild>
 				<InputGroupButton variant="ghost" size="xs" disabled={disabled}>
 					<Icon icon={CalendarGlyph} data-icon="inline-start" />
-					{selected ? formatDay(value) : "Due date"}
+					{selected ? formatDay(value) : "Fecha de vencimiento"}
 				</InputGroupButton>
 			</PopoverTrigger>
 			<PopoverContent size="fit" align="start">
@@ -54,7 +54,7 @@ export function DueDateButton({
 							className="w-full justify-start"
 							onClick={() => choose("")}
 						>
-							Clear due date
+							Quitar fecha de vencimiento
 						</Button>
 					</div>
 				) : null}

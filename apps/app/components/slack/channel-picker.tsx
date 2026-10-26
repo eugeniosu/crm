@@ -56,7 +56,7 @@ export function ChannelPicker({
 					>
 						{onSelect && selectable ? (
 							<button
-								aria-label={`Choose #${channel.name}`}
+								aria-label={`Elegir #${channel.name}`}
 								aria-pressed={selected}
 								className="absolute inset-0"
 								disabled={pending}
@@ -101,7 +101,7 @@ export function ChannelPicker({
 									size="xs"
 									variant="outline"
 								>
-									{channel.inviteRequestedAt ? "Ask again" : "Request"}
+									{channel.inviteRequestedAt ? "Pedir de nuevo" : "Solicitar"}
 								</Button>
 							) : !channel.isMember && onAdd ? (
 								<Button
@@ -110,7 +110,7 @@ export function ChannelPicker({
 									size="xs"
 									variant="outline"
 								>
-									Add
+									Agregar
 								</Button>
 							) : null}
 						</span>
@@ -123,13 +123,13 @@ export function ChannelPicker({
 
 function describe(channel: PickerChannel, canInviteItself: boolean): string {
 	const people =
-		channel.memberCount === null ? "" : ` · ${channel.memberCount} people`;
+		channel.memberCount === null ? "" : ` · ${channel.memberCount} personas`;
 
-	if (channel.isMember) return `Comp AI is in${people}`;
-	if (!channel.classified) return `Not read from Slack yet${people}`;
-	if (!channel.isPrivate) return `Comp AI can join this one${people}`;
-	if (canInviteItself) return `Private. Comp AI joins as you${people}`;
+	if (channel.isMember) return `Comp AI está en el canal${people}`;
+	if (!channel.classified) return `Aún no se lee desde Slack${people}`;
+	if (!channel.isPrivate) return `Comp AI puede unirse a este canal${people}`;
+	if (canInviteItself) return `Privado. Comp AI se une como tú${people}`;
 	if (channel.inviteRequestedAt)
-		return `Private. Waiting on an invite${people}`;
-	return `Private. Someone inside has to invite Comp AI${people}`;
+		return `Privado. Esperando una invitación${people}`;
+	return `Privado. Alguien del canal tiene que invitar a Comp AI${people}`;
 }

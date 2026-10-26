@@ -38,8 +38,8 @@ export function SlackScopeGroups({
 			<div>
 				<h2 className="font-medium text-sm">{title}</h2>
 				<p className="text-muted-foreground text-xs">
-					Broad means the whole workspace, not one channel. Open a group to see
-					the details.
+					«Amplio» significa todo el espacio de trabajo, no un solo canal. Abre
+					un grupo para ver el detalle.
 				</p>
 			</div>
 
@@ -57,7 +57,8 @@ export function SlackScopeGroups({
 									</span>
 								</span>
 								<span className="shrink-0 whitespace-nowrap pt-0.5 pr-2 font-normal text-muted-foreground text-xs">
-									{broad} broad of {group.scopes.length}
+									{broad} {broad === 1 ? "amplio" : "amplios"} de{" "}
+									{group.scopes.length}
 								</span>
 							</AccordionTrigger>
 
@@ -94,11 +95,11 @@ export function SlackScopeGroups({
 								{entry.grant}
 							</span>
 							<span className="text-muted-foreground text-xs">
-								Slack held this one back, so it is off.
+								Slack retuvo este permiso, por lo que está desactivado.
 							</span>
 						</span>
 						<span className="shrink-0 whitespace-nowrap pt-0.5 pr-2 text-muted-foreground text-xs">
-							Not granted
+							No otorgado
 						</span>
 					</div>
 				))}

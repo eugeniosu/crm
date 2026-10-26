@@ -9,7 +9,7 @@ import { SocialSignIn } from "./social-sign-in";
 import { type SsoProvider, SsoSignIn } from "./sso-sign-in";
 
 export const metadata: Metadata = {
-	title: "Sign in",
+	title: "Iniciar sesión",
 };
 
 type SignInOptions = {
@@ -46,8 +46,8 @@ export default function SignInPage({ searchParams }: PageProps<"/sign-in">) {
 			<Suspense
 				fallback={
 					<AuthHeading
-						title="Welcome back"
-						description="Sign in with your account to continue."
+						title="Hola de nuevo"
+						description="Inicia sesión con tu cuenta para continuar."
 					/>
 				}
 			>
@@ -89,15 +89,15 @@ async function SignIn({
 		return (
 			<>
 				<AuthHeading
-					title="No way in yet"
-					description="This CRM has no sign-in method configured, so nobody can get in — including you."
+					title="Todavía no hay forma de entrar"
+					description="Este CRM no tiene un método de inicio de sesión configurado, así que nadie puede entrar, tú tampoco."
 				/>
 
 				<p className="text-center text-muted-foreground text-sm/5">
-					Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET — or MICROSOFT_CLIENT_ID
-					and MICROSOFT_CLIENT_SECRET — in the root .env file and restart. Your
-					own identity provider can be added from Settings once somebody is
-					signed in.
+					Define GOOGLE_CLIENT_ID y GOOGLE_CLIENT_SECRET (o MICROSOFT_CLIENT_ID
+					y MICROSOFT_CLIENT_SECRET) en el archivo .env de la raíz y reinicia.
+					Tu propio proveedor de identidad se puede agregar desde Configuración
+					una vez que alguien haya iniciado sesión.
 				</p>
 			</>
 		);
@@ -106,8 +106,8 @@ async function SignIn({
 	return (
 		<>
 			<AuthHeading
-				title="Welcome back"
-				description="Sign in with your account to continue."
+				title="Hola de nuevo"
+				description="Inicia sesión con tu cuenta para continuar."
 			/>
 
 			{showSso ? <SsoSignIn providers={providers} /> : null}

@@ -33,7 +33,7 @@ async function handler(request: Request): Promise<Response> {
 
 	if (!bridgeConfigured()) {
 		return failure(
-			"The research agent is not configured for this install.",
+			"El agente de investigación no está configurado en esta instalación.",
 			503,
 		);
 	}
@@ -125,7 +125,7 @@ async function handler(request: Request): Promise<Response> {
 			signal: request.signal,
 		});
 	} catch {
-		return failure("The research agent is not reachable.", 502);
+		return failure("El agente de investigación no responde.", 502);
 	}
 
 	if (!upstream.ok) {

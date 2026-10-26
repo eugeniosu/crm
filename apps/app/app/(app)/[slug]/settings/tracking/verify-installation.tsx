@@ -55,13 +55,13 @@ export function VerifyInstallation() {
 			<CardHeader>
 				<CardTitle>
 					<div className="flex items-center gap-2">
-						Verify installation
+						Verificar la instalación
 						{result ? <Indicator result={result} /> : null}
 					</div>
 				</CardTitle>
 				<CardDescription>
-					We load one page and look for the script, then read your Tag Manager
-					container if it is not in the HTML.
+					Cargamos una página y buscamos el script; si no está en el HTML,
+					leemos tu contenedor de Tag Manager.
 				</CardDescription>
 
 				<CardAction>
@@ -72,7 +72,7 @@ export function VerifyInstallation() {
 						disabled={!canManage || verify.isPending || url.trim() === ""}
 					>
 						{verify.isPending ? <Spinner data-icon="inline-start" /> : null}
-						Check now
+						Comprobar ahora
 					</Button>
 				</CardAction>
 			</CardHeader>
@@ -87,7 +87,7 @@ export function VerifyInstallation() {
 					}}
 				>
 					<Field>
-						<FieldLabel htmlFor={urlId}>Page to check</FieldLabel>
+						<FieldLabel htmlFor={urlId}>Página a comprobar</FieldLabel>
 						<InputGroup>
 							<InputGroupAddon>
 								<InputGroupText>https://</InputGroupText>
@@ -109,8 +109,8 @@ export function VerifyInstallation() {
 							/>
 						</InputGroup>
 						<FieldDescription>
-							The page has to be public. A page behind a login always fails this
-							check.
+							La página debe ser pública. Una página protegida con inicio de
+							sesión siempre falla esta comprobación.
 						</FieldDescription>
 					</Field>
 				</form>
@@ -124,7 +124,11 @@ export function VerifyInstallation() {
 function Indicator({ result }: { result: Result }) {
 	if (result.status === "found" && result.pageView) {
 		return (
-			<StatusIndicator size="sm" tone="success" label="Verified just now" />
+			<StatusIndicator
+				size="sm"
+				tone="success"
+				label="Verificado hace un momento"
+			/>
 		);
 	}
 
@@ -133,7 +137,7 @@ function Indicator({ result }: { result: Result }) {
 			<StatusIndicator
 				size="sm"
 				tone="warning"
-				label="Tag Manager needs a fix"
+				label="Tag Manager necesita un arreglo"
 			/>
 		);
 	}
@@ -142,7 +146,9 @@ function Indicator({ result }: { result: Result }) {
 		<StatusIndicator
 			size="sm"
 			tone="warning"
-			label={result.status === "found" ? "No page view yet" : "Not detected"}
+			label={
+				result.status === "found" ? "Aún sin vistas de página" : "No detectado"
+			}
 		/>
 	);
 }
@@ -152,10 +158,10 @@ function Outcome({ result, siteId }: { result: Result; siteId: string }) {
 		return (
 			<Alert variant="destructive">
 				<Icon icon={Warning} />
-				<AlertTitle>Could not open {result.host}</AlertTitle>
+				<AlertTitle>No se pudo abrir {result.host}</AlertTitle>
 				<AlertDescription>
-					{result.detail} We only follow public pages, and we never follow a
-					redirect to a private address.
+					{result.detail} Solo seguimos páginas públicas y nunca seguimos una
+					redirección a una dirección privada.
 				</AlertDescription>
 			</Alert>
 		);
@@ -165,13 +171,13 @@ function Outcome({ result, siteId }: { result: Result; siteId: string }) {
 		return (
 			<Alert variant="destructive">
 				<Icon icon={Warning} />
-				<AlertTitle>No script on {result.host}</AlertTitle>
+				<AlertTitle>No hay script en {result.host}</AlertTitle>
 				<AlertDescription>
-					The page answered in {result.responseMs} ms, but the tag was not in
-					the HTML. Check that it sits in the head, above anything that rewrites
-					the page.
+					La página respondió en {result.responseMs} ms, pero la etiqueta no
+					estaba en el HTML. Revisa que esté en el head, antes de cualquier cosa
+					que reescriba la página.
 					{result.containers.length > 0
-						? ` We also read Tag Manager container ${result.containers.join(" and ")}, and the tag is not in there either.`
+						? ` También leímos el contenedor de Tag Manager ${result.containers.join(" y ")} y la etiqueta tampoco está ahí.`
 						: ""}
 				</AlertDescription>
 			</Alert>
@@ -182,15 +188,15 @@ function Outcome({ result, siteId }: { result: Result; siteId: string }) {
 		return (
 			<Alert variant="destructive">
 				<Icon icon={Warning} />
-				<AlertTitle>Tag Manager will drop the site ID</AlertTitle>
+				<AlertTitle>Tag Manager va a perder el ID del sitio</AlertTitle>
 				<AlertDescription>
-					Container {result.container.id} carries the tag, but the site ID is
-					not in the script URL. Tag Manager keeps only the URL when it injects
-					a script, so a data-site attribute never reaches the page and the
-					tracker never starts. Copy the Tag Manager snippet above and replace
-					the tag's HTML.
+					El contenedor {result.container.id} tiene la etiqueta, pero el ID del
+					sitio no está en la URL del script. Tag Manager conserva solo la URL
+					cuando inyecta un script, así que el atributo data-site nunca llega a
+					la página y el rastreador nunca parte. Copia el fragmento de Tag
+					Manager de arriba y reemplaza el HTML de la etiqueta.
 					{result.pageView
-						? " A page view did arrive in the last five minutes, so something on this site is still recording."
+						? " Sí llegó una vista de página en los últimos cinco minutos, así que algo en este sitio sigue registrando."
 						: ""}
 				</AlertDescription>
 			</Alert>
@@ -202,18 +208,19 @@ function Outcome({ result, siteId }: { result: Result; siteId: string }) {
 			<Icon icon={CheckmarkFilled} className="text-success" />
 			<AlertTitle>
 				{result.container
-					? `Script found in container ${result.container.id}`
-					: `Script found on ${result.host}`}
+					? `Script encontrado en el contenedor ${result.container.id}`
+					: `Script encontrado en ${result.host}`}
 			</AlertTitle>
 			<AlertDescription>
-				It answered in {result.responseMs} ms. Site ID {siteId} matched, and
-				this domain is {result.allowed ? "on" : "not on"} the allow list.
+				Respondió en {result.responseMs} ms. El ID del sitio {siteId} coincide y
+				este dominio {result.allowed ? "está" : "no está"} en la lista de
+				permitidos.
 				{result.container
-					? " The tag is not in the HTML, so it only runs once Tag Manager fires it — a page view is the proof."
+					? " La etiqueta no está en el HTML, así que solo corre cuando Tag Manager la dispara; la prueba es una vista de página."
 					: ""}
 				{result.pageView
-					? " A page view arrived in the last five minutes."
-					: " No page view has arrived yet — open the page in a browser to send one."}
+					? " Llegó una vista de página en los últimos cinco minutos."
+					: " Todavía no llega ninguna vista de página: abre la página en un navegador para enviar una."}
 			</AlertDescription>
 		</Alert>
 	);
