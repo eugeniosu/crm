@@ -140,7 +140,7 @@ export class EnvironmentVariables {
 		{ require_tld: false, require_protocol: true },
 		{
 			message:
-				"GATEWAY_URL must be a full URL with a scheme, like https://crm.kontia.cl.",
+				"GATEWAY_URL must be a full URL with a scheme, like https://conectar.kontia.cl.",
 		},
 	)
 	GATEWAY_URL?: string;

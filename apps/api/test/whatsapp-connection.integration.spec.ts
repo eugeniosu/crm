@@ -40,7 +40,7 @@ const central = Bun.serve({
 		}
 		if (url.pathname === "/v1/connect-sessions") {
 			return Response.json({
-				url: "https://central.crm.test/connect/whatsapp/abc",
+				url: "https://conectar.test/connect/whatsapp/abc",
 				expiresAt: new Date().toISOString(),
 			});
 		}
@@ -161,7 +161,7 @@ describe("the office's WhatsApp connection", () => {
 		number = { connected: true } satisfies GatewayNumber;
 
 		expect(await connections.connect(adminId)).toEqual({
-			url: "https://central.crm.test/connect/whatsapp/abc",
+			url: "https://conectar.test/connect/whatsapp/abc",
 		});
 		expect((await connections.disconnect(adminId)).connected).toBe(false);
 		expect(seen.map((call) => `${call.method} ${call.path}`)).toEqual([

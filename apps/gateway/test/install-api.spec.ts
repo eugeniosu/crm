@@ -288,7 +288,7 @@ describe("POST /v1/connect-sessions", () => {
 		expect(response.status).toBe(201);
 		const body = await response.json();
 		const id = String(body.url).split("/").at(-1) ?? "";
-		expect(body.url).toBe(`https://central.crm.test/connect/whatsapp/${id}`);
+		expect(body.url).toBe(`https://conectar.test/connect/whatsapp/${id}`);
 		expect(Buffer.from(id, "base64url")).toHaveLength(32);
 		const expiresAt = new Date(body.expiresAt).getTime();
 		expect(expiresAt - before).toBeGreaterThanOrEqual(15 * 60_000 - 1000);

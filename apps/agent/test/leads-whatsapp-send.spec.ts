@@ -14,7 +14,7 @@ function recorder(response: () => Response) {
 }
 
 const GATEWAY = {
-	GATEWAY_URL: "https://central.crm.test/",
+	GATEWAY_URL: "https://conectar.test/",
 	GATEWAY_API_KEY: "k".repeat(40),
 };
 
@@ -36,7 +36,7 @@ describe("sending a WhatsApp reply", () => {
 
 		expect(delivery).toEqual({ status: "SENT", providerId: "wamid.G" });
 		expect(calls).toHaveLength(1);
-		expect(calls[0]?.url).toBe("https://central.crm.test/v1/messages");
+		expect(calls[0]?.url).toBe("https://conectar.test/v1/messages");
 		expect(new Headers(calls[0]?.init?.headers).get("authorization")).toBe(
 			`Bearer ${GATEWAY.GATEWAY_API_KEY}`,
 		);
