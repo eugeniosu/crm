@@ -26,3 +26,26 @@ export async function selectedModel(): Promise<ModelSelection> {
 		};
 	}
 }
+
+const SESSION_MODELS = new Map<string, ModelSelection>();
+const REMEMBERED_SESSIONS = 1000;
+
+export function rememberSessionModel(
+	sessionId: string,
+	selection: ModelSelection,
+): ModelSelection {
+	SESSION_MODELS.delete(sessionId);
+	SESSION_MODELS.set(sessionId, selection);
+	if (SESSION_MODELS.size > REMEMBERED_SESSIONS) {
+		const oldest = SESSION_MODELS.keys().next().value;
+		if (oldest) SESSION_MODELS.delete(oldest);
+	}
+	return selection;
+}
+
+export async function sessionModel(sessionId: string): Promise<ModelSelection> {
+	return (
+		SESSION_MODELS.get(sessionId) ??
+		rememberSessionModel(sessionId, await selectedModel())
+	);
+}

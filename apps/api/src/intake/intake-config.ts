@@ -27,6 +27,16 @@ export const INTAKE = {
 			summary: "Resumen",
 		},
 	},
+	handoff: {
+		subject: "Contactar por WhatsApp",
+		subjectReasonChars: 100,
+		labels: {
+			reason: "Motivo",
+			phone: "Teléfono",
+			chat: "WhatsApp",
+		},
+		chatUrl: "https://wa.me/",
+	},
 	reasons: {
 		suppressedContact: "This address was deleted by a rep",
 		suppressedDomain: "This domain is suppressed",

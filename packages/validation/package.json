@@ -20,6 +20,7 @@
 		"./field-backfill": "./src/field-backfill.ts",
 		"./field-templates": "./src/field-templates.ts",
 		"./intake-lead": "./src/intake-lead.ts",
+		"./rut": "./src/rut.ts",
 		"./saved-view": "./src/saved-view.ts"
 	},
 	"scripts": {

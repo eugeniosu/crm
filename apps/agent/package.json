@@ -9,6 +9,8 @@
 		"backfill:images": "bun scripts/backfill-brand-images.ts",
 		"dev": "eve dev",
 		"dev:headless": "eve dev --no-ui",
+		"leads:simular": "bun scripts/simulate-whatsapp.ts",
+		"leads:autorizar-calendario": "bun scripts/authorize-leads-calendar.ts",
 		"dispatch": "curl -fsS -X POST \"${AGENT_URL:-http://127.0.0.1:2000}/eve/v1/dev/schedules/dispatch\"",
 		"build": "eve build",
 		"start": "bun scripts/start.ts",
@@ -19,6 +21,7 @@
 		"clean": "rm -rf .turbo .eve node_modules"
 	},
 	"dependencies": {
+		"@ai-sdk/anthropic": "4.0.84",
 		"@crm/auth": "workspace:*",
 		"@crm/db": "workspace:*",
 		"@crm/env": "workspace:*",
@@ -32,6 +35,7 @@
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
+		"@ai-sdk/provider": "4.0.31",
 		"@crm/typescript-config": "workspace:*",
 		"@types/node": "^24.0.0",
 		"microsandbox": "^0.6.8",

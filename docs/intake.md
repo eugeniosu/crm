@@ -7,10 +7,12 @@ contact, the company, the deal and a note, in one transaction.
 This is a fork addition. It is not in upstream. Keep it isolated so that upstream
 merges stay cheap — the upstream files it touches are listed at the end.
 
-## The API records facts. Kontia decides.
+## The API records facts. The callers decide.
 
-Kontia's WhatsApp agent talks to the person, books the meeting and writes the
-summary. The intake route only files what Kontia says happened. It does no
+Two callers file leads. Kontia files demo accounts and web form contacts. The
+WhatsApp leads agent in `apps/agent` (`docs/whatsapp-leads.md`) talks to the
+person, books the meeting and writes the summary; Kontia only relays the messages
+to it. The intake route only files what the caller says happened. It does no
 research, no scoring and no fuzzy matching — the same line as `docs/api.md`.
 
 Matching is on exact keys only:
@@ -48,7 +50,8 @@ digests. No token configured answers `503`. A wrong token answers `403`. The rou
     "start": "2026-11-03T13:00:00-03:00",
     "end": "2026-11-03T13:30:00-03:00",
     "externalEventId": "google-event-id"
-  }
+  },
+  "handoff": { "reason": "Es cliente y tiene un problema con el F29" }
 }
 ```
 
@@ -75,6 +78,10 @@ read, or a RUT with a wrong check digit, answers `400`.
   `DEMO_BOOKED`, `demo` targets `TRIAL_ACTIVE`. The deal moves only when the target
   is later in `OPEN_DEAL_STAGES`. A stage a rep set further on is never undone. Each
   move writes a `STAGE_CHANGE` activity and emits `deal.stage.changed`.
+- **A handoff leaves a task.** `handoff.reason` writes a `TASK` due now, authored
+  by the owner (so it shows in their tasks), with the reason, the phone and a
+  `wa.me` link. The subject cuts the reason at 100 characters; the body keeps it
+  whole. A replayed key writes nothing, so the task is never doubled.
 - **No `MEETING` activity.** The calendar sync files the meeting itself. The note
   carries `externalEventId` in `meta` instead.
 - **No repeated notes.** A note whose body matches the contact's last intake note
@@ -109,9 +116,9 @@ Resolve these by hand on an upstream merge:
 | `apps/app/lib/deal-stage.ts` | Order, labels, six open stages, two more colours |
 | `apps/api/src/app.module.ts` | `IntakeModule` |
 | `apps/api/src/config/env.validation.ts` | `INTAKE_API_TOKEN`, `INTAKE_OWNER_EMAIL` |
-| `packages/validation/package.json` | `./intake-lead` export |
+| `packages/validation/package.json` | `./intake-lead` and `./rut` exports |
 | `.env.example`, `turbo.json`, `AGENTS.md` | The variables, and this doc in the index |
 
 Everything else is new: `apps/api/src/intake/`, the tests above,
-`packages/validation/src/intake-lead.ts` and the migration
+`packages/validation/src/intake-lead.ts`, `packages/validation/src/rut.ts` and the migration
 `20261024190000_kontia_intake`, which also creates the company field `rut`.

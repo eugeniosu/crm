@@ -643,8 +643,8 @@ model AgentEvent {
 
   emittedAt DateTime
 
-  @@index([sessionId, emittedAt])
   @@unique([sessionId, streamIndex])
+  @@index([sessionId, emittedAt])
   @@index([contactId, emittedAt])
   @@index([conversationId, emittedAt])
   @@map("agentEvent")
@@ -668,9 +668,9 @@ model AgentConversation {
   agentId String?
   agent   AgentDefinition? @relation(fields: [agentId], references: [id], onDelete: SetNull)
 
-  sessionId           String? @unique
-  continuationToken   String?
-  streamIndex         Int     @default(0)
+  sessionId            String? @unique
+  continuationToken    String?
+  streamIndex          Int     @default(0)
   pendingInputRequests Json?
 
   permissionMode AgentConversationPermissionMode @default(MANUAL)
@@ -1734,4 +1734,77 @@ model IntakeReceipt {
 
   @@index([contactId])
   @@map("intakeReceipt")
+}
+
+enum LeadMessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum LeadDeliveryStatus {
+  SENT
+  SIMULATED
+  FAILED
+}
+
+enum LeadMeetingStatus {
+  RESERVED
+  CREATED
+}
+
+model LeadConversation {
+  id                String        @id @default(cuid())
+  phone             String        @unique
+  profileName       String?
+  lastMessageAt     DateTime?
+  summarizedThrough DateTime?
+  summarizeNow      Boolean       @default(false)
+  summarizingSince  DateTime?
+  messages          LeadMessage[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@index([lastMessageAt])
+  @@map("leadConversation")
+}
+
+model LeadMessage {
+  id             String               @id @default(cuid())
+  conversationId String
+  conversation   LeadConversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  direction      LeadMessageDirection
+  wamid          String?              @unique
+  replyKey       String?              @unique
+  type           String
+  text           String?
+  sentAt         DateTime
+  turnKey        String?
+  deliveryStatus LeadDeliveryStatus?
+  providerId     String?
+  createdAt      DateTime             @default(now())
+
+  @@index([conversationId, sentAt])
+  @@index([conversationId, turnKey])
+  @@map("leadMessage")
+}
+
+model LeadMeeting {
+  id              String            @id @default(cuid())
+  phone           String
+  start           DateTime
+  end             DateTime
+  status          LeadMeetingStatus @default(RESERVED)
+  externalEventId String?
+  videoLink       String?
+  attendeeName    String?
+  attendeeEmail   String?
+  company         String?
+  reason          String?
+  reservedAt      DateTime
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@unique([phone, start])
+  @@index([status, start])
+  @@map("leadMeeting")
 }

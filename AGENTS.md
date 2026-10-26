@@ -14,6 +14,7 @@ context until you read them, and the rules in them are not optional.
 | The record sheet's Agent tab | `docs/agent-panel.md` |
 | `/settings/connections`, integrations, the intake endpoint | `docs/connections.md` |
 | `POST /internal/intake/lead`, leads filed from Kontia | `docs/intake.md` |
+| The WhatsApp leads agent, its relay route and calendar | `docs/whatsapp-leads.md` |
 | The tracking script, the collector, form submissions | `docs/tracking.md` |
 | Running it locally, Google Cloud, DB commands, secrets | `docs/setup.md` |
 | Anything that sends a telemetry event, or a new property on one | `docs/telemetry.md` |

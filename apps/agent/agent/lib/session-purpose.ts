@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-export type SessionPurpose = "builder" | "team-agent" | "research";
+export type SessionPurpose =
+	| "builder"
+	| "team-agent"
+	| "whatsapp-lead"
+	| "research";
 
 type SessionAttributes = Readonly<Record<string, string | readonly string[]>>;
 
@@ -21,7 +25,13 @@ const attributeText = z.string().trim().min(1).nullable().catch(null);
 
 export function purposeOf(ctx: PurposeContext): SessionPurpose {
 	const purpose = attribute(ctx, "purpose");
-	if (purpose === "builder" || purpose === "team-agent") return purpose;
+	if (
+		purpose === "builder" ||
+		purpose === "team-agent" ||
+		purpose === "whatsapp-lead"
+	) {
+		return purpose;
+	}
 	return "research";
 }
 

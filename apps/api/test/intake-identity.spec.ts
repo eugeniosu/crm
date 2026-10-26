@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import { DealStage } from "@crm/db";
+import { normalizeRut } from "@crm/validation/rut";
 import {
 	contactName,
 	isPlaceholderName,
 	normalizePhone,
-	normalizeRut,
 	phoneLookupDigits,
 } from "../src/intake/intake-identity";
 import { advances, targetStage } from "../src/intake/intake-stage";

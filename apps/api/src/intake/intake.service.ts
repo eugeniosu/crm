@@ -8,6 +8,7 @@ import {
 	type IntakeSource,
 	parseIntakeOutcome,
 } from "@crm/validation/intake-lead";
+import { normalizeRut } from "@crm/validation/rut";
 import {
 	BadRequestException,
 	Injectable,
@@ -28,7 +29,6 @@ import {
 	contactName,
 	isPlaceholderName,
 	normalizePhone,
-	normalizeRut,
 	phoneLookupDigits,
 } from "./intake-identity";
 import { advances, targetStage } from "./intake-stage";
@@ -139,6 +139,7 @@ export class IntakeService {
 		};
 
 		await this.note(tx, lead, refs, ownerId, contact.created);
+		await this.handoffTask(tx, lead, refs, ownerId);
 
 		const outcome: IntakeOutcome = {
 			filed: true,
@@ -556,6 +557,35 @@ export class IntakeService {
 		});
 	}
 
+	private async handoffTask(
+		tx: Tx,
+		lead: IntakeLead,
+		refs: RecordRefs,
+		ownerId: string,
+	): Promise<void> {
+		if (!lead.handoff) return;
+
+		const now = new Date();
+		await tx.activity.create({
+			data: {
+				type: ActivityType.TASK,
+				subject: handoffSubject(lead.handoff.reason),
+				body: handoffBody(lead.phone, lead.handoff.reason),
+				occurredAt: now,
+				dueAt: now,
+				...refs,
+				createdById: ownerId,
+				meta: {
+					automated: true,
+					source: INTAKE.meta.source,
+					channel: lead.source,
+					idempotencyKey: lead.idempotencyKey,
+					handoff: true,
+				},
+			},
+		});
+	}
+
 	private async repeatsLastNote(
 		tx: Tx,
 		contactId: string,
@@ -705,6 +735,26 @@ export function noteBody(lead: IntakeLead): string | null {
 	].filter((line): line is string => line !== null);
 
 	return lines.length > 0 ? lines.join("\n\n") : null;
+}
+
+export function handoffSubject(reason: string): string {
+	const { subject, subjectReasonChars } = INTAKE.handoff;
+	const short =
+		reason.length > subjectReasonChars
+			? `${reason.slice(0, subjectReasonChars - 1).trimEnd()}…`
+			: reason;
+
+	return `${subject}: ${short}`;
+}
+
+function handoffBody(phone: string, reason: string): string {
+	const { labels, chatUrl } = INTAKE.handoff;
+
+	return [
+		`${labels.reason}: ${reason}`,
+		`${labels.phone}: ${phone}`,
+		`${labels.chat}: ${chatUrl}${phone.replace(/\D/g, "")}`,
+	].join("\n");
 }
 
 const MEETING_DAY = new Intl.DateTimeFormat(INTAKE.note.locale, {

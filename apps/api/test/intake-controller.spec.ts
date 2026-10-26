@@ -14,7 +14,10 @@ import {
 	parseLead,
 	sameSecret,
 } from "../src/intake/intake.controller";
-import type { IntakeService } from "../src/intake/intake.service";
+import {
+	handoffSubject,
+	type IntakeService,
+} from "../src/intake/intake.service";
 
 const TOKEN = "t".repeat(40);
 
@@ -124,6 +127,34 @@ describe("parseLead", () => {
 		);
 	});
 
+	it("reads a handoff with its reason", () => {
+		const lead = parseLead(
+			JSON.stringify({
+				...LEAD,
+				handoff: { reason: "  Pide hablar con alguien " },
+			}),
+		);
+
+		expect(lead.handoff?.reason).toBe("Pide hablar con alguien");
+	});
+
+	it("refuses a handoff without a reason", () => {
+		expect(() =>
+			parseLead(JSON.stringify({ ...LEAD, handoff: { reason: " " } })),
+		).toThrow(BadRequestException);
+		expect(() => parseLead(JSON.stringify({ ...LEAD, handoff: {} }))).toThrow(
+			BadRequestException,
+		);
+	});
+
+	it("refuses a handoff reason that is too long", () => {
+		expect(() =>
+			parseLead(
+				JSON.stringify({ ...LEAD, handoff: { reason: "x".repeat(501) } }),
+			),
+		).toThrow(BadRequestException);
+	});
+
 	it("reads a complete lead", () => {
 		const lead = parseLead(
 			JSON.stringify({
@@ -141,5 +172,20 @@ describe("parseLead", () => {
 
 		expect(lead.company).toBe("Estudio Rojas");
 		expect(lead.meeting?.externalEventId).toBe("evt");
+	});
+});
+
+describe("handoffSubject", () => {
+	it("keeps a short reason whole", () => {
+		expect(handoffSubject("Pide hablar con alguien")).toBe(
+			"Contactar por WhatsApp: Pide hablar con alguien",
+		);
+	});
+
+	it("cuts a long reason so the task list stays readable", () => {
+		const subject = handoffSubject("a".repeat(300));
+
+		expect(subject.length).toBe("Contactar por WhatsApp: ".length + 100);
+		expect(subject.endsWith("…")).toBe(true);
 	});
 });

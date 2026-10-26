@@ -13,6 +13,7 @@ export const INTAKE_LIMITS = {
 	interest: 2000,
 	summary: 10_000,
 	eventId: 1024,
+	handoffReason: 500,
 } as const;
 
 const optionalText = (max: number) =>
@@ -29,6 +30,10 @@ export const intakeMeeting = z
 		path: ["end"],
 	});
 
+export const intakeHandoff = z.object({
+	reason: z.string().trim().min(1).max(INTAKE_LIMITS.handoffReason),
+});
+
 export const intakeLeadInput = z.object({
 	source: z.enum(INTAKE_SOURCES),
 	idempotencyKey: z.string().trim().min(1).max(INTAKE_LIMITS.key),
@@ -40,10 +45,12 @@ export const intakeLeadInput = z.object({
 	interest: optionalText(INTAKE_LIMITS.interest),
 	summary: optionalText(INTAKE_LIMITS.summary),
 	meeting: intakeMeeting.optional(),
+	handoff: intakeHandoff.optional(),
 });
 
 export type IntakeSource = (typeof INTAKE_SOURCES)[number];
 export type IntakeMeeting = z.infer<typeof intakeMeeting>;
+export type IntakeHandoff = z.infer<typeof intakeHandoff>;
 export type IntakeLeadInput = z.infer<typeof intakeLeadInput>;
 
 export const intakeOutcome = z.discriminatedUnion("filed", [

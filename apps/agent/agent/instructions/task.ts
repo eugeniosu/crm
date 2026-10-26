@@ -1,6 +1,8 @@
 import { defineDynamic, defineInstructions } from "eve/instructions";
 import { z } from "zod";
 import { focusOn, setBudget } from "../lib/focus";
+import { DISPATCH_DONE, DISPATCH_TOOL } from "../lib/leads/dispatcher-model";
+import { LEADS } from "../lib/leads/leads-config";
 import { MCP } from "../lib/mcp-config";
 import { sessionPreamble } from "../lib/preamble";
 import { RESEARCH_INSTRUCTIONS } from "../lib/research-instructions";
@@ -21,6 +23,12 @@ export default defineDynamic({
 			const purpose = purposeOf(ctx);
 			if (purpose === "builder") {
 				return builderInstructions(ctx);
+			}
+
+			if (purpose === LEADS.purpose) {
+				return defineInstructions({
+					markdown: `This session relays one WhatsApp conversation. Call ${DISPATCH_TOOL} once with no arguments for each user message, then reply "${DISPATCH_DONE}". Never call any other tool.`,
+				});
 			}
 
 			if (purpose === "team-agent") {

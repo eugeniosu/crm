@@ -377,6 +377,19 @@ asserts the declared subagent path, verifies a READY side-effect-free manifest, 
 cleans up its rows. It skips visibly when the database, bridge secret or model
 credential is unavailable.
 
+## The WhatsApp leads agent
+
+`channels/whatsapp.ts`, `tools/atender_whatsapp.ts`, `lib/leads/` and
+`subagents/leads_whatsapp/` answer strangers on Kontia's WhatsApp number. A stranger's
+text never reaches the root model: in a `whatsapp-lead` session the root runs a
+deterministic dispatcher model on `step.started`, and the conversation itself runs in
+the isolated subagent with four tools. Everything else — the contract with Kontia,
+the calendar, the variables — is in **`docs/whatsapp-leads.md`**.
+
+The root model's `step.started` handler returns the session's own selection for every
+other purpose (`sessionModel` in `lib/model.ts`), so research sessions keep the model
+they started with.
+
 ## The bridge
 
 ```

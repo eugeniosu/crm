@@ -223,6 +223,54 @@ describe("filing a lead from Kontia", () => {
 		expect(queued.contacts).toHaveLength(1);
 	});
 
+	it("leaves a task for the lead owner when the agent hands over", async () => {
+		const input = lead({
+			phone: phone(40),
+			name: "Rocío",
+			handoff: { reason: "Es cliente y tiene un problema con el F29" },
+		});
+
+		const first = await intake.file(input);
+		const replay = await intake.file(input);
+
+		if (!first.filed) throw new Error("not filed");
+		expect(replay.replayed).toBe(true);
+		const tasks = await db.activity.findMany({
+			where: { contactId: first.contactId, type: ActivityType.TASK },
+			select: {
+				subject: true,
+				body: true,
+				dueAt: true,
+				completedAt: true,
+				createdById: true,
+				meta: true,
+			},
+		});
+		expect(tasks).toHaveLength(1);
+		const [task] = tasks;
+		expect(task?.subject).toBe(
+			"Contactar por WhatsApp: Es cliente y tiene un problema con el F29",
+		);
+		expect(task?.body).toContain(phone(40));
+		expect(task?.body).toContain(`https://wa.me/${phone(40).slice(1)}`);
+		expect(task?.dueAt).not.toBeNull();
+		expect(task?.completedAt).toBeNull();
+		expect(task?.createdById).toBe(ownerId);
+		expect(task?.meta).toMatchObject({ handoff: true });
+	});
+
+	it("leaves no task when the lead asks for nothing", async () => {
+		const result = await intake.file(
+			lead({ phone: phone(41), name: "Tomás", interest: "Ver los planes" }),
+		);
+
+		if (!result.filed) throw new Error("not filed");
+		const tasks = await db.activity.count({
+			where: { contactId: result.contactId, type: ActivityType.TASK },
+		});
+		expect(tasks).toBe(0);
+	});
+
 	it("skips a note that repeats the last one from the same channel", async () => {
 		const first = await intake.file(
 			lead({ phone: phone(30), name: "Pedro", interest: "Ver Kontia" }),
