@@ -13,7 +13,9 @@ import { authorizedRelay, parseRelay } from "../lib/leads/relay";
 import { REPLIES } from "../lib/leads/replies";
 import { sendWhatsAppText } from "../lib/leads/whatsapp";
 
-function json(body: unknown, status: number): Response {
+type ChannelReply = { error: string } | { estado: "aceptado" | "duplicado" };
+
+function json(body: ChannelReply, status: number): Response {
 	return Response.json(body, { status });
 }
 
@@ -81,9 +83,9 @@ export default defineChannel({
 							.send(DISPATCH_REQUEST, { auth: leadAuth(phone) })
 							.then(() => undefined);
 			waitUntil(
-				work.catch((error: unknown) => {
+				work.catch((cause: unknown) => {
 					console.error(
-						`[leads] could not start the turn for ${maskPhone(phone)}: ${error instanceof Error ? error.message : String(error)}`,
+						`[leads] could not start the turn for ${maskPhone(phone)}: ${cause instanceof Error ? cause.message : String(cause)}`,
 					);
 				}),
 			);

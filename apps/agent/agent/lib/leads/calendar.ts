@@ -67,6 +67,13 @@ const eventReply = z.object({
 
 type Fetch = (input: string, init?: RequestInit) => Promise<Response>;
 
+type FreeBusyRequest = {
+	timeMin: string;
+	timeMax: string;
+	timeZone: string;
+	items: { id: string }[];
+};
+
 class DuplicateEvent extends Error {}
 
 export function googleCalendar(
@@ -124,7 +131,7 @@ export function googleCalendar(
 	async function api(
 		method: string,
 		path: string,
-		body?: unknown,
+		body?: FreeBusyRequest | ReturnType<typeof eventBody>,
 	): Promise<unknown> {
 		const response = await call(`${LEADS.google.apiUrl}${path}`, {
 			method,

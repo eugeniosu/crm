@@ -126,7 +126,7 @@ export async function consultAvailability(
 
 export async function bookMeeting(
 	phone: string,
-	raw: unknown,
+	raw: z.input<typeof meetingInput>,
 	now: Date,
 	calendar: Calendar = salesCalendar(),
 	file: FileLead = fileLead,
@@ -177,28 +177,28 @@ export async function bookMeeting(
 	};
 }
 
-function bookingFailure(error: unknown): ToolFailure {
-	if (error instanceof InvalidSlotError) {
+function bookingFailure(cause: unknown): ToolFailure {
+	if (cause instanceof InvalidSlotError) {
 		return {
 			ok: false,
 			error:
 				"Ese horario no está disponible. Consulta la disponibilidad y ofrece otro.",
 		};
 	}
-	if (error instanceof SlotTakenError) {
+	if (cause instanceof SlotTakenError) {
 		return {
 			ok: false,
 			error: "Ese horario se acaba de ocupar. Ofrece otros.",
 		};
 	}
-	if (error instanceof BookingInProgressError) {
+	if (cause instanceof BookingInProgressError) {
 		return {
 			ok: false,
 			error: "Esa reunión ya se está agendando; espera la confirmación.",
 		};
 	}
 	console.error(
-		`[leads] could not book: ${error instanceof Error ? error.message : String(error)}`,
+		`[leads] could not book: ${cause instanceof Error ? cause.message : String(cause)}`,
 	);
 	return {
 		ok: false,
@@ -208,7 +208,7 @@ function bookingFailure(error: unknown): ToolFailure {
 
 export async function registerLead(
 	phone: string,
-	raw: unknown,
+	raw: z.input<typeof leadInput>,
 	idempotencyKey: string,
 	file: FileLead = fileLead,
 ) {
@@ -235,7 +235,7 @@ export async function registerLead(
 
 export async function handOver(
 	phone: string,
-	raw: unknown,
+	raw: z.input<typeof handoffInput>,
 	idempotencyKey: string,
 	file: FileLead = fileLead,
 ) {

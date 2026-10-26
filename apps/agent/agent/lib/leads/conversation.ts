@@ -46,7 +46,7 @@ export async function recordInbound(
 				},
 				update: {
 					lastMessageAt: message.receivedAt,
-					...(message.profileName ? { profileName: message.profileName } : {}),
+					profileName: message.profileName ?? undefined,
 				},
 				select: { id: true },
 			});

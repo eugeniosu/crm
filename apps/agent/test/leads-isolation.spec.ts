@@ -36,9 +36,11 @@ const RESEARCH_TOOLS = [
 	"connection_execute",
 ];
 
+type InputSchema = { type?: string };
+
 type ToolSchemas = {
-	root: Record<string, unknown>;
-	subagents: Record<string, Record<string, unknown>>;
+	root: Record<string, InputSchema>;
+	subagents: Record<string, Record<string, InputSchema>>;
 };
 
 let schemas: ToolSchemas;

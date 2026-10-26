@@ -24,7 +24,7 @@ type Sent = { address: string; message: unknown; auth: unknown };
 
 type RouteArgs = {
 	from: (address: string) => {
-		send: (message: unknown, options: { auth: unknown }) => Promise<unknown>;
+		send: (message: string, options: { auth: unknown }) => Promise<unknown>;
 	};
 	waitUntil: (promise: Promise<unknown>) => void;
 };
@@ -39,7 +39,16 @@ const route = (whatsapp.routes as unknown as Route[]).find(
 	(candidate) => candidate.path === LEADS.channel.path,
 );
 
-async function post(body: unknown, authorization = `Bearer ${TOKEN}`) {
+type RelayFields = {
+	wamid: string | undefined;
+	telefono: string;
+	nombre_perfil: string | null;
+	tipo: string;
+	texto: string | null;
+	recibido_en: string;
+};
+
+async function post(body: string, authorization = `Bearer ${TOKEN}`) {
 	if (!route) throw new Error("The WhatsApp route is missing.");
 	const sent: Sent[] = [];
 	const pending: Promise<unknown>[] = [];
@@ -47,7 +56,7 @@ async function post(body: unknown, authorization = `Bearer ${TOKEN}`) {
 		new Request(`http://agent.test${LEADS.channel.path}`, {
 			method: "POST",
 			headers: { authorization, "content-type": "application/json" },
-			body: typeof body === "string" ? body : JSON.stringify(body),
+			body,
 		}),
 		{
 			from: (address) => ({
@@ -63,7 +72,7 @@ async function post(body: unknown, authorization = `Bearer ${TOKEN}`) {
 	return { response, sent };
 }
 
-function message(overrides: Record<string, unknown> = {}) {
+function message(overrides: Partial<RelayFields> = {}): RelayFields {
 	return {
 		wamid: `wamid.test.${crypto.randomUUID()}`,
 		telefono: PHONE,
@@ -102,7 +111,7 @@ afterAll(() => {
 describe("the WhatsApp relay route", () => {
 	it("answers 503 without a relay token", async () => {
 		delete process.env.LEADS_REENVIO_TOKEN;
-		const { response, sent } = await post(message());
+		const { response, sent } = await post(JSON.stringify(message()));
 
 		expect(response.status).toBe(503);
 		expect(sent).toHaveLength(0);
@@ -110,14 +119,14 @@ describe("the WhatsApp relay route", () => {
 
 	it("answers 503 with a token shorter than 32 characters", async () => {
 		process.env.LEADS_REENVIO_TOKEN = "short";
-		const { response } = await post(message(), "Bearer short");
+		const { response } = await post(JSON.stringify(message()), "Bearer short");
 
 		expect(response.status).toBe(503);
 	});
 
 	it("answers 503 without a model key", async () => {
 		delete process.env.ANTHROPIC_API_KEY;
-		const { response } = await post(message());
+		const { response } = await post(JSON.stringify(message()));
 
 		expect(response.status).toBe(503);
 	});
@@ -127,7 +136,7 @@ describe("the WhatsApp relay route", () => {
 		["a wrong token", `Bearer ${"x".repeat(40)}`],
 		["the token without Bearer", TOKEN],
 	])("answers 401 to %s", async (_label, header) => {
-		const { response, sent } = await post(message(), header);
+		const { response, sent } = await post(JSON.stringify(message()), header);
 
 		expect(response.status).toBe(401);
 		expect(sent).toHaveLength(0);
@@ -135,9 +144,15 @@ describe("the WhatsApp relay route", () => {
 
 	it.each([
 		["a body that is not JSON", "{nope"],
-		["a phone with symbols", message({ telefono: "+56 9 1234 5678" })],
-		["a missing wamid", message({ wamid: undefined })],
-		["a date without a zone", message({ recibido_en: "2026-10-26 14:03" })],
+		[
+			"a phone with symbols",
+			JSON.stringify(message({ telefono: "+56 9 1234 5678" })),
+		],
+		["a missing wamid", JSON.stringify(message({ wamid: undefined }))],
+		[
+			"a date without a zone",
+			JSON.stringify(message({ recibido_en: "2026-10-26 14:03" })),
+		],
 	])("answers 400 to %s", async (_label, body) => {
 		const { response, sent } = await post(body);
 
@@ -147,7 +162,7 @@ describe("the WhatsApp relay route", () => {
 
 	it("accepts a text, stores it and wakes the session with no lead text", async () => {
 		const body = message();
-		const { response, sent } = await post(body);
+		const { response, sent } = await post(JSON.stringify(body));
 
 		expect(response.status).toBe(202);
 		expect(sent).toEqual([
@@ -181,8 +196,8 @@ describe("the WhatsApp relay route", () => {
 
 	it("answers 200 to a wamid it already has and does nothing else", async () => {
 		const body = message();
-		await post(body);
-		const { response, sent } = await post(body);
+		await post(JSON.stringify(body));
+		const { response, sent } = await post(JSON.stringify(body));
 
 		expect(response.status).toBe(200);
 		expect(sent).toHaveLength(0);
@@ -193,7 +208,7 @@ describe("the WhatsApp relay route", () => {
 
 	it("answers a message that is not text without the model", async () => {
 		const body = message({ tipo: "image", texto: null });
-		const { response, sent } = await post(body);
+		const { response, sent } = await post(JSON.stringify(body));
 
 		expect(response.status).toBe(202);
 		expect(sent).toHaveLength(0);

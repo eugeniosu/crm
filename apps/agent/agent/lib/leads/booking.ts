@@ -172,9 +172,9 @@ function booked(meeting: MeetingRow, alreadyBooked: boolean): Booked {
 	};
 }
 
-function isUniqueViolation(error: unknown): boolean {
+function isUniqueViolation(cause: unknown): boolean {
 	return (
-		error instanceof Prisma.PrismaClientKnownRequestError &&
-		error.code === "P2002"
+		cause instanceof Prisma.PrismaClientKnownRequestError &&
+		cause.code === "P2002"
 	);
 }
