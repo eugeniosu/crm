@@ -20,11 +20,11 @@ import { DeleteChatAction } from "./delete-chat-action";
 
 type Conversation = RouterOutputs["conversations"]["builderList"][number];
 type TeamAgent = RouterOutputs["agents"]["list"][number];
-const GROUP_LABELS: Record<ChatDateGroup, string> = {
+const GROUP_LABELS = {
 	Today: "Hoy",
 	Yesterday: "Ayer",
 	"Last 7 days": "Últimos 7 días",
-};
+} satisfies Record<ChatDateGroup, string>;
 
 type SidebarData = {
 	conversations: Conversation[];
