@@ -1,9 +1,19 @@
 # WhatsApp leads agent
 
-A person who is not a Kontia customer writes to Kontia's WhatsApp number. Kontia
-keeps the Meta webhook, decides the person is not a customer, and relays the
-message here. The agent answers with Claude, files the lead in the CRM, books a
-meeting on the sales calendar, and hands the person over to a rep when it should.
+A person who is not a Kontia customer writes to the WhatsApp number on Kontia's
+landing page (+56 9 7654 8423). Kontia keeps the Meta webhook, decides the person
+is not a customer, and relays the message here. The agent answers with Claude,
+files the lead in the CRM, books a meeting on the sales calendar, and hands the
+person over to a rep when it should.
+
+The landing number is also answered by people, from the WhatsApp Business app on a
+phone. It is connected to the Cloud API in coexistence mode, so the app keeps
+working and sees the agent's replies. When someone on the team answers from the
+app, Kontia relays that message too (`autor: "equipo"`): it is stored in the
+conversation and the agent stays quiet with that person for
+`LEADS.conversation.teamPauseMs` (24 hours), so the two never answer at once.
+Customers who write to that number never reach the CRM. Kontia's other number,
+the one that sends notifications, is not served by this agent.
 
 This is a fork addition, like `docs/intake.md`. It lives in `apps/agent`. The API
 only gained one optional intake field.
@@ -59,7 +69,13 @@ Add it to the test only after you decide a stranger may call it.
 - `Authorization: Bearer <LEADS_REENVIO_TOKEN>`, compared in constant time over
   SHA-256 digests.
 - Body: `wamid`, `telefono` (digits with country code), `nombre_perfil` (or null),
-  `tipo`, `texto` (or null), `recibido_en` (ISO 8601 with zone).
+  `tipo`, `texto` (or null), `recibido_en` (ISO 8601 with zone), `autor`
+  (`lead` by default, or `equipo` for a reply the team sent from the app; then
+  `telefono` is still the lead's and `recibido_en` is when the team sent it).
+- A team reply is stored with `fromTeam` and wakes nobody. A lead message that
+  arrives while the team is answering is stored outside any turn (`turnKey`
+  `equipo:<wamid>`) and shows up later as history. A reply the agent was about to
+  send when the team stepped in is dropped.
 - `202` accepted, processed in the background. `200` the `wamid` was already
   received; nothing runs again. `401` wrong token. `400` invalid body. `503` the
   channel is not configured (`LEADS_REENVIO_TOKEN` or `ANTHROPIC_API_KEY` missing).
@@ -106,7 +122,7 @@ All in `.env.example` and `globalPassThroughEnv`. The API reads none of them.
 | `LEADS_MODELO` | Model id, `claude-haiku-5-5` by default |
 | `LEADS_CALENDARIO` | `simulado` or `google`; unset is `simulado` outside production |
 | `LEADS_GOOGLE_CLIENT_ID`, `_CLIENT_SECRET`, `_REFRESH_TOKEN`, `_CALENDAR_ID` | The sales calendar |
-| `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` | The agent's own Cloud API token. Without them replies are simulated |
+| `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` | The agent's own Cloud API token and the landing number's id. Without them replies are simulated |
 | `KONTIA_PLANES_URL` | Kontia's public plans |
 | `INTAKE_API_TOKEN`, `API_URL` | Already used by the intake route; the agent calls it with them |
 

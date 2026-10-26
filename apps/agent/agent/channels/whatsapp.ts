@@ -2,6 +2,7 @@ import { defineChannel, POST } from "eve/channels";
 import {
 	recordDelivery,
 	recordInbound,
+	recordTeamReply,
 	storeReply,
 } from "../lib/leads/conversation";
 import { DISPATCH_REQUEST } from "../lib/leads/dispatcher-model";
@@ -66,6 +67,19 @@ export default defineChannel({
 			if (!parsed.ok) return json({ error: parsed.error }, 400);
 
 			const { message, phone, text } = parsed;
+			if (message.autor === "equipo") {
+				const team = await recordTeamReply({
+					wamid: message.wamid,
+					phone,
+					type: message.tipo,
+					text,
+					sentAt: new Date(message.recibido_en),
+				});
+				return team.duplicate
+					? json({ estado: "duplicado" }, 200)
+					: json({ estado: "aceptado" }, 202);
+			}
+
 			const recorded = await recordInbound({
 				wamid: message.wamid,
 				phone,
@@ -75,6 +89,7 @@ export default defineChannel({
 				receivedAt: new Date(message.recibido_en),
 			});
 			if (recorded.duplicate) return json({ estado: "duplicado" }, 200);
+			if (recorded.teamAnswering) return json({ estado: "aceptado" }, 202);
 
 			const work =
 				text === null

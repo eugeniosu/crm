@@ -46,6 +46,7 @@ type RelayFields = {
 	tipo: string;
 	texto: string | null;
 	recibido_en: string;
+	autor?: "lead" | "equipo";
 };
 
 async function post(body: string, authorization = `Bearer ${TOKEN}`) {
@@ -219,5 +220,82 @@ describe("the WhatsApp relay route", () => {
 		expect(replies).toEqual([
 			{ text: REPLIES.textOnly, deliveryStatus: "SIMULATED" },
 		]);
+	});
+});
+
+const HOUR = 60 * 60 * 1000;
+
+function teamReply(at: Date) {
+	return message({
+		autor: "equipo",
+		nombre_perfil: null,
+		texto: "Hola, soy Sergio de Kontia",
+		recibido_en: at.toISOString(),
+	});
+}
+
+describe("a reply the team sent from the WhatsApp app", () => {
+	it("is stored as the team's and wakes nobody", async () => {
+		const body = teamReply(new Date());
+		const { response, sent } = await post(JSON.stringify(body));
+
+		expect(response.status).toBe(202);
+		expect(sent).toHaveLength(0);
+		const stored = await db.leadMessage.findUniqueOrThrow({
+			where: { wamid: body.wamid },
+			select: {
+				direction: true,
+				fromTeam: true,
+				text: true,
+				conversation: { select: { teamRepliedAt: true } },
+			},
+		});
+		expect(stored).toEqual({
+			direction: "OUTBOUND",
+			fromTeam: true,
+			text: body.texto,
+			conversation: { teamRepliedAt: new Date(body.recibido_en) },
+		});
+	});
+
+	it("answers 200 to one it already has", async () => {
+		const body = teamReply(new Date());
+		await post(JSON.stringify(body));
+		const { response } = await post(JSON.stringify(body));
+
+		expect(response.status).toBe(200);
+		expect(await db.leadMessage.count({ where: { wamid: body.wamid } })).toBe(
+			1,
+		);
+	});
+
+	it("keeps the agent quiet while the team answers", async () => {
+		await post(JSON.stringify(teamReply(new Date(Date.now() - HOUR))));
+		const body = message();
+		const { response, sent } = await post(JSON.stringify(body));
+
+		expect(response.status).toBe(202);
+		expect(sent).toHaveLength(0);
+		const stored = await db.leadMessage.findUniqueOrThrow({
+			where: { wamid: body.wamid },
+			select: { turnKey: true },
+		});
+		expect(stored.turnKey).toBe(`equipo:${body.wamid}`);
+	});
+
+	it("lets the agent answer again once the pause is over", async () => {
+		const past = new Date(Date.now() - LEADS.conversation.teamPauseMs - HOUR);
+		await post(JSON.stringify(teamReply(past)));
+		const { response, sent } = await post(JSON.stringify(message()));
+
+		expect(response.status).toBe(202);
+		expect(sent).toHaveLength(1);
+	});
+
+	it("answers 400 to an author it does not know", async () => {
+		const { response } = await post(
+			JSON.stringify({ ...message(), autor: "bot" }),
+		);
+		expect(response.status).toBe(400);
 	});
 });

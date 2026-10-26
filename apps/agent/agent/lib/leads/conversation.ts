@@ -11,11 +11,24 @@ export type InboundMessage = {
 	receivedAt: Date;
 };
 
+export type TeamMessage = {
+	wamid: string;
+	phone: string;
+	type: string;
+	text: string | null;
+	sentAt: Date;
+};
+
 export type Recorded =
 	| { duplicate: true }
-	| { duplicate: false; conversationId: string; messageId: string };
+	| {
+			duplicate: false;
+			conversationId: string;
+			messageId: string;
+			teamAnswering: boolean;
+	  };
 
-export type TranscriptLine = { from: "lead" | "agent"; text: string };
+export type TranscriptLine = { from: "lead" | "agent" | "team"; text: string };
 
 export type Turn = {
 	conversationId: string;
@@ -48,8 +61,12 @@ export async function recordInbound(
 					lastMessageAt: message.receivedAt,
 					profileName: message.profileName ?? undefined,
 				},
-				select: { id: true },
+				select: { id: true, teamRepliedAt: true },
 			});
+			const teamAnswering = teamIsRecent(
+				conversation.teamRepliedAt,
+				message.receivedAt,
+			);
 			const created = await tx.leadMessage.create({
 				data: {
 					conversationId: conversation.id,
@@ -58,7 +75,7 @@ export async function recordInbound(
 					type: message.type,
 					text: message.text,
 					sentAt: message.receivedAt,
-					turnKey: message.text === null ? textOnlyKey(message.wamid) : null,
+					turnKey: inboundTurnKey(message, teamAnswering),
 				},
 				select: { id: true },
 			});
@@ -66,17 +83,100 @@ export async function recordInbound(
 				duplicate: false as const,
 				conversationId: conversation.id,
 				messageId: created.id,
+				teamAnswering,
 			};
 		});
-	} catch (error) {
-		if (
-			error instanceof Prisma.PrismaClientKnownRequestError &&
-			error.code === "P2002"
-		) {
-			return { duplicate: true };
-		}
-		throw error;
+	} catch (cause) {
+		if (isUniqueViolation(cause)) return { duplicate: true };
+		throw cause;
 	}
+}
+
+export async function recordTeamReply(
+	message: TeamMessage,
+): Promise<{ duplicate: boolean }> {
+	const existing = await db.leadMessage.findUnique({
+		where: { wamid: message.wamid },
+		select: { id: true },
+	});
+	if (existing) return { duplicate: true };
+
+	try {
+		await db.$transaction(async (tx) => {
+			const conversation = await tx.leadConversation.upsert({
+				where: { phone: message.phone },
+				create: {
+					phone: message.phone,
+					lastMessageAt: message.sentAt,
+					teamRepliedAt: message.sentAt,
+				},
+				update: {},
+				select: { id: true },
+			});
+			await tx.leadConversation.updateMany({
+				where: {
+					id: conversation.id,
+					OR: [
+						{ teamRepliedAt: null },
+						{ teamRepliedAt: { lt: message.sentAt } },
+					],
+				},
+				data: { teamRepliedAt: message.sentAt, lastMessageAt: message.sentAt },
+			});
+			await tx.leadMessage.create({
+				data: {
+					conversationId: conversation.id,
+					direction: "OUTBOUND",
+					fromTeam: true,
+					wamid: message.wamid,
+					type: message.type,
+					text: message.text,
+					sentAt: message.sentAt,
+				},
+			});
+		});
+	} catch (cause) {
+		if (isUniqueViolation(cause)) return { duplicate: true };
+		throw cause;
+	}
+	return { duplicate: false };
+}
+
+export async function teamIsAnswering(
+	conversationId: string,
+	now: Date,
+): Promise<boolean> {
+	const conversation = await db.leadConversation.findUnique({
+		where: { id: conversationId },
+		select: { teamRepliedAt: true },
+	});
+	return teamIsRecent(conversation?.teamRepliedAt ?? null, now);
+}
+
+function teamIsRecent(repliedAt: Date | null, at: Date): boolean {
+	return (
+		repliedAt !== null &&
+		at.getTime() - repliedAt.getTime() < LEADS.conversation.teamPauseMs
+	);
+}
+
+function inboundTurnKey(
+	message: InboundMessage,
+	teamAnswering: boolean,
+): string | null {
+	if (teamAnswering) return teamKey(message.wamid);
+	return message.text === null ? textOnlyKey(message.wamid) : null;
+}
+
+function isUniqueViolation(cause: unknown): boolean {
+	return (
+		cause instanceof Prisma.PrismaClientKnownRequestError &&
+		cause.code === "P2002"
+	);
+}
+
+export function teamKey(wamid: string): string {
+	return `equipo:${wamid}`;
 }
 
 export function textOnlyKey(wamid: string): string {
@@ -119,7 +219,7 @@ export async function claimTurn(
 		},
 		orderBy: [{ sentAt: "desc" }, { createdAt: "desc" }],
 		take: LEADS.conversation.historyMessages,
-		select: { direction: true, text: true },
+		select: { direction: true, fromTeam: true, text: true },
 	});
 
 	return {
@@ -127,12 +227,20 @@ export async function claimTurn(
 		phone: conversation.phone,
 		profileName: conversation.profileName,
 		history: earlier.reverse().map((message) => ({
-			from: message.direction === "INBOUND" ? "lead" : "agent",
+			from: speaker(message.direction, message.fromTeam),
 			text: message.text ?? "",
 		})),
 		pending: pending.map((message) => message.text ?? ""),
 		lastWamid: pending.at(-1)?.wamid ?? turnKey,
 	};
+}
+
+function speaker(
+	direction: "INBOUND" | "OUTBOUND",
+	fromTeam: boolean,
+): TranscriptLine["from"] {
+	if (direction === "INBOUND") return "lead";
+	return fromTeam ? "team" : "agent";
 }
 
 export type StoredReply = {

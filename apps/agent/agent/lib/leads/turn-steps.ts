@@ -1,4 +1,9 @@
-import { claimTurn, recordDelivery, storeReply } from "./conversation";
+import {
+	claimTurn,
+	recordDelivery,
+	storeReply,
+	teamIsAnswering,
+} from "./conversation";
 import { maskPhone } from "./identity";
 import { summarizePending } from "./summary";
 import { turnMessage } from "./turn-message";
@@ -31,6 +36,7 @@ export async function deliverReply(
 	text: string,
 ): Promise<void> {
 	"use step";
+	if (await teamIsAnswering(conversationId, new Date())) return;
 	const stored = await storeReply(
 		conversationId,
 		`reply:${turnKey}`,

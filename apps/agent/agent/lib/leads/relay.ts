@@ -13,6 +13,7 @@ export const relayedMessage = z.object({
 	tipo: z.string().trim().min(1).max(40),
 	texto: z.string().max(LEADS.channel.maxTextChars).nullable().optional(),
 	recibido_en: z.iso.datetime({ offset: true }),
+	autor: z.enum(["lead", "equipo"]).default("lead"),
 });
 
 export type RelayedMessage = z.infer<typeof relayedMessage>;

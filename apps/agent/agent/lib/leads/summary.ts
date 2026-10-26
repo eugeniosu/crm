@@ -65,17 +65,22 @@ async function claimNext(
 	return rows[0] ?? null;
 }
 
+function speakerOf(message: {
+	direction: "INBOUND" | "OUTBOUND";
+	fromTeam: boolean;
+}): string {
+	if (message.direction === "INBOUND") return "Persona";
+	return message.fromTeam ? "Equipo de Kontia" : "Asistente";
+}
+
 async function transcriptOf(conversationId: string): Promise<string> {
 	const messages = await db.leadMessage.findMany({
 		where: { conversationId, text: { not: null } },
 		orderBy: [{ sentAt: "asc" }, { createdAt: "asc" }],
-		select: { direction: true, text: true },
+		select: { direction: true, fromTeam: true, text: true },
 	});
 	return messages
-		.map(
-			(message) =>
-				`${message.direction === "INBOUND" ? "Persona" : "Asistente"}: ${message.text}`,
-		)
+		.map((message) => `${speakerOf(message)}: ${message.text}`)
 		.join("\n");
 }
 

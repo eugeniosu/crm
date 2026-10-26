@@ -28,6 +28,7 @@ export const LEADS = {
 	},
 	conversation: {
 		historyMessages: 20,
+		teamPauseMs: 24 * HOUR_MS,
 	},
 	summary: {
 		idleMs: 30 * MINUTE_MS,

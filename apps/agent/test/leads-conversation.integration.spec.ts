@@ -4,10 +4,13 @@ import type { IntakeLeadInput } from "@crm/validation/intake-lead";
 import {
 	claimTurn,
 	recordInbound,
+	recordTeamReply,
 	requestSummary,
 	storeReply,
+	teamIsAnswering,
 } from "../agent/lib/leads/conversation";
 import type { FileResult } from "../agent/lib/leads/intake";
+import { LEADS } from "../agent/lib/leads/leads-config";
 import { summarizePending } from "../agent/lib/leads/summary";
 
 const PHONE = `5695${String(Date.now()).slice(-7)}`;
@@ -90,6 +93,52 @@ describe("a turn", () => {
 		]);
 		expect(again?.pending).toEqual(turn?.pending);
 		expect(later).toBeNull();
+	});
+
+	it("shows the team's replies in the history and pauses the agent", async () => {
+		const t0 = new Date("2026-11-02T12:00:00Z");
+		const first = await inbound("Hola", t0);
+		if (first.duplicate) throw new Error("duplicate");
+		await claimTurn(PHONE, "turn-1");
+		await recordTeamReply({
+			wamid: `wamid.team.${crypto.randomUUID()}`,
+			phone: PHONE,
+			type: "text",
+			text: "Hola, soy Sergio",
+			sentAt: new Date(t0.getTime() + MINUTE),
+		});
+		const paused = await inbound(
+			"Gracias",
+			new Date(t0.getTime() + 2 * MINUTE),
+		);
+		if (paused.duplicate) throw new Error("duplicate");
+
+		expect(paused.teamAnswering).toBe(true);
+		expect(await claimTurn(PHONE, "turn-2")).toBeNull();
+		expect(
+			await teamIsAnswering(
+				first.conversationId,
+				new Date(t0.getTime() + MINUTE),
+			),
+		).toBe(true);
+		expect(
+			await teamIsAnswering(
+				first.conversationId,
+				new Date(t0.getTime() + MINUTE + LEADS.conversation.teamPauseMs),
+			),
+		).toBe(false);
+
+		const later = new Date(
+			t0.getTime() + 2 * MINUTE + LEADS.conversation.teamPauseMs,
+		);
+		await inbound("¿Siguen ahí?", later);
+		const turn = await claimTurn(PHONE, "turn-3");
+		expect(turn?.pending).toEqual(["¿Siguen ahí?"]);
+		expect(turn?.history).toEqual([
+			{ from: "lead", text: "Hola" },
+			{ from: "team", text: "Hola, soy Sergio" },
+			{ from: "lead", text: "Gracias" },
+		]);
 	});
 
 	it("stores a reply once per turn", async () => {

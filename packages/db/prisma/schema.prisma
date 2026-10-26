@@ -1760,6 +1760,7 @@ model LeadConversation {
   summarizedThrough DateTime?
   summarizeNow      Boolean       @default(false)
   summarizingSince  DateTime?
+  teamRepliedAt     DateTime?
   messages          LeadMessage[]
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
@@ -1781,6 +1782,7 @@ model LeadMessage {
   turnKey        String?
   deliveryStatus LeadDeliveryStatus?
   providerId     String?
+  fromTeam       Boolean              @default(false)
   createdAt      DateTime             @default(now())
 
   @@index([conversationId, sentAt])
