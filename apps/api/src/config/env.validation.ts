@@ -108,6 +108,17 @@ export class EnvironmentVariables {
 
 	@IsOptional()
 	@IsString()
+	@MinLength(32, {
+		message: "INTAKE_API_TOKEN must be at least 32 characters.",
+	})
+	INTAKE_API_TOKEN?: string;
+
+	@IsOptional()
+	@IsString()
+	INTAKE_OWNER_EMAIL?: string;
+
+	@IsOptional()
+	@IsString()
 	BLOB_READ_WRITE_TOKEN?: string;
 
 	@IsOptional()

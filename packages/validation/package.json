@@ -19,6 +19,7 @@
 		"./eve-tool": "./src/eve-tool.ts",
 		"./field-backfill": "./src/field-backfill.ts",
 		"./field-templates": "./src/field-templates.ts",
+		"./intake-lead": "./src/intake-lead.ts",
 		"./saved-view": "./src/saved-view.ts"
 	},
 	"scripts": {

@@ -291,7 +291,9 @@ model RateLimit {
 }
 
 enum DealStage {
+  LEAD_NEW
   DEMO_BOOKED
+  TRIAL_ACTIVE
   QUALIFIED_TO_BUY
   UNQUALIFIED_TO_BUY
   DECISION_MAKER_BOUGHT_IN
@@ -324,6 +326,9 @@ enum RecordSource {
   EMAIL
   CALENDAR
   TRACKING
+  WHATSAPP
+  DEMO
+  WEB
 }
 
 enum AgentConversationKind {
@@ -1718,4 +1723,15 @@ model Apikey {
   @@index([configId])
   @@index([key])
   @@map("apikey")
+}
+
+model IntakeReceipt {
+  key       String   @id
+  source    String
+  contactId String?
+  outcome   Json
+  createdAt DateTime @default(now())
+
+  @@index([contactId])
+  @@map("intakeReceipt")
 }

@@ -2,7 +2,9 @@ import { DealStage } from "@crm/db/enums";
 import type { StatusTone } from "@crm/ui/components/status-indicator";
 
 const ORDER = [
+	DealStage.LEAD_NEW,
 	DealStage.DEMO_BOOKED,
+	DealStage.TRIAL_ACTIVE,
 	DealStage.QUALIFIED_TO_BUY,
 	DealStage.DECISION_MAKER_BOUGHT_IN,
 	DealStage.CONTRACT_SENT,
@@ -17,7 +19,9 @@ type DealStagePresentation = Record<
 >;
 
 const PRESENTATION: DealStagePresentation = {
+	LEAD_NEW: { label: "New lead", tone: "neutral" },
 	DEMO_BOOKED: { label: "Demo booked", tone: "neutral" },
+	TRIAL_ACTIVE: { label: "Trial active", tone: "info" },
 	QUALIFIED_TO_BUY: { label: "Qualified to buy", tone: "info" },
 	DECISION_MAKER_BOUGHT_IN: { label: "Decision maker in", tone: "info" },
 	CONTRACT_SENT: { label: "Contract sent", tone: "warning" },
@@ -26,7 +30,7 @@ const PRESENTATION: DealStagePresentation = {
 	UNQUALIFIED_TO_BUY: { label: "Unqualified", tone: "neutral" },
 };
 
-export const OPEN_STAGES = ORDER.slice(0, 4) as readonly DealStage[];
+export const OPEN_STAGES = ORDER.slice(0, 6) as readonly DealStage[];
 
 export const LOSING_STAGES: readonly DealStage[] = [
 	DealStage.CLOSED_LOST,
@@ -43,6 +47,8 @@ const OPEN_STAGE_COLORS = [
 	"var(--chart-2)",
 	"var(--chart-3)",
 	"var(--chart-4)",
+	"var(--chart-5)",
+	"var(--chart-1)",
 ] as const;
 
 export function isClosedStage(stage: DealStage): boolean {
