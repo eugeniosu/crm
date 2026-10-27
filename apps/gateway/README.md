@@ -127,3 +127,26 @@ bun run --filter=gateway gateway:instalacion -- \
 The script refuses an existing file. It writes `GATEWAY_URL`, `GATEWAY_API_KEY`
 and `LEADS_REENVIO_TOKEN` only to that file, with mode 600, and prints none of
 them. Copy the lines into that office's CRM `.env` and delete the file.
+
+## Image and staging
+
+The image builds from the repo root. Its build context is only the workspace
+manifests plus `apps/gateway`, `packages/env`, `packages/auth` and
+`packages/typescript-config` (`Dockerfile.dockerignore`). It installs with
+`--ignore-scripts` because `@crm/db`'s postinstall needs `DATABASE_URL`, and it
+applies pending migrations on every start.
+
+```sh
+docker build -f apps/gateway/Dockerfile -t southamerica-west1-docker.pkg.dev/kontia-prod/kontia/crm-gateway:staging .
+docker push southamerica-west1-docker.pkg.dev/kontia-prod/kontia/crm-gateway:staging
+```
+
+Staging runs it on Kontia's staging VM at `https://conectar.kontia.cl`. The compose
+file, its secrets and the tunnel live in the Kontia repo
+(`infra/gcp/staging/crm.yml` and `crm()` in `infra/gcp/staging/arranque.sh`).
+The VM pulls the `staging` tag every time it starts.
+
+Cloudflare challenges automated clients across `kontia.cl`. `/meta/webhook` and
+`/v1/` on `conectar.kontia.cl` are exempted in the zone's "Kontia: lo automatizado
+legítimo..." skip rule. A new public route needs the same exemption, or Meta and the
+CRMs get a challenge page instead of the gateway.

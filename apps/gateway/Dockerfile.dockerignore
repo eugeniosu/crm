@@ -1,0 +1,14 @@
+*
+!package.json
+!bun.lock
+!apps/*/package.json
+!apps/gateway
+!packages/*/package.json
+!packages/env
+!packages/auth
+!packages/typescript-config
+**/node_modules
+**/.turbo
+**/src/generated
+**/.env
+**/.env.*
