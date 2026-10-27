@@ -1,0 +1,13 @@
+**/node_modules
+**/.next
+**/.turbo
+**/.eve
+**/.output
+**/dist
+**/src/generated/*
+!apps/api/src/generated/server.ts
+.git
+**/.env
+**/.env.*
+!.env.example
+**/*.log
