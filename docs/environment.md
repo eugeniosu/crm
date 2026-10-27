@@ -143,8 +143,8 @@ excluded — recognising our URL for the image optimizer needs no token.
 ### The Context key is asked for, not configured
 
 **`CONTEXT_DEV_API_KEY` is not a variable here and must not become one.** The key lives
-in `AppSetting`, is asked for at `/onboarding/research`, and changes on Settings →
-General — an admin who cannot redeploy cannot set a variable.
+in `AppSetting` and is set, optionally, on Settings → General — an admin who cannot
+redeploy cannot set a variable. Onboarding no longer asks for it.
 
 - **It buys two places to look, not one.** Company brand data by domain, and a person
   read back from a LinkedIn URL already on their record. Both capabilities in

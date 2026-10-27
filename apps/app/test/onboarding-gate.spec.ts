@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import { AUTH_COOKIE_PREFIX } from "@crm/auth/cookies";
 import { NextRequest } from "next/server";
-import { readResearchGate, readWorkspaceGate } from "../lib/onboarding";
+import { readWorkspaceGate } from "../lib/onboarding";
 import { proxy } from "../proxy";
 
 const SESSION_COOKIE = `${AUTH_COOKIE_PREFIX}.session_token=abc.def`;
@@ -48,23 +48,17 @@ const workspace = (data: {
 	slug?: string;
 }) => ({ result: { data: { slug: SLUG, ...data } } });
 
-const researchKey = (configured: boolean) => ({
-	result: { data: { configured, hint: configured ? "••••9876" : null } },
-});
-
-/** Answers both gate procedures, counting the calls to each. */
+/** Answers the workspace gate, counting the calls to it. */
 function setup({
 	onboarded = true,
 	canRename = true,
-	configured = true,
 	slug = SLUG,
 }: {
 	onboarded?: boolean;
 	canRename?: boolean;
-	configured?: boolean;
 	slug?: string;
 } = {}) {
-	const calls = { workspace: 0, research: 0 };
+	const calls = { workspace: 0, other: 0 };
 
 	stub(async (url) => {
 		if (url.includes("workspace.get")) {
@@ -72,8 +66,8 @@ function setup({
 			return json(workspace({ onboarded, canRename, slug }));
 		}
 
-		calls.research += 1;
-		return json(researchKey(configured));
+		calls.other += 1;
+		return json({ error: { message: "not a gate" } }, 404);
 	});
 
 	return calls;
@@ -131,30 +125,6 @@ describe("readWorkspaceGate", () => {
 	});
 });
 
-describe("readResearchGate", () => {
-	it("is settled once a key is saved, and required until then", async () => {
-		answerWith(researchKey(true));
-		expect(await readResearchGate(request("/", [SESSION_COOKIE]))).toBe(
-			"settled",
-		);
-
-		answerWith(researchKey(false));
-		expect(await readResearchGate(request("/", [SESSION_COOKIE]))).toBe(
-			"required",
-		);
-	});
-
-	it("is unknown rather than required when the API cannot be read", async () => {
-		stub(async () => {
-			throw new Error("connect ECONNREFUSED");
-		});
-
-		expect(await readResearchGate(request("/", [SESSION_COOKIE]))).toBe(
-			"unknown",
-		);
-	});
-});
-
 describe("proxy", () => {
 	it("shows a stranger the landing page and nothing behind it", async () => {
 		marketing("true");
@@ -176,7 +146,7 @@ describe("proxy", () => {
 
 	it("never aims a redirect at the sign-in page itself", async () => {
 		marketing(undefined);
-		setup({ onboarded: false, configured: false });
+		setup({ onboarded: false });
 
 		expect(redirectedTo(await proxy(request("/sign-in")))).toBeNull();
 		expect(
@@ -237,11 +207,11 @@ describe("proxy", () => {
 		const first = await proxy(request(`/${SLUG}/companies`, [SESSION_COOKIE]));
 
 		expect([...first.cookies.getAll()]).toHaveLength(0);
-		expect(calls).toEqual({ workspace: 1, research: 1 });
+		expect(calls).toEqual({ workspace: 1, other: 0 });
 
 		await proxy(request(`/${SLUG}/companies`, [SESSION_COOKIE]));
 
-		expect(calls).toEqual({ workspace: 2, research: 2 });
+		expect(calls).toEqual({ workspace: 2, other: 0 });
 	});
 
 	it("notices when the answer changes underneath it", async () => {
@@ -262,17 +232,11 @@ describe("proxy", () => {
 		).toBe("/onboarding");
 	});
 
-	it("takes a settled rep off both setup pages and into the workspace", async () => {
+	it("takes a settled rep off the setup page and into the workspace", async () => {
 		setup();
 
 		expect(
 			redirectedTo(await proxy(request("/onboarding", [SESSION_COOKIE]))),
-		).toBe(`/${SLUG}`);
-
-		expect(
-			redirectedTo(
-				await proxy(request("/onboarding/research", [SESSION_COOKIE])),
-			),
 		).toBe(`/${SLUG}`);
 	});
 
@@ -355,43 +319,24 @@ describe("the slug the app is served under", () => {
 	});
 });
 
-describe("the research key gate", () => {
-	it("sends an onboarded rep with no key to the key form", async () => {
-		setup({ configured: false });
+describe("no research key step", () => {
+	it("lets a named workspace in without asking for a Context key", async () => {
+		const calls = setup({ onboarded: true });
 
 		expect(
 			redirectedTo(
 				await proxy(request(`/${SLUG}/companies`, [SESSION_COOKIE])),
-			),
-		).toBe("/onboarding/research");
-	});
-
-	it("lets that form render rather than looping onto itself", async () => {
-		setup({ configured: false });
-
-		expect(
-			redirectedTo(
-				await proxy(request("/onboarding/research", [SESSION_COOKIE])),
 			),
 		).toBeNull();
+		expect(calls.other).toBe(0);
 	});
 
-	it("asks the first question first when both are outstanding", async () => {
-		setup({ onboarded: false, configured: false });
-
-		expect(
-			redirectedTo(
-				await proxy(request(`/${SLUG}/companies`, [SESSION_COOKIE])),
-			),
-		).toBe("/onboarding");
-	});
-
-	it("sends them on to the key once the workspace is named", async () => {
-		setup({ onboarded: true, configured: false });
+	it("sends someone who just named the workspace straight into it", async () => {
+		setup({ onboarded: true });
 
 		expect(
 			redirectedTo(await proxy(request("/onboarding", [SESSION_COOKIE]))),
-		).toBe("/onboarding/research");
+		).toBe(`/${SLUG}`);
 	});
 });
 

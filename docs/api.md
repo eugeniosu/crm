@@ -67,12 +67,14 @@ here, what do we sell.
 
 ### Gates in `proxy.ts`
 
-Onboarding, then `/onboarding/research` for the Context key. Asked server-side every
-request.
+Onboarding (naming the workspace), asked server-side every request. Kontia CRM
+dropped the `/onboarding/research` step that demanded a Context key before anyone
+could enter (2026-10-27): the offices' prospects are Chilean SMEs that Context barely
+covers, and the key stays optional on Settings → General.
 
 - **`getSessionCookie()` decides signed-in**; pages still resolve the real session via
   `requireMailboxAccess()`.
-- **Nothing is cached in a cookie** — both facts revert on a database reset while a
+- **Nothing is cached in a cookie** — the fact reverts on a database reset while a
   year-long marker insists the gate passed. Cache in the API if cost ever matters.
 - **Both reads run concurrently**, but order decides which is *asked* — the research
   read is never made while onboarding is open.
