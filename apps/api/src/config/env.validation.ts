@@ -71,6 +71,14 @@ export class EnvironmentVariables {
 
 	@IsOptional()
 	@IsString()
+	CLOUDFLARE_ACCESS_TEAM_DOMAIN?: string;
+
+	@IsOptional()
+	@IsString()
+	CLOUDFLARE_ACCESS_AUD?: string;
+
+	@IsOptional()
+	@IsString()
 	SLACK_CLIENT_ID?: string;
 
 	@IsOptional()

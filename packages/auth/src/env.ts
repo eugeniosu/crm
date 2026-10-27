@@ -46,6 +46,24 @@ const slackCredentials = ():
 	| { clientId: string; clientSecret: string }
 	| undefined => pair("SLACK_CLIENT_ID", "SLACK_CLIENT_SECRET");
 
+const cloudflareAccessConfig = ():
+	| { teamDomain: string; audience: string }
+	| undefined => {
+	const teamDomain = optional("CLOUDFLARE_ACCESS_TEAM_DOMAIN");
+	const audience = optional("CLOUDFLARE_ACCESS_AUD");
+
+	if (!teamDomain || !audience) {
+		if (teamDomain || audience) {
+			throw new Error(
+				"CLOUDFLARE_ACCESS_TEAM_DOMAIN and CLOUDFLARE_ACCESS_AUD must be set together.",
+			);
+		}
+		return undefined;
+	}
+
+	return { teamDomain, audience };
+};
+
 const apiUrl =
 	optional("API_URL") ?? optional("BETTER_AUTH_URL") ?? DEFAULT_API_URL;
 
@@ -62,6 +80,7 @@ export const env = {
 	google: googleCredentials(),
 	microsoft: microsoftCredentials(),
 	slack: slackCredentials(),
+	cloudflareAccess: cloudflareAccessConfig(),
 	cookieDomain: optional("AUTH_COOKIE_DOMAIN"),
 	trustedOrigins: [...new Set([...appUrls, apiUrl])],
 	isProduction: process.env.NODE_ENV === "production",
@@ -77,6 +96,10 @@ export function isMicrosoftConfigured(): boolean {
 
 export function isSlackConfigured(): boolean {
 	return env.slack !== undefined;
+}
+
+export function isCloudflareAccessConfigured(): boolean {
+	return env.cloudflareAccess !== undefined;
 }
 
 export { apiUrl, appUrl };

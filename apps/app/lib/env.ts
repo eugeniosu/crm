@@ -4,3 +4,7 @@ export const API_URL =
 export function isMarketing(): boolean {
 	return process.env.IS_MARKETING === "true";
 }
+
+export function isCloudflareAccessSignIn(): boolean {
+	return Boolean(process.env.CLOUDFLARE_ACCESS_AUD);
+}

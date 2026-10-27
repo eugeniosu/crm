@@ -8,6 +8,7 @@
 		"./auth": "./src/auth.ts",
 		"./chat-event-crypto": "./src/chat-event-crypto.ts",
 		"./client": "./src/client.ts",
+		"./cloudflare-access": "./src/cloudflare-access.ts",
 		"./cookies": "./src/cookies.ts",
 		"./env": "./src/env.ts",
 		"./mcp-crypto": "./src/mcp-crypto.ts",
@@ -36,6 +37,7 @@
 		"@crm/mcp-integrations": "workspace:*",
 		"@crm/validation": "workspace:*",
 		"better-auth": "1.6.33",
+		"jose": "6.2.5",
 		"zod": "^4.4.3"
 	},
 	"peerDependencies": {

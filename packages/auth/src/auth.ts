@@ -8,6 +8,7 @@ import { APIError } from "better-auth/api";
 import { genericOAuth } from "better-auth/plugins/generic-oauth";
 import { organization } from "better-auth/plugins/organization";
 import { API_KEY_EXPIRATION, API_KEY_HEADER, API_KEY_PREFIX } from "./api-keys";
+import { cloudflareAccess } from "./cloudflare-access";
 import { AUTH_COOKIE_PREFIX } from "./cookies";
 import { env } from "./env";
 import { ensureWorkspaceMembership } from "./organization";
@@ -231,6 +232,10 @@ export const auth = betterAuth({
 		sso({
 			organizationProvisioning: { disabled: true },
 		}),
+
+		...(env.cloudflareAccess
+			? [cloudflareAccess({ ...env.cloudflareAccess, appUrl: env.appUrl })]
+			: []),
 
 		apiKey({
 			apiKeyHeaders: API_KEY_HEADER,

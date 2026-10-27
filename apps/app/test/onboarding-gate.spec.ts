@@ -394,3 +394,37 @@ describe("the research key gate", () => {
 		).toBe("/onboarding/research");
 	});
 });
+
+describe("proxy behind Cloudflare Access", () => {
+	const ACCESS_SIGN_IN = "/api/auth/cloudflare-access/sign-in";
+	const realAudience = process.env.CLOUDFLARE_ACCESS_AUD;
+
+	afterEach(() => {
+		if (realAudience === undefined) delete process.env.CLOUDFLARE_ACCESS_AUD;
+		else process.env.CLOUDFLARE_ACCESS_AUD = realAudience;
+	});
+
+	it("sends a stranger to Access instead of the sign-in page", async () => {
+		marketing(undefined);
+		process.env.CLOUDFLARE_ACCESS_AUD = "aud-tag";
+
+		expect(redirectedTo(await proxy(request("/")))).toBe(ACCESS_SIGN_IN);
+		expect(redirectedTo(await proxy(request(`/${SLUG}/companies`)))).toBe(
+			ACCESS_SIGN_IN,
+		);
+	});
+
+	it("never shows the sign-in page while Access signs people in", async () => {
+		process.env.CLOUDFLARE_ACCESS_AUD = "aud-tag";
+
+		expect(redirectedTo(await proxy(request("/sign-in")))).toBe(ACCESS_SIGN_IN);
+	});
+
+	it("keeps the sign-in page when Access is not configured", async () => {
+		marketing(undefined);
+		delete process.env.CLOUDFLARE_ACCESS_AUD;
+
+		expect(redirectedTo(await proxy(request("/")))).toBe("/sign-in");
+		expect(redirectedTo(await proxy(request("/sign-in")))).toBeNull();
+	});
+});

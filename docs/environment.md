@@ -43,6 +43,16 @@ the three that is genuinely optional on its own — set it to your tenant's GUID
 refuse other tenants at Microsoft instead of at `ALLOWED_SIGN_IN`. There is **no
 Microsoft equivalent of `hd`**: `tenantId` is the whole of it.
 
+**`CLOUDFLARE_ACCESS_TEAM_DOMAIN` + `CLOUDFLARE_ACCESS_AUD`** replace the sign-in
+page with Cloudflare Access, for an install reachable *only* through an Access
+application (Kontia's staging CRM). `packages/auth/src/cloudflare-access.ts` verifies
+the `Cf-Access-Jwt-Assertion` header against the team's published keys, issuer and
+the application's AUD tag, then opens a session for that email through Better Auth,
+so `ALLOWED_SIGN_IN` and the workspace enrolment hooks still apply. `proxy.ts` sends
+anyone without a session to `/api/auth/cloudflare-access/sign-in` instead of
+`/sign-in`. Set both or none. **Never on an install reachable without Access**: the
+header is only trustworthy because Access sits in front.
+
 **Neither pair is required, but an install wants one of them or an SSO provider** —
 with none, the sign-in page says so by name rather than rendering nothing.
 

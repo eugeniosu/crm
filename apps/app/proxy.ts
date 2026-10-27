@@ -1,7 +1,7 @@
 import { AUTH_COOKIE_PREFIX } from "@crm/auth/cookies";
 import { getSessionCookie } from "better-auth/cookies";
 import { type NextRequest, NextResponse } from "next/server";
-import { isMarketing } from "@/lib/env";
+import { isCloudflareAccessSignIn, isMarketing } from "@/lib/env";
 import {
 	ONBOARDING_PATH,
 	RESEARCH_PATH,
@@ -14,6 +14,8 @@ const LANDING_PATH = "/";
 
 const SIGN_IN_PATH = "/sign-in";
 
+const ACCESS_SIGN_IN_PATH = "/api/auth/cloudflare-access/sign-in";
+
 const UNGATED = ["/grant-access", "/eve"];
 
 const ANONYMOUS = ["/t"];
@@ -23,16 +25,22 @@ const SECTIONS = ["/companies", "/contacts", "/deals", "/tasks", "/settings"];
 export async function proxy(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
-	if (pathname === SIGN_IN_PATH) return NextResponse.next();
+	if (pathname === SIGN_IN_PATH) {
+		return isCloudflareAccessSignIn()
+			? NextResponse.redirect(new URL(ACCESS_SIGN_IN_PATH, request.nextUrl))
+			: NextResponse.next();
+	}
 
 	if (isAnonymous(pathname)) return NextResponse.next();
 
 	if (
 		getSessionCookie(request, { cookiePrefix: AUTH_COOKIE_PREFIX }) === null
 	) {
-		return isPublic(pathname)
-			? NextResponse.next()
-			: NextResponse.redirect(new URL(SIGN_IN_PATH, request.nextUrl));
+		if (isPublic(pathname)) return NextResponse.next();
+		const signIn = isCloudflareAccessSignIn()
+			? ACCESS_SIGN_IN_PATH
+			: SIGN_IN_PATH;
+		return NextResponse.redirect(new URL(signIn, request.nextUrl));
 	}
 
 	if (isUngated(pathname)) return NextResponse.next();
